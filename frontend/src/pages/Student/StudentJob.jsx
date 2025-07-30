@@ -16,6 +16,7 @@ const JobListUI = () => {
       }
     };
     fetchJobs();
+    
   }, []);
 
   const applyJob = async(id)=>{
@@ -29,8 +30,6 @@ const JobListUI = () => {
     }
   }
   
-
-
   return (
     <>
       <Navbar />
