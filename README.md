@@ -1,76 +1,75 @@
-Earnease – A Student-Centric Part-Time Job Portal
-Earnease is a MERN Stack-based web platform designed to connect students with verified part-time job opportunities. The platform bridges the gap between job seekers (students) and employers, enabling students to earn income while managing their studies and allowing employers to find reliable part-time talent with ease.
+# Earnease – Student-Focused Part-Time Job Portal
 
-🚀 Features
-🎓 For Students (Job Seekers):
-Personalized dashboard to track applications & earnings
+**Earnease** is a full-stack MERN application that connects students with flexible, part-time job opportunities while giving employers a streamlined way to find reliable student workers.  
+It features user-friendly dashboards, real-time communication, job tracking, and payment integration — all designed to support students in earning while they learn.
 
-Apply for jobs, save jobs, and view application history
+---
 
-Create a public profile with education, skills & experience
+## 🚀 Key Features
 
-Real-time in-app chat with employers
+### 🎓 For Students (Job Seekers)
+- Apply for part-time jobs and view application history  
+- Create and manage public profiles with skills, experience, and availability  
+- Real-time in-app chat with employers  
+- Save jobs for later  
+- Rate and report employers after job completion  
+- Dark/Light mode toggle  
+- Notification system for updates and job alerts  
+- Monthly earnings tracker  
 
-Rate and report employers after job completion
+### 🧑‍💼 For Employers
+- Post jobs (with free limit + pay-per-post model)  
+- Manage applicants and view detailed profiles  
+- Chat with job seekers in real time  
+- Provide one-time feedback and ratings for students  
+- Highlight job posts using featured post option  
 
-Notification system for job alerts and updates
+### 🛡️ For Admin
+- Manage students, employers, and job listings  
+- View and resolve reports, feedback, and complaints  
+- Restrict or block employers when necessary  
+- Track Razorpay transactions and revenue  
+- View platform stats (users, jobs, income, etc.)
 
-Dark/Light mode toggle for accessibility
+---
 
-🧑‍💼 For Employers:
-Post and manage job listings
+## 🛠️ Tech Stack
 
-View and filter applicants
+- **Frontend**: React.js, Vite, Tailwind CSS, Framer Motion  
+- **Backend**: Node.js, Express.js  
+- **Database**: MongoDB + Mongoose  
+- **Authentication**: JWT + Email OTP  
+- **Payments**: Razorpay  
+- **Icons/Animations**: Lucide, Framer Motion  
+- **Deployment**: Vercel (Frontend), Render (Backend)
 
-Real-time chat with student applicants
+---
 
-One-time feedback/rating system for hired students
+## 🎯 Why Earnease?
 
-Monthly post limit with payment integration (Free + Paid posts)
+Many students struggle to find flexible and safe part-time work.  
+Earnease bridges that gap by providing a trusted, student-friendly platform that supports both students and employers — ensuring opportunities are accessible, transparent, and efficient.
 
-Profile management and job visibility control
+---
 
-🛡️ For Admin:
-Monitor all users, jobs, feedback, and reports
+## 🌐 Live Demo
 
-Manage platform-wide content and security
+🔗 Not hosted yet..!
 
-Track monthly income and Razorpay payment history
+---
 
-View flagged employers and restrict/block accounts if needed
+## 📦 Getting Started
 
-🛠️ Tech Stack
-Frontend: React.js, Tailwind CSS, Framer Motion, Lucide Icons
-
-Backend: Node.js, Express.js
-
-Database: MongoDB
-
-Authentication: JWT + Email OTP
-
-Payment Integration: Razorpay
-
-Deployment: Vercel (Frontend) + Render/Node Host (Backend)
-
-🎯 Problem it Solves
-Many students struggle to find reliable and flexible part-time jobs. At the same time, small businesses or local employers find it hard to reach potential student workers. Earnease solves this by providing a secure, easy-to-use, and feature-rich job portal tailored specifically for students.
-
-🌐 Live Demo
-🔗 not hosted yet..!
-
-📦 How to Run Locally
-bash
-Copy
-Edit
+```bash
 # Clone the repository
 git clone https://github.com/yourusername/earnease.git
 
-# Navigate to frontend
+# Frontend
 cd frontend
 npm install
 npm run dev
 
-# Navigate to backend
+# Backend
 cd ../backend
 npm install
 npm run dev
