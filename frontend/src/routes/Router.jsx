@@ -1,0 +1,189 @@
+import { Routes, Route, Navigate } from "react-router-dom";
+
+{/* ---------- PUBLIC ROUTES ---------- */ }
+import HomePage from "../pages/Publicpages/Home";
+import Register from "../pages/Publicpages/Register";
+import Login from "../pages/Publicpages/Login";
+import ForgotPassword from "../pages/Publicpages/ForgotPassword";
+import ResetPassword from "../pages/Publicpages/ResetPassword";
+import NotFound from "../pages/Publicpages/Notfound";
+
+{/* ---------- STUDENT ROUTES ---------- */ }
+import StudentDashboard from "../pages/Student/StudentDashboard";
+import JobListUI from "../pages/Student/StudentJob";
+
+{/* ---------- EMPLOYER ROUTES ---------- */ }
+import EmployerDashboard from "../pages/Employer/EmployerDashboard";
+import VerifyEmployer from "../pages/Employer/verifyEmployer";
+import VerificationPending from "../pages/Employer/VerificationPending";
+import PostJob from "../pages/Employer/PostJob";
+import ViewJob from "../pages/Employer/ViewJob";
+import EditJob from "../pages/Employer/EditJob";
+import EmployerApplications from "../pages/Employer/EmployerApplications";
+import EmployerEditProfile from "../pages/Employer/EmployerEditProfile";
+
+{/* ---------- ADMIN ROUTES ---------- */ }
+import AdminLogin from "../pages/Admin/AdminLogin";
+import AdminDashboard from "../pages/Admin/AdminDashboard";
+import PendingEmployers from "../pages/Admin/PendingEmployers";
+import EmployerDetail from "../pages/Admin/EmployerDetail";
+import SingleViewEmployer from "../pages/Admin/SingleViewEmp";
+import StudentManagement from "../pages/Admin/StudentManagement";
+import EmployerManagement from "../pages/Admin/EmployerManagement";
+import ProtectedRoute from "./ProtectedRoute";
+import ProtectHomeRoute from "./ProtectHomeRoute";
+
+const Router = () => {
+  return (
+    <Routes>
+      {/* ---------- PUBLIC ROUTES ---------- */}
+      <Route path="/" element={<ProtectHomeRoute>
+        <HomePage />
+      </ProtectHomeRoute>} />
+      <Route path="/register/student" element={<Register />} />
+      <Route path="/register/employer" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/adminlog" element={<AdminLogin />} />
+
+      {/* ---------- STUDENT ROUTES ---------- */}
+      <Route
+        path="/student/dashboard"
+        element={
+          <ProtectedRoute allowedRoles={["student"]}>
+            <StudentDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/job"
+        element={
+          <JobListUI />
+        }
+      />
+
+      {/* ---------- EMPLOYER ONLY ---------- */}
+      <Route
+        path="/employer/dashboard"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <EmployerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/verify/employer"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <VerifyEmployer />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employer/verification-pending"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <VerificationPending />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employer/post-job"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <PostJob />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employer/editjob/:id"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <EditJob />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/viewJob"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <ViewJob />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employer/getApplication"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <EmployerApplications />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employer/editProfile"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <EmployerEditProfile />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ---------- ADMIN ONLY ---------- */}
+      <Route
+        path="/admin/dashboard"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/employers/pending"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <PendingEmployers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/employers/:id"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <EmployerDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/employerview/:id"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <SingleViewEmployer />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/studentmanagement"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <StudentManagement />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employermanagement"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <EmployerManagement />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* ---------- 404 ---------- */}
+      <Route path="/notfound" element={<NotFound />} />
+      <Route path="*" element={<Navigate to="/notfound" replace />} />
+    </Routes>
+  );
+};
+
+export default Router;
