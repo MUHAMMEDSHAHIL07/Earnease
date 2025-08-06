@@ -75,17 +75,13 @@ const Router = () => {
       <Route
         path="/verify/employer"
         element={
-          <ProtectedRoute allowedRoles={["employer"]}>
             <VerifyEmployer />
-          </ProtectedRoute>
         }
       />
       <Route
         path="/employer/verification-pending"
         element={
-          <ProtectedRoute allowedRoles={["employer"]}>
             <VerificationPending />
-          </ProtectedRoute>
         }
       />
       <Route

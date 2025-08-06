@@ -78,7 +78,7 @@ const Login = () => {
         if (status === 401 && role === "employer" && empId) {
           navigate("/verify/employer", { state: { employerId: empId } });
         }
-        if (status === 403 && role === "employer") {
+        if (status === 403) {
           navigate("/employer/verification-pending");
         }
       } finally {
@@ -107,6 +107,8 @@ const Login = () => {
         return;
       }
       await fetchUser();
+      
+      console.log(data)
 
       if (data.role === "employer") {
         if (!data.verified) {
@@ -114,6 +116,7 @@ const Login = () => {
             toast.info("You have already submitted verification. Please wait for approval.");
             return navigate("/employer/verification-pending");
           } else {
+            toast.info("Please verify your details")
             return navigate("/verify/employer", {
               state: { employerId: data.employerId },
             });

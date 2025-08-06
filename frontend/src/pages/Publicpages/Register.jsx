@@ -110,6 +110,7 @@ const Register = () => {
         const employerId = res.data.employerId;
         localStorage.setItem("employerId", employerId)
         navigate('/verify/employer', { state: { employerId } });
+  console.log(res.data)
       } else {
         navigate('/login');
       }
@@ -119,6 +120,7 @@ const Register = () => {
       setVerifyingOtp(false);
     }
   };
+
 
   const handleOtpChange = (e, i) => {
     const value = e.target.value;

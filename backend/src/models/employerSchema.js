@@ -22,7 +22,7 @@ const employerSchema = new Schema({
     },
     avatarUrl:{
       type:String
-   },
+    },
     isVerified: {
         type: Boolean,
         default: false,
@@ -34,6 +34,18 @@ const employerSchema = new Schema({
     resetTokenExpiry:{
       type:Date,
       default:null
+    },
+    jobPostCount:{
+      type:Number,
+      default:0
+    },
+    isSubscribed:{
+        type:Boolean,
+        default:false
+    },
+    subscriptionExpiry:{
+       type:Date,
+       default:null
     },
      isBlocked: { type: Boolean, default: false } 
 },{ timestamps:true })

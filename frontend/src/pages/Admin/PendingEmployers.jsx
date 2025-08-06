@@ -57,11 +57,11 @@ const PendingEmployers = () => {
                     className="border-b hover:bg-gray-50 transition"
                   >
                     <td className="px-4 py-3 font-medium">
-                      {item.employerId.companyname}
+                      {item.employerId?.companyname}
                     </td>
-                    <td className="px-4 py-3">{item.employerId.email}</td>
+                    <td className="px-4 py-3">{item.employerId?.email}</td>
                     <td className="px-4 py-3">
-                      {new Date(item.employerId.createdAt).toLocaleDateString()}
+                      {new Date(item.employerId?.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-3 flex-wrap">

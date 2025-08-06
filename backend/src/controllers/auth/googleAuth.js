@@ -44,20 +44,32 @@ export const GoogleLogin = async (req, res) => {
       if (employer) {
         const verification = await EmployerVerification.findOne({ employerId: employer._id })
         const token = jwt.sign({ id: employer._id, role: "employer" }, process.env.JWT_SECRET, { expiresIn: "7d" })
+        if (!employer.isVerified) {
+          return res.json({
+            exists: true,
+            role: "employer",
+            blocked: employer.isBlocked,
+            verified: false,
+            hasSubmittedVerification: !!verification,
+            employerId: employer._id,
+            user: { name: employer.companyname, email, avatarUrl: picture }
+          });
+        }
         res.cookie("token", token, {
           httpOnly: true,
           secure: false,
           sameSite: "Lax",
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });
-        return res.json({
-          exists: true, role: "employer", blocked: employer.isBlocked,
-          verified: employer.isVerified, hasSubmittedVerification: !!verification,
-          employerId: employer._id,
-          user: { name: employer.companyname, email, avatarUrl: picture }
-        });
       }
-      return res.json({ exists: false });
+      return res.json({
+        exists: true,
+        role: "employer",
+        blocked: employer.isBlocked,
+        verified: true,
+        employerId: employer._id,
+        user: { name: employer.companyname, email, avatarUrl: picture },
+      })
     }
 
     if ((role === "student" && employer) || (role === "employer" && student)) {
@@ -69,9 +81,9 @@ export const GoogleLogin = async (req, res) => {
     if (!user) {
       if (role === "student") {
 
-        user = await userModel.create({ name, email, googleId,avatarUrl: picture})
+        user = await userModel.create({ name, email, googleId, avatarUrl: picture })
       } else {
-        user = await employerModel.create({ companyname: name, email, googleId,avatarUrl: picture, isVerified: false })
+        user = await employerModel.create({ companyname: name, email, googleId, avatarUrl: picture, isVerified: false })
       }
     }
     if (user.isBlocked) {
