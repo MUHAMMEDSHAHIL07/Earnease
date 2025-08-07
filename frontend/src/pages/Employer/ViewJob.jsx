@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import {Briefcase,MapPin,IndianRupee,Clock,Users,Trash2,Pencil,Menu,X,} from "lucide-react";
-import axios from "axios";
+import React, { useEffect, useState } from "react"
+import {Briefcase,MapPin,IndianRupee,Clock,Users,Trash2,Pencil,Menu,X,} from "lucide-react"
+import axios from "axios"
 import EmployerSidebar from "../Employer/EmployerSidebar"
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"
+import { useNavigate } from "react-router-dom"
 
 const ViewJob = () => {
-  const [jobs, setJob] = useState([]);
+  const [jobs, setJob] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate()
   const HandleDelete = async(id)=>{
@@ -27,31 +27,23 @@ const ViewJob = () => {
         const res = await axios.get("http://localhost:5000/api/employer/getJobs", {
           withCredentials: true,
         });
-        setJob(res.data.getJob);
+        setJob(res.data.getJob)
       } catch (error) {
-        console.log(error.message);
+        console.log(error.message)
       }
     };
-    fetchJob();
+    fetchJob()
   }, []);
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-blue-50 to-white">
-  
-      <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-gray-700">
-          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-        <h2 className="text-lg font-semibold text-blue-600">Your Jobs</h2>
-      </div>
-
   
       <EmployerSidebar sidebarOpen={sidebarOpen} />
 
  
       <main className="flex-1 p-4 md:p-10">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-6 text-blue-700 text-center">
+          <h2 className="text-3xl font-bold mb-6 mt-10 md:mt-10 text-blue-700 text-center">
             Jobs You've Posted
           </h2>
 
@@ -126,4 +118,4 @@ const ViewJob = () => {
   );
 };
 
-export default ViewJob;
+export default ViewJob

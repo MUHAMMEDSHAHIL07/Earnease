@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Menu, X, User2, Mail, Briefcase, Clock } from "lucide-react";
-import axios from "axios";
-import EmployerSidebar from "../Employer/EmployerSidebar";
+import React, { useEffect, useState } from "react"
+import { User2, Mail, Briefcase, Clock } from "lucide-react"
+import axios from "axios"
+import EmployerSidebar from "../Employer/EmployerSidebar"
 
 const EmployerApplications = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [applications, setApplications] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [applications, setApplications] = useState([])
 
   useEffect(() => {
     axios
@@ -18,13 +18,10 @@ const EmployerApplications = () => {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-100 to-blue-50">
-      <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-gray-700">
-          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      <EmployerSidebar sidebarOpen={sidebarOpen} />
+      <EmployerSidebar 
+        sidebarOpen={sidebarOpen} 
+        setSidebarOpen={setSidebarOpen} 
+      />
 
       <main className="flex-1 p-6 md:p-10 mt-4 md:mt-0">
         <div className="mb-6">
@@ -102,4 +99,4 @@ const EmployerApplications = () => {
   );
 };
 
-export default EmployerApplications;
+export default EmployerApplications

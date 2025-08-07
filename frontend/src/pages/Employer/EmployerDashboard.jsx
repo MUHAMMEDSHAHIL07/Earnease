@@ -50,17 +50,8 @@ const EmployerDashboard = () => {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-100 to-blue-50">
-      {/* Mobile Menu Toggle */}
-      <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-gray-700">
-          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {/* Sidebar Component */}
       <EmployerSidebar sidebarOpen={sidebarOpen} />
 
-      {/* Main Content */}
       <main className="flex-1 p-6 md:p-10 mt-4 md:mt-0">
         {employer && (
           <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
@@ -85,7 +76,6 @@ const EmployerDashboard = () => {
           </header>
         )}
 
-        {/* Stats Cards */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition-all">
             <p className="text-gray-500 text-sm">Jobs Posted</p>
@@ -111,7 +101,6 @@ const EmployerDashboard = () => {
           </div>
         </section>
 
-        {/* Quick Actions */}
         <section className="flex flex-col sm:flex-row gap-4 mb-8">
           <button
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium shadow-md w-full sm:w-auto"
@@ -126,7 +115,7 @@ const EmployerDashboard = () => {
           </button>
         </section>
 
-        {/* Recent Activity */}
+
         <section className="bg-white p-6 rounded-2xl shadow mb-8 overflow-x-auto">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">Recent Activity</h3>
           <table className="w-full text-sm text-left">
@@ -171,4 +160,4 @@ const EmployerDashboard = () => {
   );
 };
 
-export default EmployerDashboard;
+export default EmployerDashboard

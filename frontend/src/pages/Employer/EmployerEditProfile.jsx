@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Upload, Mail, Phone, Globe, Building2 } from "lucide-react";
-import axios from "axios";
+import React, { useEffect, useState } from "react"
+import { Upload, Mail, Phone, Globe, Building2 } from "lucide-react"
+import axios from "axios"
 import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
+import EmployerSidebar from "./EmployerSidebar" 
+
 const EmployerEditProfile = () => {
-  const store = JSON.parse(localStorage.getItem("earneaseUser"));
+  const store = JSON.parse(localStorage.getItem("earneaseUser"))
   const [employer, setEmployer] = useState({})
   const [verification, setVerification] = useState({})
   const navigate = useNavigate()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
   const [form, setForm] = useState({
     companyname: "",
     email: "",
@@ -17,10 +21,11 @@ const EmployerEditProfile = () => {
     industry: "",
     address: "",
     foundedYear: "",
-    avatarUrl: ""
+    avatarUrl: "",
   });
+
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value })
   }
 
   useEffect(() => {
@@ -46,23 +51,23 @@ const EmployerEditProfile = () => {
   }, []);
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "earnease_uploads");
+    const file = e.target.files[0]
+    if (!file) return
+    const formData = new FormData()
+    formData.append("file", file)
+    formData.append("upload_preset", "earnease_uploads")
 
     try {
       const res = await axios.post(
         "https://api.cloudinary.com/v1_1/dmiqegsx4/upload",
         formData
       );
-      const imageUrl = res.data.secure_url;
-      setForm((prev) => ({ ...prev, avatarUrl: imageUrl }));
+      const imageUrl = res.data.secure_url
+      setForm((prev) => ({ ...prev, avatarUrl: imageUrl }))
       toast.success("Image uploaded");
     } catch (err) {
-      console.error("Upload error:", err);
-      toast.error("Image upload failed");
+      console.error("Upload error:", err)
+      toast.error("Image upload failed")
     }
   };
 
@@ -75,7 +80,7 @@ const EmployerEditProfile = () => {
         { withCredentials: true }
       );
 
-      toast.success("Profile updated successfully!");
+      toast.success("Profile updated successfully!")
       localStorage.setItem(
         "earneaseUser",
         JSON.stringify({ ...store, avatarUrl: form.avatarUrl })
@@ -89,40 +94,47 @@ const EmployerEditProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 md:p-10">
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow p-8">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Edit Company Profile</h1>
-        <p className="text-sm text-gray-500 mb-6">Update your company information visible to job seekers</p>
+    <div className="flex min-h-screen bg-gray-50">
+      <EmployerSidebar sidebarOpen={sidebarOpen} />
 
+      <main className="flex-1 p-4 md:p-10 overflow-y-auto">
+        <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow p-8">
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+            Edit Company Profile
+          </h1>
+          <p className="text-sm text-gray-500 mb-6">
+            Update your company information visible to job seekers
+          </p>
 
-        <div className="flex items-center gap-6 mb-8">
-          <img
-            src={form.avatarUrl || store?.avatarUrl}
-            alt="Company Logo"
-            className="w-24 h-24 rounded-full object-cover border"
-          />
-
-          <div>
-            <input
-              type="file"
-              id="avatarUpload"
-              onChange={handleImageUpload}
-              accept="image/*"
-              className="hidden"
+          <div className="flex items-center gap-6 mb-8">
+            <img
+              src={form.avatarUrl || store?.avatarUrl}
+              alt="Company Logo"
+              className="w-24 h-24 rounded-full object-cover border"
             />
-            <label
-              htmlFor="avatarUpload"
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 cursor-pointer"
-            >
-              <Upload className="w-4 h-4" />
-              Upload Logo
-            </label>
-            <p className="text-xs text-gray-500 mt-1">Recommended: Square image, at least 400×400px</p>
+
+            <div>
+              <input
+                type="file"
+                id="avatarUpload"
+                onChange={handleImageUpload}
+                accept="image/*"
+                className="hidden"
+              />
+              <label
+                htmlFor="avatarUpload"
+                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 cursor-pointer"
+              >
+                <Upload className="w-4 h-4" />
+                Upload Logo
+              </label>
+              <p className="text-xs text-gray-500 mt-1">
+                Recommended: Square image, at least 400×400px
+              </p>
+            </div>
           </div>
-        </div>
 
-
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Company Name*</label>
@@ -241,24 +253,25 @@ const EmployerEditProfile = () => {
           </div>
         </form>
 
-
-        <div className="mt-8 flex justify-end gap-4">
-          <button 
-          onClick={()=>navigate(-1)}
-          className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100">
-            Back
-          </button>
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
-          >
-            Save Changes
-          </button>
+          <div className="mt-8 flex justify-end gap-4">
+            <button
+              onClick={() => navigate(-1)}
+              className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
+            >
+              Back
+            </button>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700"
+            >
+              Save Changes
+            </button>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
 
-export default EmployerEditProfile;
+export default EmployerEditProfile
