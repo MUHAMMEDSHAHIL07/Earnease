@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { Menu, X } from "lucide-react"
 import axios from "axios"
 import logo from "../assets/logo.png"
+import Swal from "sweetalert2"
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -17,15 +18,37 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await axios.delete("http://localhost:5000/api/auth/logout", {
-        withCredentials: true,
-      });
-      localStorage.removeItem("earneaseUser");
-      setUser(null);
-      navigate("/");
-    } catch (error) {
-      console.log(error.message)
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You will be logged out of your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, logout",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.delete("http://localhost:5000/api/auth/logout", {
+          withCredentials: true,
+        });
+        localStorage.removeItem("earneaseUser");
+        navigate("/login");
+        Swal.fire({
+          icon: "success",
+          title: "Logged out",
+          text: "You have been successfully logged out.",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong while logging out.",
+        });
+      }
     }
   };
 
