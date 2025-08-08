@@ -51,6 +51,7 @@ const Navbar = () => {
       }
     }
   };
+  console.log(user)
 
   return (
     <nav className="bg-gradient-to-r from-blue-50 to-white shadow-md sticky top-0 z-50">
@@ -89,12 +90,13 @@ const Navbar = () => {
               About Us
             </Link>
 
-            {user ? (
+            {user? (
               <div className="relative group">
                 {user.avatarUrl && (
                   <img
                     src={user.avatarUrl}
                     alt={user.name || "User"}
+                    referrerPolicy="no-referrer"
                     className="w-9 h-9 rounded-full border-2 border-blue-500 object-cover transition-transform duration-200 hover:scale-110"
                   />
                 )}

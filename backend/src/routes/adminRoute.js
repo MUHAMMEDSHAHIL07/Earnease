@@ -6,6 +6,7 @@ import { BlockUnblockEmployer, getEmployer, getEmployerById } from "../controlle
 import { jwtMiddleware } from "../middleware/authMiddleware.js";
 
 
+
 const router = express.Router()
 
 router.get("/employers/pending",jwtMiddleware,getPendingVerification)

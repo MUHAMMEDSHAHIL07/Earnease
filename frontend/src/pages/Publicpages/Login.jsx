@@ -166,9 +166,7 @@ const Login = () => {
         name: user.name,
         avatarUrl: user.avatarUrl,
       }));
-
-      toast.success("Account created please verify your details");
-
+      toast.success("Account created ");
       if (role === "employer") {
         return navigate("/verify/employer", {
           state: { employerId }, 

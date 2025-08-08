@@ -16,7 +16,7 @@ router.post("/userregister",checkBlocked, userRegister);
 router.post("/employerregister", checkBlocked,employerRegister);
 router.post("/adminregister",checkBlocked, adminRegister);
 router.post("/login",checkBlocked,userLogin)
-router.post("/adminlogin",checkBlocked,jwtMiddleware,loginLimiter,adminLogin)
+router.post("/adminlogin",checkBlocked,adminLogin)
 router.post("/forgot-password",checkBlocked,loginLimiter,forgetPassword)
 router.post('/googlelogin',checkBlocked,GoogleLogin);
 router.post("/reset-password/:token", checkBlocked,loginLimiter,resetPassword);

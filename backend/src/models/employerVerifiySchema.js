@@ -52,10 +52,12 @@ const employerVerificationSchema = new mongoose.Schema({
     enum: ["pending", "approved", "rejected"],
     default: "pending",
   },
-  isVerified:
-  {
+  isVerified:{
     type: Boolean,
     default: false
+  },
+  rejectionReason:{
+    type:String
   },
   submittedAt:
   {

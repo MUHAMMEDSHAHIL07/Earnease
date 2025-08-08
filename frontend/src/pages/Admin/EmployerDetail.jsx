@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import axios from "axios"
+import { toast } from "react-toastify"
 
 const EmployerDetail = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [data, setData] = useState(null);
-
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [data, setData] = useState(null)
+  const [rejectionReason, setRejectionReason] = useState("")
   useEffect(() => {
     axios
       .get(`http://localhost:5000/admin/employers/pending/${id}`)
@@ -27,7 +27,7 @@ const EmployerDetail = () => {
 
   const handleReject = () => {
     axios
-      .patch(`http://localhost:5000/admin/employers/rejectEmployer/${id}`)
+      .patch(`http://localhost:5000/admin/employers/rejectEmployer/${id}`, { rejectionReason })
       .then(() => {
         toast.success("Employer rejected successfully");
         navigate("/admin/employers/pending");
@@ -66,7 +66,7 @@ const EmployerDetail = () => {
             <Info label="Address" value={address} />
             <Info label="About company" value={aboutCompany} />
             <Info label="Website" value={websiteUrl} />
-             <Info label="Founded year" value={foundedYear} />
+            <Info label="Founded year" value={foundedYear} />
             <Info label="Contact Person" value={contactPerson} />
             <Info label="Contact Email" value={contactEmail} />
           </div>
@@ -85,6 +85,18 @@ const EmployerDetail = () => {
               <p className="text-red-500 text-sm">No license uploaded.</p>
             )}
           </div>
+        </div>
+        <div className="mt-8">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Rejection Reason <span className="text-gray-500 opacity-50">(Optional)</span>
+          </label>
+          <textarea
+            value={rejectionReason}
+            onChange={(e) => setRejectionReason(e.target.value)}
+            rows="3"
+            placeholder="Enter reason for rejection..."
+            className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
         </div>
 
         <div className="mt-10 flex flex-wrap gap-4 justify-start">

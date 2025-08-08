@@ -6,7 +6,7 @@ import adminRouter from "./routes/adminRoute.js"
 import employerRoute from "./routes/employerRoute.js"
 import cookieParser from "cookie-parser";
 import cors from "cors"
-import { apiLimiter } from "./middleware/rateLimit.js";
+// import { apiLimiter } from "./middleware/rateLimit.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -21,7 +21,7 @@ app.use("/api/auth", authRoute)
 app.use("/student",studentRoute)
 app.use("/api/employer",employerRoute)
 app.use("/admin",adminRouter)
-app.use(apiLimiter)
+// app.use(apiLimiter)
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
 })

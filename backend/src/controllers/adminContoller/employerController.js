@@ -1,7 +1,7 @@
 import { employerModel } from "../../models/employerSchema.js"
 import EmployerVerification from "../../models/employerVerifiySchema.js"
 
-//get all employer
+
 export const getEmployer = async (req, res) => {
   try {
     const employer = await employerModel.find().select("-password")
@@ -12,7 +12,7 @@ export const getEmployer = async (req, res) => {
   }
 }
 
-//get employer by id
+
 
 export const getEmployerById = async (req, res) => {
   try {
@@ -33,7 +33,7 @@ export const getEmployerById = async (req, res) => {
 
 }
 
-//block and unblock employer
+
 
 export const BlockUnblockEmployer = async (req, res) => {
   try {
