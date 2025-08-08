@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 const PendingEmployers = () => {
   const [pending, setPending] = useState([]);
+  const [loading, setLoading] = useState({ id: null, action: null });
 
   useEffect(() => {
     axios
@@ -13,24 +14,16 @@ const PendingEmployers = () => {
       .catch((err) => console.error("Error fetching:", err));
   }, []);
 
-  const handleApprove = (id) => {
+  const handleAction = (id, action) => {
+    setLoading({ id, action });
     axios
-      .patch(`http://localhost:5000/admin/employers/approveEmployer/${id}`)
+      .patch(`http://localhost:5000/admin/employers/${action}Employer/${id}`)
       .then(() => {
         setPending((prev) => prev.filter((item) => item._id !== id));
-        toast.success("Application approved");
+        toast.success(`Application ${action === "approve" ? "approved" : "rejected"}`);
       })
-      .catch((err) => console.error("Approval failed:", err.message));
-  };
-
-  const handleReject = (id) => {
-    axios
-      .patch(`http://localhost:5000/admin/employers/rejectEmployer/${id}`)
-      .then(() => {
-        setPending((prev) => prev.filter((item) => item._id !== id));
-        toast.success("Application rejected");
-      })
-      .catch((err) => console.error("Rejection failed:", err.message));
+      .catch((err) => console.error(err.message))
+      .finally(() => setLoading({ id: null, action: null }));
   };
 
   return (
@@ -72,16 +65,28 @@ const PendingEmployers = () => {
                           View
                         </Link>
                         <button
-                          onClick={() => handleApprove(item._id)}
-                          className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md shadow-sm transition"
+                          onClick={() => handleAction(item._id, "approve")}
+                          disabled={loading.id === item._id && loading.action === "approve"}
+                          className={`px-3 py-1 rounded-md shadow-sm transition ${loading.id === item._id && loading.action === "approve"
+                            ? "bg-green-300 cursor-not-allowed"
+                            : "bg-green-500 hover:bg-green-600 text-white"
+                            }`}
                         >
-                          Approve
+                          {loading.id === item._id && loading.action === "approve"
+                            ? "Approving..."
+                            : "Approve"}
                         </button>
                         <button
-                          onClick={() => handleReject(item._id)}
-                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md shadow-sm transition"
+                          onClick={() => handleAction(item._id, "reject")}
+                          disabled={loading.id === item._id && loading.action === "reject"}
+                          className={`px-3 py-1 rounded-md shadow-sm transition ${loading.id === item._id && loading.action === "reject"
+                            ? "bg-red-300 cursor-not-allowed"
+                            : "bg-red-500 hover:bg-red-600 text-white"
+                            }`}
                         >
-                          Reject
+                          {loading.id === item._id && loading.action === "reject"
+                            ? "Rejecting..."
+                            : "Reject"}
                         </button>
                       </div>
                     </td>
@@ -89,7 +94,10 @@ const PendingEmployers = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="px-4 py-6 text-center text-gray-500">
+                  <td
+                    colSpan="4"
+                    className="px-4 py-6 text-center text-gray-500"
+                  >
                     No pending employer verifications
                   </td>
                 </tr>

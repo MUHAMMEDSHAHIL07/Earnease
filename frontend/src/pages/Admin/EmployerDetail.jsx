@@ -8,34 +8,41 @@ const EmployerDetail = () => {
   const navigate = useNavigate()
   const [data, setData] = useState(null)
   const [rejectionReason, setRejectionReason] = useState("")
+  const [loading, setLoading] = useState(null)
+
   useEffect(() => {
     axios
       .get(`http://localhost:5000/admin/employers/pending/${id}`)
       .then((res) => setData(res.data.verification))
-      .catch((err) => console.log(err.message));
-  }, [id]);
+      .catch((err) => console.log(err.message))
+  }, [id])
 
   const handleApprove = () => {
+    setLoading("approve")
     axios
       .patch(`http://localhost:5000/admin/employers/approveEmployer/${id}`)
       .then(() => {
-        toast.success("Employer approved successfully");
-        navigate("/admin/employers/pending");
+        toast.success("Employer approved successfully")
+        navigate("/admin/employers/pending")
       })
-      .catch((err) => toast.error("Approval failed"));
-  };
+      .catch(() => toast.error("Approval failed"))
+      .finally(() => setLoading(null))
+  }
 
   const handleReject = () => {
+    setLoading("reject")
+
     axios
       .patch(`http://localhost:5000/admin/employers/rejectEmployer/${id}`, { rejectionReason })
       .then(() => {
-        toast.success("Employer rejected successfully");
-        navigate("/admin/employers/pending");
+        toast.success("Employer rejected successfully")
+        navigate("/admin/employers/pending")
       })
-      .catch((err) => toast.error("Rejection failed"));
-  };
+      .catch(() => toast.error("Rejection failed"))
+      .finally(() => setLoading(null))
+  }
 
-  if (!data) return <div className="p-6 text-gray-600">Loading…</div>;
+  if (!data) return <div className="p-6 text-gray-600">Loading…</div>
 
   const {
     employerId,
@@ -47,8 +54,8 @@ const EmployerDetail = () => {
     contactEmail,
     websiteUrl,
     aboutCompany,
-    foundedYear
-  } = data;
+    foundedYear,
+  } = data
 
   return (
     <div className="max-w-5xl mx-auto p-8">
@@ -86,6 +93,7 @@ const EmployerDetail = () => {
             )}
           </div>
         </div>
+
         <div className="mt-8">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Rejection Reason <span className="text-gray-500 opacity-50">(Optional)</span>
@@ -102,16 +110,26 @@ const EmployerDetail = () => {
         <div className="mt-10 flex flex-wrap gap-4 justify-start">
           <button
             onClick={handleApprove}
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition"
+            disabled={loading === "approve"}
+            className={`font-semibold px-6 py-2 rounded-lg shadow-md transition ${loading === "approve"
+              ? "bg-green-300 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700 text-white"
+              }`}
           >
-            ✅ Approve
+            {loading === "approve" ? "Approving..." : "✅ Approve"}
           </button>
+
           <button
             onClick={handleReject}
-            className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow-md transition"
+            disabled={loading === "reject"}
+            className={`font-semibold px-6 py-2 rounded-lg shadow-md transition ${loading === "reject"
+              ? "bg-red-300 cursor-not-allowed"
+              : "bg-red-600 hover:bg-red-700 text-white"
+              }`}
           >
-            ❌ Reject
+            {loading === "reject" ? "Rejecting..." : "❌ Reject"}
           </button>
+
           <button
             onClick={() => navigate(-1)}
             className="border border-gray-400 text-gray-700 font-medium px-6 py-2 rounded-lg hover:bg-gray-100 transition"
@@ -121,14 +139,14 @@ const EmployerDetail = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const Info = ({ label, value }) => (
   <div>
     <p className="text-sm text-gray-500">{label}</p>
     <p className="text-base font-medium text-gray-800">{value || "—"}</p>
   </div>
-);
+)
 
-export default EmployerDetail;
+export default EmployerDetail
