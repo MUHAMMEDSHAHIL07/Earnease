@@ -2,24 +2,46 @@ import React, { useEffect, useState } from "react"
 import {Briefcase,MapPin,IndianRupee,Clock,Users,Trash2,Pencil,Menu,X,} from "lucide-react"
 import axios from "axios"
 import EmployerSidebar from "../Employer/EmployerSidebar"
-import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom"
+import toast from "react-hot-toast"
+import Swal from "sweetalert2"
 
 const ViewJob = () => {
   const [jobs, setJob] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate()
-  const HandleDelete = async(id)=>{
-     try{
+    const HandleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure to delete job?",
+      text: "if yes click on delete button.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes,Delete",
+    });
+
+    if (result.isConfirmed) {
+      try{
       await axios.delete(`http://localhost:5000/api/employer/deleteJob/${id}`,{withCredentials:true})
       setJob((prev)=>prev.filter((job)=>job._id!==id))
-      toast.success("job deleted successfully") 
-     }
-     catch(error){
-      const msg = error.response?.data?.message || err.message
-      console.log(msg)
-     }
-  }
+       Swal.fire({
+          icon: "success",
+          title: "Deleted Job",
+          text: "You have been deleted job.",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+     } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong.",
+        });
+        console.log(error.message)
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchJob = async () => {

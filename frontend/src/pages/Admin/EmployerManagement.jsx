@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+
 const EmployerManagement = () => {
     const [employer, setEmployer] = useState([])
     const navigate= useNavigate()

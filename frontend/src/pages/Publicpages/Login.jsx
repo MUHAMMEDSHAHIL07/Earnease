@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
 import { LoginSchema } from "../../Schema";
 import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../../context/authContext";
+import toast from "react-hot-toast";
 
 
 const RoleSelectModal = ({ onSelect, onClose }) => (

@@ -3,21 +3,21 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { SignupSchema } from '../../Schema';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import job from "/src/assets/job.jpg";
 import { GoogleLogin } from "@react-oauth/google";
+import toast from 'react-hot-toast';
 
 const Register = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const activeTab = location.pathname.includes('employer') ? 'employer' : 'student';
-  const switchTab = (role) => navigate(`/register/${role}`);
-  const otpRefs = useRef([]);
-  const [otpSent, setOtpSent] = useState(false);
-  const [sendingOtp, setSendingOtp] = useState(false);
-  const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const navigate = useNavigate()
+  const location = useLocation()
+  const activeTab = location.pathname.includes('employer') ? 'employer' : 'student'
+  const switchTab = (role) => navigate(`/register/${role}`)
+  const otpRefs = useRef([])
+  const [otpSent, setOtpSent] = useState(false)
+  const [sendingOtp, setSendingOtp] = useState(false)
+  const [verifyingOtp, setVerifyingOtp] = useState(false)
 
-  const getOtp = () => otpRefs.current.map((el) => el?.value).join('');
+  const getOtp = () => otpRefs.current.map((el) => el?.value).join('')
 
 
   const initialValues = {

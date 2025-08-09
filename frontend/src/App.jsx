@@ -1,17 +1,43 @@
-import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from 'react-hot-toast';
 import Router from './routes/Router';
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <Router/>
+        <Router />
       </BrowserRouter>
-      <ToastContainer position="top-right" autoClose={3000} />
+
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            padding: '12px 16px',
+            fontSize: '15px',
+            borderRadius: '8px',
+            background: '#fff',
+            color: '#333',
+            boxShadow: '0px 4px 12px rgba(0,0,0,0.08)',
+          },
+          success: {
+            iconTheme: {
+              primary: '#22c55e',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
+
     </>
   );
 }
-export default React.memo(App);
+
+export default App

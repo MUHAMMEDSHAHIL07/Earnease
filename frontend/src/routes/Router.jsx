@@ -2,12 +2,11 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 {/* ---------- PUBLIC ROUTES ---------- */ }
 import HomePage from "../pages/Publicpages/Home";
-import Register from "../pages/Publicpages/Register";
 import Login from "../pages/Publicpages/Login";
 import ForgotPassword from "../pages/Publicpages/ForgotPassword";
 import ResetPassword from "../pages/Publicpages/ResetPassword";
 import NotFound from "../pages/Publicpages/Notfound";
-
+import Register from "../pages/Publicpages/Register"
 {/* ---------- STUDENT ROUTES ---------- */ }
 import StudentDashboard from "../pages/Student/StudentDashboard";
 import JobListUI from "../pages/Student/StudentJob";

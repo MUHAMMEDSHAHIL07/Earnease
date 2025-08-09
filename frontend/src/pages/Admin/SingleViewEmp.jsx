@@ -4,8 +4,8 @@ import axios from "axios";
 import { CheckCircle, XCircle, Globe } from "lucide-react";
 
 const SingleViewEmployer = () => {
-  const { id } = useParams();
-  const [data, setData] = useState(null);
+  const { id } = useParams()
+  const [data, setData] = useState(null)
 
   useEffect(() => {
     axios
@@ -14,10 +14,10 @@ const SingleViewEmployer = () => {
       .catch(console.error);
   }, [id]);
 
-  if (!data) return <div className="p-6 text-gray-600">Loading…</div>;
+  if (!data) return <div className="p-6 text-gray-600">Loading…</div>
 
-  const { verification, employer } = data;
-  const dateJoined = new Date(employer.createdAt).toLocaleDateString();
+  const { verification, employer } = data
+  const dateJoined = new Date(employer.createdAt).toLocaleDateString()
   const Badge = ({ ok, yesText, noText }) => (
     <span
       className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium

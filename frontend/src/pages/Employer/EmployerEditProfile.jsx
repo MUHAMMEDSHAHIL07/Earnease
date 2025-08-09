@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react"
-import { Upload, Mail, Phone, Globe, Building2 } from "lucide-react"
-import axios from "axios"
-import { toast } from "react-toastify"
-import { useNavigate } from "react-router-dom"
-import EmployerSidebar from "./EmployerSidebar" 
+import React, { useEffect, useState } from "react";
+import { Upload, Mail, Phone, Globe, Building2 } from "lucide-react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import EmployerSidebar from "./EmployerSidebar";
+import toast from "react-hot-toast";
 
 const EmployerEditProfile = () => {
   const store = JSON.parse(localStorage.getItem("earneaseUser"))
@@ -26,7 +26,7 @@ const EmployerEditProfile = () => {
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
-  }
+  };
 
   useEffect(() => {
     axios
@@ -34,8 +34,8 @@ const EmployerEditProfile = () => {
         withCredentials: true,
       })
       .then((res) => {
-        setEmployer(res.data.employer || {});
-        setVerification(res.data.verification || {});
+        setEmployer(res.data.employer || {})
+        setVerification(res.data.verification || {})
         setForm({
           companyname: res.data.employer?.companyname || "",
           email: res.data.employer?.email || "",
@@ -45,6 +45,7 @@ const EmployerEditProfile = () => {
           industry: res.data.verification?.industry || "",
           address: res.data.verification?.address || "",
           foundedYear: res.data.verification?.foundedYear || "",
+          avatarUrl: res.data.employer?.avatarUrl || "",
         });
       })
       .catch(console.error);
@@ -53,34 +54,49 @@ const EmployerEditProfile = () => {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
+
     const formData = new FormData()
     formData.append("file", file)
     formData.append("upload_preset", "earnease_uploads")
 
     try {
-      const res = await axios.post(
-        "https://api.cloudinary.com/v1_1/dmiqegsx4/upload",
-        formData
-      );
-      const imageUrl = res.data.secure_url
-      setForm((prev) => ({ ...prev, avatarUrl: imageUrl }))
-      toast.success("Image uploaded");
+      await toast
+        .promise(
+          axios.post(
+            "https://api.cloudinary.com/v1_1/dmiqegsx4/upload",
+            formData
+          ),
+          {
+            loading: "Uploading image...",
+            success: "Image uploaded successfully!",
+            error: "Image upload failed",
+          }
+        )
+        .then((res) => {
+          const imageUrl = res.data.secure_url;
+          setForm((prev) => ({ ...prev, avatarUrl: imageUrl }))
+        });
     } catch (err) {
-      console.error("Upload error:", err)
-      toast.error("Image upload failed")
+      console.error("Upload error:", err);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.patch(
-        "http://localhost:5000/api/employer/editprofile",
-        form,
-        { withCredentials: true }
+      await toast.promise(
+        axios.patch(
+          "http://localhost:5000/api/employer/editprofile",
+          form,
+          { withCredentials: true }
+        ),
+        {
+          loading: "Saving profile...",
+          success: "Profile updated successfully!",
+          error: "Error updating profile",
+        }
       );
 
-      toast.success("Profile updated successfully!")
       localStorage.setItem(
         "earneaseUser",
         JSON.stringify({ ...store, avatarUrl: form.avatarUrl })
@@ -89,7 +105,6 @@ const EmployerEditProfile = () => {
       navigate("/employer/dashboard");
     } catch (error) {
       console.error(error);
-      toast.error("Error updating profile");
     }
   };
 
@@ -134,124 +149,134 @@ const EmployerEditProfile = () => {
             </div>
           </div>
 
-                 <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company Name*</label>
-            <input
-              type="text"
-              value={form.companyname}
-              name="companyname"
-              onChange={handleChange}
-              className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter company name"
-            />
-          </div>
-
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-            <div className="relative">
-              <Phone className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
+          <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Company Name*
+              </label>
               <input
                 type="text"
-                className="w-full pl-10 border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="+91 9876543210"
-                name="phone"
+                value={form.companyname}
+                name="companyname"
                 onChange={handleChange}
-                value={form.phone}
+                className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter company name"
               />
             </div>
-          </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Phone Number
+              </label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  className="w-full pl-10 border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="+91 9876543210"
+                  name="phone"
+                  onChange={handleChange}
+                  value={form.phone}
+                />
+              </div>
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email Address*</label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address*
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
+                <input
+                  type="email"
+                  onChange={handleChange}
+                  name="email"
+                  value={form.email}
+                  className="w-full pl-10 border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="company@example.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Website
+              </label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
+                <input
+                  type="url"
+                  onChange={handleChange}
+                  name="websiteUrl"
+                  className="w-full pl-10 border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="https://www.company.com"
+                  value={form.websiteUrl}
+                />
+              </div>
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                About Company
+              </label>
+              <textarea
+                rows="4"
+                className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Describe your company culture, mission, and values…"
+                onChange={handleChange}
+                name="aboutCompany"
+                value={form.aboutCompany}
+              ></textarea>
+              <p className="text-xs text-gray-500 mt-1">
+                Share what makes your company unique and attractive to potential employees
+              </p>
+            </div>
+
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address
+              </label>
+              <textarea
+                rows="4"
+                onChange={handleChange}
+                name="address"
+                className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter company address..."
+                value={form.address}
+              ></textarea>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Industry
+              </label>
+              <div className="relative">
+                <Building2 className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  value={form.industry}
+                  name="industry"
+                  onChange={handleChange}
+                  className="w-full pl-10 border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="EG: PVT LTD"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Founded Year
+              </label>
               <input
-                type="email"
+                type="number"
+                className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="YYYY"
+                name="foundedYear"
                 onChange={handleChange}
-                name="email"
-                value={form.email}
-                className="w-full pl-10 border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="company@example.com"
+                value={form.foundedYear}
               />
             </div>
-          </div>
-
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Website</label>
-            <div className="relative">
-              <Globe className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
-              <input
-                type="url"
-                onChange={handleChange}
-                name="websiteUrl"
-                className="w-full pl-10 border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="https://www.company.com"
-                value={form.websiteUrl}
-              />
-            </div>
-          </div>
-
-
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">About Company</label>
-            <textarea
-              rows="4"
-              className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Describe your company culture, mission, and values…"
-              onChange={handleChange}
-              name="aboutCompany"
-              value={form.aboutCompany}
-            ></textarea>
-            <p className="text-xs text-gray-500 mt-1">
-              Share what makes your company unique and attractive to potential employees
-            </p>
-          </div>
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-            <textarea
-              rows="4"
-              onChange={handleChange}
-              name="address"
-              className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Describe your company culture, mission, and values…"
-              value={form.address}
-            ></textarea>
-          </div>
-
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
-            <div className="relative">
-              <Building2 className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
-              <input
-                type="url"
-                value={form.industry}
-                name="industry"
-                onChange={handleChange}
-                className="w-full pl-10 border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="EG:PVT LTD"
-              />
-            </div>
-          </div>
-
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Founded Year</label>
-            <input
-              type="number"
-              className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="YYYY"
-              name="foundedYear"
-              onChange={handleChange}
-              value={form.foundedYear}
-            />
-          </div>
-        </form>
+          </form>
 
           <div className="mt-8 flex justify-end gap-4">
             <button
@@ -274,4 +299,4 @@ const EmployerEditProfile = () => {
   );
 };
 
-export default EmployerEditProfile
+export default EmployerEditProfile;

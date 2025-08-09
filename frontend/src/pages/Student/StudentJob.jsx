@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
 import {Bookmark,MapPin,IndianRupee,Building2,} from "lucide-react";
 import Navbar from "../../components/Navbar";
+import toast from "react-hot-toast";
 
 const JobListUI = () => {
   const [jobs, setJobs] = useState([]);

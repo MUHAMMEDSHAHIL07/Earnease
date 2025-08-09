@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+
 
 const PendingEmployers = () => {
-  const [pending, setPending] = useState([]);
-  const [loading, setLoading] = useState({ id: null, action: null });
+  const [pending, setPending] = useState([])
+  const [loading, setLoading] = useState({ id: null, action: null })
 
   useEffect(() => {
     axios
       .get("http://localhost:5000/admin/employers/pending")
       .then((res) => setPending(res.data.pending))
-      .catch((err) => console.error("Error fetching:", err));
+      .catch((err) => console.error("Error fetching:", err))
   }, []);
 
   const handleAction = (id, action) => {
@@ -23,7 +24,7 @@ const PendingEmployers = () => {
         toast.success(`Application ${action === "approve" ? "approved" : "rejected"}`);
       })
       .catch((err) => console.error(err.message))
-      .finally(() => setLoading({ id: null, action: null }));
+      .finally(() => setLoading({ id: null, action: null }))
   };
 
   return (

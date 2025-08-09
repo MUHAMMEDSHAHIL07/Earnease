@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+
 const StudentManagement = () => {
     const [student, setStudent] = useState([])
 
@@ -13,7 +14,7 @@ const StudentManagement = () => {
                 toast.error(msg);
             });
     }, [])
-    console.log(student);
+
 
     const block = (id) => {
         axios.patch(`http://localhost:5000/admin/userStatus/${id}`, { isBlocked: true }, { withCredentials: true })

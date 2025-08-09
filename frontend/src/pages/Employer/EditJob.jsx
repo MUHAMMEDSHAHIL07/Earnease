@@ -1,51 +1,68 @@
-import axios from "axios"
-import {Briefcase,MapPin,IndianRupee,Clock,Users,AlignLeft,ListChecks,} from "lucide-react"
-import {  useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { toast } from "react-toastify"
+import axios from "axios";
+import {Briefcase,MapPin,IndianRupee,Clock,Users,AlignLeft,ListChecks,} from "lucide-react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { useFormik } from "formik";
+import { JobPostSchema } from "../../Schema";
+
 
 const EditJob = () => {
-    const navigate = useNavigate()
-    const {id} = useParams()
-    const [form,setForm] = useState({
-    title:"",
-    Description:"",
-    Location:"",
-    Salary:"",
-    Category:"",
-    WorkHour:"",
-    Gender:""
-    })
-      useEffect(()=>{
-        axios.get(`http://localhost:5000/api/employer/getJob/${id}`,{withCredentials:true})
-        .then((res)=>setForm(res.data.getJob))
-        .catch(error=>{
-           const msg = error.response?.data?.message || err.message
-            console.log(msg)
-        })
-    },[id])
-    const handleChange =(e)=>{
-        setForm({...form,[e.target.name]:e.target.value})
-    }
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
 
-    const handleSubmit = async(e)=>{
-        e.preventDefault()
-        try{
-            const res= await axios.patch(`http://localhost:5000/api/employer/editjob/${id}`,form,{withCredentials: true})
-            if(res.status===200){
-                toast.success("job Edited succesufully")
-                navigate("/employer/dashboard")
-            }
+  const formik = useFormik({
+    initialValues: {
+      title: "",
+      Description: "",
+      Location: "",
+      Salary: "",
+      Category: "",
+      WorkHour: "",
+      Gender: "",
+    },
+    validationSchema: JobPostSchema,
+    onSubmit: async (values) => {
+      try {
+        const res = await axios.patch(
+          `http://localhost:5000/api/employer/editjob/${id}`,
+          values,
+          { withCredentials: true }
+        );
+        if (res.status === 200) {
+          toast.success("Job edited successfully");
+          navigate("/employer/dashboard");
         }
-        catch(error){
-             toast.error(error.response?.data?.message || "Job Edit failed")
-        }
-    }
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Job edit failed");
+      }
+    },
+  });
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5000/api/employer/getJob/${id}`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        formik.setValues(res.data.getJob);
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error(err.response?.data?.message || err.message);
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) {
+    return <p className="text-center py-10">Loading...</p>;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white py-10 px-4">
       <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-2xl border border-blue-100">
-        <form className="space-y-6" onSubmit={handleSubmit}>
-         
+        <form className="space-y-6" onSubmit={formik.handleSubmit}>
           <div>
             <label className="block font-medium mb-2 text-gray-700">
               Job Title
@@ -54,17 +71,20 @@ const EditJob = () => {
               <Briefcase className="text-gray-400 mr-2" />
               <input
                 type="text"
-                placeholder="Enter job title"
                 name="title"
-                value={form.title}
+                placeholder="Enter job title"
                 className="w-full outline-none"
-                required
-                onChange={handleChange}
+                value={formik.values.title}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </div>
+            {formik.touched.title && formik.errors.title && (
+              <p className="text-red-500 text-sm">{formik.errors.title}</p>
+            )}
           </div>
 
-   
+
           <div>
             <label className="block font-medium mb-2 text-gray-700">
               Job Description
@@ -72,17 +92,22 @@ const EditJob = () => {
             <div className="flex items-start border border-gray-300 rounded-md p-3 focus-within:ring-2 focus-within:ring-blue-500">
               <AlignLeft className="text-gray-400 mr-2 mt-1" />
               <textarea
+                name="Description"
                 placeholder="Write a short description..."
                 className="w-full outline-none h-28 resize-none"
-                required
-                value={form.Description}
-                onChange={handleChange}
-                name="Description"
+                value={formik.values.Description}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </div>
+            {formik.touched.Description && formik.errors.Description && (
+              <p className="text-red-500 text-sm">
+                {formik.errors.Description}
+              </p>
+            )}
           </div>
 
-    
+
           <div>
             <label className="block font-medium mb-2 text-gray-700">
               Location
@@ -91,36 +116,42 @@ const EditJob = () => {
               <MapPin className="text-gray-400 mr-2" />
               <input
                 type="text"
+                name="Location"
                 placeholder="e.g., Kochi, Kerala"
                 className="w-full outline-none"
-                value={form.Location}
-                required
-                onChange={handleChange}
-                name="Location"
+                value={formik.values.Location}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </div>
+            {formik.touched.Location && formik.errors.Location && (
+              <p className="text-red-500 text-sm">{formik.errors.Location}</p>
+            )}
           </div>
 
 
           <div>
             <label className="block font-medium mb-2 text-gray-700">
-              Salary 
+              Salary
             </label>
             <div className="flex items-center border border-gray-300 rounded-md p-3 focus-within:ring-2 focus-within:ring-blue-500">
               <IndianRupee className="text-gray-400 mr-2" />
               <input
                 type="number"
-                placeholder="e.g., 5000"
-                required
-                onChange={handleChange}
-                value={form.Salary}
                 name="Salary"
+                placeholder="e.g., 5000"
                 className="w-full outline-none"
+                value={formik.values.Salary}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </div>
+            {formik.touched.Salary && formik.errors.Salary && (
+              <p className="text-red-500 text-sm">{formik.errors.Salary}</p>
+            )}
           </div>
 
-  
+
           <div>
             <label className="block font-medium mb-2 text-gray-700">
               Category
@@ -129,17 +160,19 @@ const EditJob = () => {
               <ListChecks className="text-gray-400 mr-2" />
               <input
                 type="text"
-                placeholder="e.g., Delivery, Retail"
-                required
-                onChange={handleChange}
-                value={form.Category}
                 name="Category"
+                placeholder="e.g., Delivery, Retail"
                 className="w-full outline-none"
+                value={formik.values.Category}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </div>
+            {formik.touched.Category && formik.errors.Category && (
+              <p className="text-red-500 text-sm">{formik.errors.Category}</p>
+            )}
           </div>
 
-      
           <div>
             <label className="block font-medium mb-2 text-gray-700">
               Work Hours / Timings
@@ -148,30 +181,41 @@ const EditJob = () => {
               <Clock className="text-gray-400 mr-2" />
               <input
                 type="text"
-                placeholder="e.g., 6 PM - 10 PM"
-                required
-                onChange={handleChange}
-                value={form.WorkHour}
                 name="WorkHour"
+                placeholder="e.g., 6 PM - 10 PM"
                 className="w-full outline-none"
+                value={formik.values.WorkHour}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
             </div>
+            {formik.touched.WorkHour && formik.errors.WorkHour && (
+              <p className="text-red-500 text-sm">{formik.errors.WorkHour}</p>
+            )}
           </div>
 
-      
           <div>
             <label className="block font-medium mb-2 text-gray-700">
               Gender Preference
             </label>
             <div className="flex items-center border border-gray-300 rounded-md p-3 focus-within:ring-2 focus-within:ring-blue-500">
               <Users className="text-gray-400 mr-2" />
-              <select className="w-full outline-none bg-white" required onChange={handleChange} name="Gender" value={form.Gender}>
+              <select
+                name="Gender"
+                className="w-full outline-none bg-white"
+                value={formik.values.Gender}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
                 <option value="">Select</option>
                 <option value="Any">Any</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
             </div>
+            {formik.touched.Gender && formik.errors.Gender && (
+              <p className="text-red-500 text-sm">{formik.errors.Gender}</p>
+            )}
           </div>
 
           <div className="pt-4">
@@ -188,4 +232,4 @@ const EditJob = () => {
   );
 };
 
-export default EditJob
+export default EditJob;

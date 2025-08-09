@@ -12,3 +12,19 @@ export const LoginSchema = Yup.object({
   password: Yup.string().required("Password is required")
 });
 
+export const JobPostSchema = Yup.object({
+  title: Yup.string()
+    .min(8, "Job title must be at least 8 characters")
+    .required("Job title is required"),
+  Description: Yup.string()
+    .min(10, "Description must be at least 10 characters")
+    .required("Job description is required"),
+  Location: Yup.string().required("Location is required"),
+  Salary: Yup.number()
+    .typeError("Salary must be a number")
+    .positive("Salary must be positive")
+    .required("Salary is required"),
+  Category: Yup.string().required("Category is required"),
+  WorkHour: Yup.string().required("Work hours are required"),
+  Gender: Yup.string().required("Gender preference is required"),
+});
