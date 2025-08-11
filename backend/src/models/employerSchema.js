@@ -37,7 +37,6 @@ const employerSchema = new Schema({
     default: null
   },
 
-
   jobPostCount: {
     type: Number,
     default: 0 
@@ -49,7 +48,8 @@ const employerSchema = new Schema({
   },
   subscriptionType: {
     type: String,
-    enum: ["free","single", "monthly", "yearly"],
+    enum: ["single", "monthly", "yearly"],
+    default: null
   },
   subscriptionStartDate: {
     type: Date,

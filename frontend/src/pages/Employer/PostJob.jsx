@@ -17,13 +17,12 @@ const PostJob = () => {
               isAllowed(true)
           }
           else{
-            toast.error("Cannot post your job")
-            navigate("/employer/subscription")
+              navigate("/employer/subscription")
           }
         }
         catch(error){
-          console.log(error.message)
-          navigate("/employer/subscription")
+            toast.error(error.response?.data?.message || "Please subscribe to post jobs");
+            navigate("/employer/subscription")
         }
       }
       checkLimit()
