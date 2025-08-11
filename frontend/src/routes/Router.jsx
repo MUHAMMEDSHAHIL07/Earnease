@@ -31,6 +31,7 @@ import StudentManagement from "../pages/Admin/StudentManagement";
 import EmployerManagement from "../pages/Admin/EmployerManagement";
 import ProtectedRoute from "./ProtectedRoute";
 import ProtectHomeRoute from "./ProtectHomeRoute";
+import Subscription from "../pages/Employer/Subscription";
 
 const Router = () => {
   return (
@@ -123,6 +124,14 @@ const Router = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/employer/subscription"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <Subscription />
+          </ProtectedRoute>
+        }
+      />
 
       {/* ---------- ADMIN ONLY ---------- */}
       <Route
@@ -154,6 +163,14 @@ const Router = () => {
         element={
           <ProtectedRoute allowedRoles={["admin"]}>
             <SingleViewEmployer />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/studentmanagement"
+        element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <StudentManagement />
           </ProtectedRoute>
         }
       />
