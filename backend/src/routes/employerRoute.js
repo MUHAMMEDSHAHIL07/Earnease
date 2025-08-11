@@ -8,10 +8,12 @@ import { editProfile } from "../controllers/employerController/editProfile.js";
 import { getProfileEmployer } from "../controllers/employerController/getProfile.js";
 import { checkJobLimit } from "../middleware/checkJobPostLimit.js";
 
+
 const router = express.Router()
 
 router.post("/verify", upload.single("license"),verifyEmployer)
-router.post("/jobPost",jwtMiddleware,checkRole(["employer"]),checkJobLimit,jobPost)
+router.post("/jobPost",jwtMiddleware,checkRole(["employer"]),jobPost)
+router.get("/checkpostlimit",jwtMiddleware,checkRole(["employer"]),checkJobLimit)
 router.get("/getJobs",jwtMiddleware,checkRole(["employer"]),getAllJob)
 router.delete("/deleteJob/:id",jwtMiddleware,checkRole(["employer"]),deleteJob)
 router.get("/getJob/:id",jwtMiddleware,checkRole(["employer"]),getJobById)

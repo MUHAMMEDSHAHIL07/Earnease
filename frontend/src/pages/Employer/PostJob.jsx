@@ -4,10 +4,30 @@ import {Briefcase,MapPin,IndianRupee,Clock,Users,AlignLeft,ListChecks,} from "lu
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { JobPostSchema } from "../../Schema";
+import { useEffect, useState } from "react";
 
 const PostJob = () => {
   const navigate = useNavigate();
-
+      const [allowed,isAllowed] = useState(null)
+    useEffect(()=>{
+      const checkLimit = async ()=>{
+        try{
+          const res = await axios.get("http://localhost:5000/api/employer/checkpostlimit",{withCredentials:true})
+          if(res.data.canPost){
+              isAllowed(true)
+          }
+          else{
+            toast.error("Cannot post your job")
+            navigate("/employer/subscription")
+          }
+        }
+        catch(error){
+          console.log(error.message)
+          navigate("/employer/subscription")
+        }
+      }
+      checkLimit()
+    },[])
   const formik = useFormik({
     initialValues: {
       title: "",

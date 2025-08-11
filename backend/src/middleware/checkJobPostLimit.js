@@ -1,59 +1,36 @@
-import { employerModel } from "../models/employerSchema.js"
+import { employerModel } from "../models/employerSchema.js";
 
-export const checkJobLimit = async (req, res, next) => {
-    try {
-        const employer = await employerModel.findById(req.user.id)
-        if (!employer) {
-            return res.status(404).json({ message: "no employer found" })
-        }
-        if (employer.isBlocked) {
-            return res.status(403).json({ message: "Your accout have been blocked" })
-        }
+export const checkJobLimit = async (req, res) => {
+  try {
+    const employer = await employerModel.findById(req.user.id);
+    if (!employer) {
+      return res.status(404).json({ message: "No employer found" });
+    }
+    if (employer.isBlocked) {
+      return res.status(403).json({ message: "Your account has been blocked" });
+    }
 
-        const now = new Date()
-        if (!employer.isSubscribed || !employer.subscriptionExpiry || employer.subscriptionExpiry < now) {
-            if (employer.jobPostCount < 3) {
-                employer.jobPostCount += 1
-                await employer.save()
-                return next()
-            }
-            else {
-                return res.status(403).json({ message: "Your have used 3 free job for free,please subscribe for post job" })
-            }
-        }
-        if (employer.subscriptionType == "single") {
-            if (employer.subscriptionPostCount < employer.singlePostLimit) {
-                employer.subscriptionPostCount += 1
-                await employer.save()
-                return next()
-            }
-            else {
-                return res.status(403).json({ message: "Try a plan to post a job" })
-            }
-        }
-        if (employer.subscriptionType == "monthly") {
-            if (employer.subscriptionPostCount < employer.monthlyPostLimit) {
-                employer.subscriptionPostCount += 1
-                await employer.save()
-                return next()
-            }
-            else {
-                return res.status(403).json({ message: "Your monthly subscription has been expired , subscribe for more to post" })
-            }
-        }
-        if (employer.subscriptionType == "yearly") {
-            if (employer.subscriptionPostCount < employer.yearlyPostLimit) {
-                employer.subscriptionPostCount += 1
-                await employer.save()
-                return next()
-            }
-            else {
-                return res.status(403).json({ message: "Your monthly subscription has been expired , subscribe for more to post" })
-            }
-        }
-        return res.status(400).json({ message: "Invalid subscription type." })
+    const now = new Date();
+    if (!employer.isSubscribed || !employer.subscriptionExpiry || employer.subscriptionExpiry < now) {
+      if (employer.jobPostCount < 3) {
+        return res.json({ canPost: true });
+      } else {
+        return res.status(403).json({ canPost: false, message: "You have used 3 free job posts. Please subscribe to post more." });
+      }
     }
-    catch (error) {
-        return res.status(500).json({ message: "internal server error" + error.message })
+    let limitMap = {
+      single: employer.singlePostLimit,
+      monthly: employer.monthlyPostLimit,
+      yearly: employer.yearlyPostLimit
+    };
+
+    if (employer.subscriptionPostCount < (limitMap[employer.subscriptionType] || 0)) {
+      return res.json({ canPost: true });
+    } else {
+      return res.status(403).json({ canPost: false, message: "Post limit for your subscription reached. Please upgrade." });
     }
-}
+
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error: " + error.message });
+  }
+};

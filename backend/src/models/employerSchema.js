@@ -49,8 +49,7 @@ const employerSchema = new Schema({
   },
   subscriptionType: {
     type: String,
-    enum: ["single", "monthly", "yearly"],
-    default: null
+    enum: ["free","single", "monthly", "yearly"],
   },
   subscriptionStartDate: {
     type: Date,

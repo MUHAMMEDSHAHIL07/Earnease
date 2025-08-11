@@ -12,6 +12,7 @@ const EmployerDashboard = () => {
   const [job, setJob] = useState();
   const navigate = useNavigate();
 
+
   useEffect(() => {
     const store = localStorage.getItem("earneaseUser");
     if (store) {
@@ -45,6 +46,7 @@ const EmployerDashboard = () => {
     .then((res)=>setApplications(res.data.message))
     .catch((err)=>console.log(err))
   },[])
+
 
   
 
