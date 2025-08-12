@@ -19,6 +19,8 @@ const JobListUI = () => {
     
   }, []);
 
+  console.log(jobs)
+
   const applyJob = async(id)=>{
     try{
       const res = await axios.post(`http://localhost:5000/student/applyJob/${id}`,{},{withCredentials: true})

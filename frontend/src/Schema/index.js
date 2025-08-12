@@ -25,6 +25,7 @@ export const JobPostSchema = Yup.object({
     .positive("Salary must be positive")
     .required("Salary is required"),
   Category: Yup.string().required("Category is required"),
+  Skills: Yup.string().required("Skills are required"),
   WorkHour: Yup.string().required("Work hours are required"),
   Gender: Yup.string().required("Gender preference is required"),
 });

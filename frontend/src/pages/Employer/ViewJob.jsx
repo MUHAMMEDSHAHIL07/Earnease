@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import {Briefcase,MapPin,IndianRupee,Clock,Users,Trash2,Pencil,Menu,X,} from "lucide-react"
+import { Briefcase, MapPin, IndianRupee, Clock, Users, Trash2, Pencil, Menu, X, Lightbulb, } from "lucide-react"
 import axios from "axios"
 import EmployerSidebar from "../Employer/EmployerSidebar"
 import { useNavigate } from "react-router-dom"
@@ -10,7 +10,7 @@ const ViewJob = () => {
   const [jobs, setJob] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate()
-    const HandleDelete = async (id) => {
+  const HandleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Are you sure to delete job?",
       text: "if yes click on delete button.",
@@ -22,17 +22,17 @@ const ViewJob = () => {
     });
 
     if (result.isConfirmed) {
-      try{
-      await axios.delete(`http://localhost:5000/api/employer/deleteJob/${id}`,{withCredentials:true})
-      setJob((prev)=>prev.filter((job)=>job._id!==id))
-       Swal.fire({
+      try {
+        await axios.delete(`http://localhost:5000/api/employer/deleteJob/${id}`, { withCredentials: true })
+        setJob((prev) => prev.filter((job) => job._id !== id))
+        Swal.fire({
           icon: "success",
           title: "Deleted Job",
           text: "You have been deleted job.",
           timer: 1500,
           showConfirmButton: false,
         });
-     } catch (error) {
+      } catch (error) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
@@ -59,10 +59,10 @@ const ViewJob = () => {
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-blue-50 to-white">
-  
+
       <EmployerSidebar sidebarOpen={sidebarOpen} />
 
- 
+
       <main className="flex-1 p-4 md:p-10">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold mb-6 mt-10 md:mt-10 text-blue-700 text-center">
@@ -81,15 +81,16 @@ const ViewJob = () => {
                     className="text-blue-500 hover:text-blue-700 transition"
                     title="Edit Job"
                     onClick={() => {
-                      navigate(`/employer/editjob/${job._id}`)}}
+                      navigate(`/employer/editjob/${job._id}`)
+                    }}
                   >
-                    
+
                     <Pencil size={20} />
                   </button>
                   <button
                     className="text-red-500 hover:text-red-700 transition"
                     title="Delete Job"
-                    onClick={()=>HandleDelete(job._id)}
+                    onClick={() => HandleDelete(job._id)}
                   >
                     <Trash2 size={20} />
                   </button>
@@ -111,6 +112,19 @@ const ViewJob = () => {
                     <IndianRupee className="w-4 h-4 text-gray-500" />
                     <span>{job.Salary}</span>
                   </div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Lightbulb className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                    <div className="flex gap-2 flex-wrap">
+                      {job.Skills?.split(",").map((skill, i) => (
+                        <span
+                          key={i}
+                          className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full"
+                        >
+                          {skill.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-gray-500" />
                     <span>{job.WorkHour}</span>
@@ -118,7 +132,8 @@ const ViewJob = () => {
                   <div className="flex items-center gap-2">
                     <Users className="w-4 h-4 text-gray-500" />
                     <span>Gender: {job.Gender}</span>
-                  </div>
+                  </div>  
+
                   <div className="flex items-center gap-2">
                     <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
                       {job.Category}

@@ -3,7 +3,7 @@ import {jobModel} from "../../models/jobSchema.js"
 
 export const jobPost = async(req, res) => {
   try {
-    const {title, Description, Location, Salary, Category, WorkHour, Gender} = req.body
+    const {title, Description, Location, Salary, Category, WorkHour,Skills, Gender} = req.body
     const employer = await employerModel.findById(req.user.id)
 
     if (!employer) {
@@ -43,6 +43,7 @@ export const jobPost = async(req, res) => {
       Salary,
       Category,
       WorkHour,
+      Skills,
       Gender
     });
 

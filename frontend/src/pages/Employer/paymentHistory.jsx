@@ -160,4 +160,4 @@ const PaymentHistoryDashboard = () => {
   );
 };
 
-export default PaymentHistoryDashboard;
+export default PaymentHistoryDashboard

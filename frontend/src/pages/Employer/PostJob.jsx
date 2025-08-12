@@ -34,6 +34,7 @@ const PostJob = () => {
       Location: "",
       Salary: "",
       Category: "",
+      Skills:"",
       WorkHour: "",
       Gender: "",
     },
@@ -159,7 +160,7 @@ const PostJob = () => {
               <input
                 type="text"
                 name="Category"
-                placeholder="e.g., Delivery, Retail"
+                placeholder="eg:-Excel,Word e.t.c"
                 className="w-full outline-none"
                 value={formik.values.Category}
                 onChange={formik.handleChange}
@@ -168,6 +169,31 @@ const PostJob = () => {
             </div>
             {formik.touched.Category && formik.errors.Category && (
               <p className="text-red-500 text-sm">{formik.errors.Category}</p>
+            )}
+          </div>
+
+          {/* Skills */}
+           <div>
+            <label className="block font-medium mb-2 text-gray-700">
+              Skills
+            </label>
+            <div className="flex items-center border border-gray-300 rounded-md p-3 focus-within:ring-2 focus-within:ring-blue-500">
+              <ListChecks className="text-gray-400 mr-2" />
+              <input
+                type="text"
+                name="Skills"
+                placeholder="e.g., Delivery, Retail"
+                className="w-full outline-none"
+                value={formik.values.Skills}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Separate each skill with a comma and a space (e.g., <span className="italic">HTML, CSS, JavaScript</span>).
+            </p>
+            {formik.touched.Skills && formik.errors.Skills && (
+              <p className="text-red-500 text-sm">{formik.errors.Skills}</p>
             )}
           </div>
 
