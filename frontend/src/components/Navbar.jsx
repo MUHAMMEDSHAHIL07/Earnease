@@ -51,7 +51,6 @@ const Navbar = () => {
       }
     }
   };
-  console.log(user)
 
   return (
     <nav className="bg-gradient-to-r from-blue-50 to-white shadow-md sticky top-0 z-50">

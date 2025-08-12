@@ -102,9 +102,9 @@ const EmployerSidebar = () => {
             <Link to="/employer/editProfile" className={navItemClass("/employer/editProfile")}>
               <UserCircle size={20} /> Profile
             </Link>
-            <div className={navItemClass("/payments")}>
+            <Link to="/employer/paymenthistroy" className={navItemClass("/employer/paymenthistroy")}>
               <CreditCard size={20} /> Payments
-            </div>
+            </Link>
             <div className={navItemClass("/support")}>
               <MessageSquare size={20} /> Support
             </div>

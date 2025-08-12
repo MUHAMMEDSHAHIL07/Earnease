@@ -9,6 +9,7 @@ import { getProfileEmployer } from "../controllers/employerController/getProfile
 import { checkJobLimit } from "../middleware/checkJobPostLimit.js";
 import { createJobPayment } from "../controllers/payment/createJob.js";
 import { verifyPayment } from "../controllers/payment/verifyPayment.js";
+import { getEmployerPayments } from "../controllers/payment/getEmployerPayment.js";
 
 
 const router = express.Router()
@@ -25,4 +26,5 @@ router.patch("/editprofile",jwtMiddleware,checkRole(["employer"]),editProfile)
 router.get("/getprofile",jwtMiddleware,checkRole(["employer"]),getProfileEmployer)
 router.post("/paymentJob", jwtMiddleware, checkRole(["employer"]),createJobPayment);
 router.post("/verifypayment", jwtMiddleware, checkRole(["employer"]), verifyPayment);
+router.get("/getEmployerPayments", jwtMiddleware, checkRole(["employer"]), getEmployerPayments);
 export default router

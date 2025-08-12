@@ -32,6 +32,7 @@ import EmployerManagement from "../pages/Admin/EmployerManagement";
 import ProtectedRoute from "./ProtectedRoute";
 import ProtectHomeRoute from "./ProtectHomeRoute";
 import Subscription from "../pages/Employer/Subscription";
+import PaymentHistoryDashboard from "../pages/Employer/paymentHistory";
 
 const Router = () => {
   return (
@@ -69,6 +70,14 @@ const Router = () => {
         element={
           <ProtectedRoute allowedRoles={["employer"]}>
             <EmployerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employer/paymenthistroy"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <PaymentHistoryDashboard />
           </ProtectedRoute>
         }
       />
