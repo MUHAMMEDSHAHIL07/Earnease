@@ -18,7 +18,7 @@ app.use(cors({
 app.use(express.json())
 app.use(cookieParser()) 
 app.use("/api/auth", authRoute)
-app.use("/student",studentRoute)
+app.use("/api/student",studentRoute)
 app.use("/api/employer",employerRoute)
 app.use("/admin",adminRouter)
 // app.use(apiLimiter)

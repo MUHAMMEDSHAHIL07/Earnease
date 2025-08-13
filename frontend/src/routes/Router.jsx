@@ -33,6 +33,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import ProtectHomeRoute from "./ProtectHomeRoute";
 import Subscription from "../pages/Employer/Subscription";
 import PaymentHistoryDashboard from "../pages/Employer/paymentHistory";
+import StudentProfile from "../pages/Student/StudentProfile";
 
 const Router = () => {
   return (
@@ -48,12 +49,21 @@ const Router = () => {
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/adminlog" element={<AdminLogin />} />
 
+
       {/* ---------- STUDENT ROUTES ---------- */}
       <Route
         path="/student/dashboard"
         element={
           <ProtectedRoute allowedRoles={["student"]}>
             <StudentDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student-profile"
+        element={
+          <ProtectedRoute allowedRoles={["student"]}>
+            <StudentProfile />
           </ProtectedRoute>
         }
       />

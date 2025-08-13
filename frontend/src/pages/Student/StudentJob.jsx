@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {Bookmark,MapPin,IndianRupee,Building2,} from "lucide-react";
+import {Bookmark,MapPin,IndianRupee,Building2, Lightbulb, AlignLeft,} from "lucide-react"
 import Navbar from "../../components/Navbar";
 import toast from "react-hot-toast";
 
@@ -9,25 +9,23 @@ const JobListUI = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/student/getAllJobs");
+        const res = await axios.get("http://localhost:5000/api/student/getAllJobs")
         setJobs(res.data.jobs);
       } catch (error) {
         console.log(error.response?.data?.message || error.message);
       }
     };
-    fetchJobs();
+    fetchJobs()
     
-  }, []);
-
-  console.log(jobs)
+  }, [])
 
   const applyJob = async(id)=>{
     try{
-      const res = await axios.post(`http://localhost:5000/student/applyJob/${id}`,{},{withCredentials: true})
+      const res = await axios.post(`http://localhost:5000/api/student/applyJob/${id}`,{},{withCredentials: true})
       toast.success("applied job succesfully")
     }
     catch(error){
-      const msg = error.response?.data?.message || "Login failed";
+      const msg = error.response?.data?.message || "Login failed"
       toast.error(msg);
     }
   }
@@ -72,12 +70,24 @@ const JobListUI = () => {
                   <span>{job.Location || "Not specified"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <IndianRupee size={16} className="text-gray-500" />
-                  <span>{job.Salary}</span>
+                  <AlignLeft size={16} className="text-gray-500" />
+                  <span>{job.Description}</span>
                 </div>
+                 <div className="flex items-center gap-2 flex-wrap">
+                    <Lightbulb className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                    <div className="flex gap-2 flex-wrap">
+                      {job.Skills?.split(",").map((skill, i) => (
+                        <span
+                          key={i}
+                          className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full"
+                        >
+                          {skill.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
               </div>
 
-    
               <div className="flex flex-col gap-2 mt-auto">
                 <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm py-2.5 rounded-md font-medium transition"
                 onClick={()=>applyJob(job._id)}
