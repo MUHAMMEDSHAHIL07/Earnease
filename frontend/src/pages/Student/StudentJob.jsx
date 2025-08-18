@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {Bookmark,MapPin,IndianRupee,Building2, Lightbulb, AlignLeft,} from "lucide-react"
+import {Bookmark,MapPin,IndianRupee,Building2, Lightbulb, AlignLeft, Search,} from "lucide-react"
 import Navbar from "../../components/Navbar";
 import toast from "react-hot-toast";
 
 const JobListUI = () => {
   const [jobs, setJobs] = useState([]);
+   const [searchTerm, setSearchTerm] = useState("")
+   const SearchJOb = jobs.filter((job)=>{
+      const search = searchTerm.toLocaleLowerCase()
+      return(
+      job.title?.toLowerCase().includes(search) ||
+      job.Skills?.toLowerCase().includes(search) ||
+      job.Location?.toLowerCase().includes(search) ||
+      job.Description?.toLowerCase().includes(search) ||
+      job.employer?.companyname?.toLowerCase().includes(search)
+      )
+   })
   useEffect(() => {
     const fetchJobs = async () => {
       try {
@@ -33,10 +44,21 @@ const JobListUI = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white pt-24 pb-12 px-4 sm:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white pt-10 pb-12 px-4 sm:px-8">
+          <div className="max-w-3xl mx-auto mb-10">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search jobs by title, skill, company or location..."
+              className="w-full border border-gray-300 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
 
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {jobs.map((job) => (
+          {SearchJOb.map((job) => (
             <div
               key={job._id}
               className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition-all relative flex flex-col justify-between"
@@ -102,7 +124,7 @@ const JobListUI = () => {
           ))}
         </div>
 
-        {jobs.length === 0 && (
+        {SearchJOb.length === 0 && (
           <p className="text-center text-gray-500 mt-20 text-lg">
             No job yet
           </p>
