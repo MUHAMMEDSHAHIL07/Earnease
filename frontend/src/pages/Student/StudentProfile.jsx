@@ -3,6 +3,7 @@ import { Search, Filter, CheckCircle, FileText, DollarSign, Bookmark, Settings }
 import { useAuth } from "../../context/authContext";
 import axios from "axios";
 import Navbar from "../../components/Navbar";
+import { Link } from "react-router-dom";
 
 const StudentProfile = () => {
   const { user } = useAuth();
@@ -10,6 +11,7 @@ const StudentProfile = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
   const [showFilterMenu, setShowFilterMenu] = useState(false)
+
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -93,9 +95,11 @@ const StudentProfile = () => {
   
           <div className="lg:col-span-3 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Link to="/savedjobs">
               <Card className="flex items-center justify-center gap-2 text-gray-700 font-medium hover:bg-purple-50">
-                <Bookmark size={18} className="text-purple-500" /> Saved Jobs
+                <Bookmark size={18} className="text-purple-500"/> Saved Jobs
               </Card>
+              </Link>
               <Card className="flex items-center justify-center gap-2 text-gray-700 font-medium hover:bg-orange-50">
                 <FileText size={18} className="text-orange-500" /> My Applications
               </Card>
