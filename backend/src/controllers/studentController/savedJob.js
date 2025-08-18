@@ -44,8 +44,8 @@ export const deleteSavedJob = async (req, res) => {
         const { id } = req.params
 
         const deletedJob = await SavedJobModel.findOneAndDelete({
-            _id: id,
-            student: studentId
+            student: studentId,
+            job: id,
         })
         if (!deletedJob) {
             return res.status(404).json({ message: "Saved job not found" })

@@ -8,7 +8,7 @@ const SavedJobs = () => {
   const handleremove = async(jobId)=>{
      try{
       await axios.delete(`http://localhost:5000/api/student/removeSavedJob/${jobId}`,{withCredentials:true})
-        setGetJobs((prevJobs) => prevJobs.filter((saved) => saved._id !== jobId))
+        setGetJobs((prevJobs) => prevJobs.filter((saved) => saved.job._id !== jobId))
         toast.success("Job removed from saved")
      }
      catch(err){
@@ -58,7 +58,7 @@ const SavedJobs = () => {
             >
              
               <button className="absolute top-4 right-4 flex items-center text-red-500 hover:text-red-600 text-sm font-medium"
-              onClick={()=>handleremove(saved._id)}
+              onClick={()=>handleremove(saved.job._id)}
               >
                 <BookmarkX className="w-4 h-4 mr-1" /> Remove
               </button>
