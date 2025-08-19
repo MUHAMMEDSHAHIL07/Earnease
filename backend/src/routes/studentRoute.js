@@ -6,6 +6,7 @@ import { applyJob } from "../controllers/studentController/jobApplication.js"
 import { getStudentJobList } from "../controllers/studentController/getAppliedJob.js"
 import { deleteSavedJob, getSavedJob, postSavedJob } from "../controllers/studentController/savedJob.js"
 
+
 const router = express.Router()
 
 router.patch("/profile",jwtMiddleware,checkRole(["student"]),updateStudentProfile)

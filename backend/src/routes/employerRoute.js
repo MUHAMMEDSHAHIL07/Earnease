@@ -10,6 +10,7 @@ import { checkJobLimit } from "../middleware/checkJobPostLimit.js";
 import { createJobPayment } from "../controllers/payment/createJob.js";
 import { verifyPayment } from "../controllers/payment/verifyPayment.js";
 import { getEmployerPayments } from "../controllers/payment/getEmployerPayment.js";
+import { approveJobApplication, rejectJobApplication } from "../controllers/employerController/approveOrRejectApplication.js";
 
 
 const router = express.Router()
@@ -21,6 +22,8 @@ router.get("/getJobs",jwtMiddleware,checkRole(["employer"]),getAllJob)
 router.delete("/deleteJob/:id",jwtMiddleware,checkRole(["employer"]),deleteJob)
 router.get("/getJob/:id",jwtMiddleware,checkRole(["employer"]),getJobById)
 router.patch("/editjob/:id",jwtMiddleware,checkRole(["employer"]),editJob)
+router.patch("/approveJob/:id",jwtMiddleware,approveJobApplication)
+router.patch("/rejectJob/:id",jwtMiddleware,rejectJobApplication)
 router.get("/getApplication",jwtMiddleware,checkRole(["employer"]),getEmployerApplication)
 router.patch("/editprofile",jwtMiddleware,checkRole(["employer"]),editProfile)
 router.get("/getprofile",jwtMiddleware,checkRole(["employer"]),getProfileEmployer)

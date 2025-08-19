@@ -3,11 +3,24 @@ import { Briefcase, MapPin, IndianRupee, Clock, Users } from "lucide-react";
 import Navbar from "../../components/Navbar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const JobDetail = () => {
     const { id } = useParams()
     const [job, setJob] = useState(null)
     const [loading, setLoading] = useState(true)
+    const applyJob = async (id) => {
+        try {
+            await axios.post(
+                `http://localhost:5000/api/student/applyJob/${id}`,
+                {},
+                { withCredentials: true }
+            );
+            toast.success("Applied job successfully");
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Login failed")
+        }
+    }
 
     useEffect(() => {
         const fetchJob = async () => {
@@ -107,19 +120,9 @@ const JobDetail = () => {
                                 </ul>
                             </div>
                         )}
-
-                        {job.contact && (
-                            <div className="mb-5">
-                                <h2 className="text-lg font-semibold mb-1 border-b border-gray-200 pb-1">
-                                    Contact
-                                </h2>
-                                <p className="text-gray-700 text-sm">{job.contact}</p>
-                            </div>
-                        )}
-
-
                         <div className="flex justify-center">
-                            <button className="w-1/2 bg-gradient-to-r from-blue-600 to-indigo-500 text-white py-2 rounded-lg hover:scale-105 hover:shadow-md transition-transform font-semibold text-sm">
+                            <button className="w-1/2 bg-gradient-to-r from-blue-600 to-indigo-500 text-white py-2 rounded-lg hover:scale-105 hover:shadow-md transition-transform font-semibold text-sm"
+                                onClick={() => applyJob(job._id)}>
                                 Apply Now
                             </button>
                         </div>
