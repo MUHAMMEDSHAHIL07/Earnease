@@ -4,16 +4,17 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const SavedJobs = () => {
-  const [getJobs, setGetJobs] = useState([]);
-  const handleremove = async(jobId)=>{
-     try{
-      await axios.delete(`http://localhost:5000/api/student/removeSavedJob/${jobId}`,{withCredentials:true})
-        setGetJobs((prevJobs) => prevJobs.filter((saved) => saved.job._id !== jobId))
-        toast.success("Job removed from saved")
-     }
-     catch(err){
-        console.log(err)
-     }
+  const [getJobs, setGetJobs] = useState([])
+  const [loading, setLoading] = useState(true)
+  const handleremove = async (jobId) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/student/removeSavedJob/${jobId}`, { withCredentials: true })
+      setGetJobs((prevJobs) => prevJobs.filter((saved) => saved.job._id !== jobId))
+      toast.success("Job removed from saved")
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
 
   useEffect(() => {
@@ -27,10 +28,21 @@ const SavedJobs = () => {
       } catch (err) {
         console.log(err)
       }
+      finally {
+        setLoading(false)
+      }
     };
     fetchSavedJobs()
   }, []);
-
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-lg font-semibold text-gray-600 animate-pulse">
+          Loading...
+        </p>
+      </div>
+    );
+  }
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-gray-800"> Saved Jobs</h1>
@@ -56,9 +68,9 @@ const SavedJobs = () => {
               key={saved._id}
               className="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition p-6 flex flex-col"
             >
-             
+
               <button className="absolute top-4 right-4 flex items-center text-red-500 hover:text-red-600 text-sm font-medium"
-              onClick={()=>handleremove(saved.job._id)}
+                onClick={() => handleremove(saved.job._id)}
               >
                 <BookmarkX className="w-4 h-4 mr-1" /> Remove
               </button>

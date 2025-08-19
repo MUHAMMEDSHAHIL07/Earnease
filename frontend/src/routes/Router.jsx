@@ -35,6 +35,7 @@ import Subscription from "../pages/Employer/Subscription";
 import PaymentHistoryDashboard from "../pages/Employer/paymentHistory";
 import StudentProfile from "../pages/Student/StudentProfile";
 import SavedJobs from "../pages/Student/SavedJobs";
+import JobDetail from "../pages/Student/jobDetail";
 
 const Router = () => {
   return (
@@ -73,6 +74,14 @@ const Router = () => {
         element={
           <ProtectedRoute allowedRoles={["student"]}>
             <SavedJobs />
+          </ProtectedRoute>
+        }
+      />
+       <Route
+        path="/jobdetail/:id"
+        element={
+          <ProtectedRoute allowedRoles={["student"]}>
+            <JobDetail />
           </ProtectedRoute>
         }
       />

@@ -3,14 +3,17 @@ import axios from "axios";
 import { Bookmark, MapPin, IndianRupee, Building2, Lightbulb, AlignLeft, Search, } from "lucide-react";
 import Navbar from "../../components/Navbar";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const JobListUI = () => {
   const [jobs, setJobs] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [savedJobs, setSavedJobs] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("")
+  const [savedJobs, setSavedJobs] = useState([])
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(true)
 
   const SearchJOb = jobs.filter((job) => {
-    const search = searchTerm.toLocaleLowerCase();
+    const search = searchTerm.toLocaleLowerCase()
     return (
       job.title?.toLowerCase().includes(search) ||
       job.Skills?.toLowerCase().includes(search) ||
@@ -33,10 +36,22 @@ const JobListUI = () => {
       } catch (error) {
         console.log(error.response?.data?.message);
       }
+      finally {
+        setLoading(false)
+      }
     };
 
     fetchJobs()
   }, [])
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-lg font-semibold text-gray-600 animate-pulse">
+          Loading...
+        </p>
+      </div>
+    );
+  }
 
 
   const applyJob = async (id) => {
@@ -102,8 +117,8 @@ const JobListUI = () => {
               <button
                 onClick={() => saveJob(job._id)}
                 className={`absolute top-4 right-4 p-2 rounded-full shadow transition ${savedJobs.includes(job._id)
-                    ? "bg-blue-600 hover:bg-blue-700"
-                    : "bg-white hover:bg-blue-100"
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-white hover:bg-blue-100"
                   }`}
               >
                 <Bookmark
@@ -162,7 +177,9 @@ const JobListUI = () => {
                 >
                   Apply Now
                 </button>
-                <button className="bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 text-sm py-2.5 rounded-md font-medium transition">
+                <button className="bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 text-sm py-2.5 rounded-md font-medium transition"
+                  onClick={() => navigate(`/jobdetail/${job._id}`)}
+                >
                   View Details
                 </button>
               </div>
