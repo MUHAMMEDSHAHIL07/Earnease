@@ -50,6 +50,8 @@ const Router = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/adminlog" element={<AdminLogin />} />
+      <Route path="/jobdetail/:id" element={<JobDetail />} />
+      <Route path="/job" element={<JobListUI />} />
 
 
       {/* ---------- STUDENT ROUTES ---------- */}
@@ -77,20 +79,6 @@ const Router = () => {
           </ProtectedRoute>
         }
       />
-       <Route
-        path="/jobdetail/:id"
-        element={
-          <ProtectedRoute allowedRoles={["student"]}>
-            <JobDetail />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/job"
-        element={
-          <JobListUI />
-        }
-      />
 
       {/* ---------- EMPLOYER ONLY ---------- */}
       <Route
@@ -112,13 +100,13 @@ const Router = () => {
       <Route
         path="/verify/employer"
         element={
-            <VerifyEmployer />
+          <VerifyEmployer />
         }
       />
       <Route
         path="/employer/verification-pending"
         element={
-            <VerificationPending />
+          <VerificationPending />
         }
       />
       <Route

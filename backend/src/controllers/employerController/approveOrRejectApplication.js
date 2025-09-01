@@ -3,6 +3,8 @@ import { userModel } from "../../models/userSchema.js";
 import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 dotenv.config()
+console.log("Email User:", process.env.EMAIL_USER)
+console.log("Email Pass:", process.env.EMAIL_PASS)
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -23,7 +25,7 @@ export const approveJobApplication = async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
     application.status = "accepted";
-    await application.save();
+    await application.save()
 
     await transporter.sendMail({
       to: student.email,
@@ -66,7 +68,7 @@ export const rejectJobApplication = async (req, res) => {
         if (!application) {
             return res.status(404).json({ message: "Job application not found" });
         }
-        const student = await studentModel.findById(application.student);
+        const student = await userModel.findById(application.student);
         if (!student) {
             return res.status(404).json({ message: "Student not found" });
         }

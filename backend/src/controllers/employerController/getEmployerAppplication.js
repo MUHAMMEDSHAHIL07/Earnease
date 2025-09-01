@@ -6,7 +6,10 @@ export const getEmployerApplication = async(req,res)=>{
         const employerid = req.user.id
         const employerJob = await jobModel.find({employer:employerid}).select("_id")
         const Jobid = employerJob.map((job)=>job._id)
-        const application = await jobApplicationModel.find({job:Jobid})
+        const {status} = req.query
+        const filter = {job:Jobid}
+        if(status) filter.status = status
+        const application = await jobApplicationModel.find(filter)
         .populate("student","name email").populate("job","title")
         res.status(200).json({message:application})
     }

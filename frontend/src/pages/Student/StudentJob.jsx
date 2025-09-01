@@ -13,34 +13,32 @@ const JobListUI = () => {
   const [loading, setLoading] = useState(true)
 
   const SearchJOb = jobs.filter((job) => {
-    const search = searchTerm.toLocaleLowerCase()
+    const search = searchTerm.toLowerCase()
     return (
       job.title?.toLowerCase().includes(search) ||
       job.Skills?.toLowerCase().includes(search) ||
       job.Location?.toLowerCase().includes(search) ||
       job.Description?.toLowerCase().includes(search) ||
       job.employer?.companyname?.toLowerCase().includes(search)
-    );
-  });
-
+    )
+  })
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const jobsRes = await axios.get("http://localhost:5000/api/student/getAllJobs")
+        setJobs(jobsRes.data.jobs)
         const savedRes = await axios.get("http://localhost:5000/api/student/getSavedJob", {
           withCredentials: true,
         });
-        setJobs(jobsRes.data.jobs)
         const savedIds = savedRes.data.map((item) => item.job._id)
         setSavedJobs(savedIds)
       } catch (error) {
-        console.log(error.response?.data?.message);
+        console.log(error.response?.data?.message)
       }
       finally {
         setLoading(false)
       }
-    };
-
+    }
     fetchJobs()
   }, [])
   if (loading) {

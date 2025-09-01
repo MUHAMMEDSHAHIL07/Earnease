@@ -16,7 +16,7 @@ const PendingEmployers = () => {
   }, []);
 
   const handleAction = (id, action) => {
-    setLoading({ id, action });
+    setLoading({ id, action })
     axios
       .patch(`http://localhost:5000/admin/employers/${action}Employer/${id}`)
       .then(() => {
@@ -25,7 +25,7 @@ const PendingEmployers = () => {
       })
       .catch((err) => console.error(err.message))
       .finally(() => setLoading({ id: null, action: null }))
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -111,4 +111,4 @@ const PendingEmployers = () => {
   );
 };
 
-export default PendingEmployers;
+export default PendingEmployers

@@ -31,9 +31,9 @@ const SavedJobs = () => {
       finally {
         setLoading(false)
       }
-    };
+    }
     fetchSavedJobs()
-  }, []);
+  }, [])
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
