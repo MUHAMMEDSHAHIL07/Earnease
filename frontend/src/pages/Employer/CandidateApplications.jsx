@@ -1,64 +1,48 @@
 import React, { useEffect, useState } from "react"
-import { User2, Mail, Briefcase, Clock } from "lucide-react"
+import { User2, Mail, Briefcase, Clock, MessageSquare } from "lucide-react"
 import axios from "axios"
-import EmployerSidebar from "../Employer/EmployerSidebar"
 import toast from "react-hot-toast"
-const EmployerApplications = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+import EmployerSidebar from "../Employer/EmployerSidebar"
+import { useNavigate } from "react-router-dom"
+
+const CandidateApplications = () => {
   const [applications, setApplications] = useState([])
-  const [loading, setLoading] = useState({ id: null, action: null })
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/employer/getApplication?status=pending", {
+      .get("http://localhost:5000/api/employer/getApplication", {
         withCredentials: true,
       })
       .then((res) => setApplications(res.data.message))
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        const msg = err.response?.data?.message || err.message
+        toast.error(msg)
+      })
   }, [])
 
-  const handleAction = (id, action) => {
-    setLoading({ id, action })
-    axios
-      .patch(
-        `http://localhost:5000/api/employer/${action}Job/${id}`,
-        {},
-        { withCredentials: true }
-      )
-      .then(() => {
-        setApplications((prev) =>
-          prev.map((app) =>
-            app._id === id
-              ? { ...app, status: action === "approve" ? "Accepted" : "Rejected" }
-              : app
-          )
-        )
-        toast.success(
-          `Application ${action === "approve" ? "approved" : "rejected"}`
-        )
-      })
-       .catch((error) => {
-                const msg = error.response?.data?.message || error.message
-                toast.error(msg);
-            })
-      .finally(() => setLoading({ id: null, action: null }))
+const handleMessage = (chatRoomId) => {
+  console.log("handleMessage called with chatRoomId:", chatRoomId); // Log actual value
+  if (chatRoomId) {
+    navigate(`/employer/chat/${chatRoomId}`);
+  } else {
+    toast.error("Chat room not established yet.");
   }
+};
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-100 to-blue-50">
-      <EmployerSidebar
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-      />
+      <EmployerSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <main className="flex-1 p-6 md:p-10 mt-4 md:mt-0">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
             <Mail className="w-6 h-6 text-blue-600" />
-            Applications Received
+            My Applications
           </h1>
           <p className="text-gray-500 mt-1">
-            Here are the latest job applications from students.
+            Here are the jobs you have applied to.
           </p>
         </div>
 
@@ -83,7 +67,7 @@ const EmployerApplications = () => {
                   Applied At
                 </th>
                 <th className="px-6 py-4 text-center">Status</th>
-                <th className="px-6 py-4 text-center">Action</th>
+                <th className="px-6 py-4 text-center">Message</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -121,10 +105,9 @@ const EmployerApplications = () => {
                     <td className="px-6 py-4 text-center">
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-semibold
-                          ${
-                            app.status?.toLowerCase() === "accepted"
-                              ? "bg-green-100 text-green-700"
-                              : app.status?.toLowerCase() === "rejected"
+                          ${app.status?.toLowerCase() === "accepted"
+                            ? "bg-green-100 text-green-700"
+                            : app.status?.toLowerCase() === "rejected"
                               ? "bg-red-100 text-red-700"
                               : "bg-yellow-100 text-yellow-700"
                           }`}
@@ -132,41 +115,22 @@ const EmployerApplications = () => {
                         {app.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-center space-x-2">
-                      <button
-                        onClick={() => handleAction(app._id, "approve")}
-                        disabled={
-                          loading.id === app._id && loading.action === "approve"
-                        }
-                        className={`px-3 py-1 rounded-md shadow-sm transition ${
-                          loading.id === app._id &&
-                          loading.action === "approve"
-                            ? "bg-green-300 cursor-not-allowed"
-                            : "bg-green-500 hover:bg-green-600 text-white"
-                        }`}
-                      >
-                        {loading.id === app._id &&
-                        loading.action === "approve"
-                          ? "Approving..."
-                          : "Approve"}
-                      </button>
-                      <button
-                        onClick={() => handleAction(app._id, "reject")}
-                        disabled={
-                          loading.id === app._id && loading.action === "reject"
-                        }
-                        className={`px-3 py-1 rounded-md shadow-sm transition ${
-                          loading.id === app._id &&
-                          loading.action === "reject"
-                            ? "bg-red-300 cursor-not-allowed"
-                            : "bg-red-500 hover:bg-red-600 text-white"
-                        }`}
-                      >
-                        {loading.id === app._id &&
-                        loading.action === "reject"
-                          ? "Rejecting..."
-                          : "Reject"}
-                      </button>
+                    <td className="px-6 py-4 text-center">
+                      {app.status?.toLowerCase() === "accepted" ? (
+                        <button
+                          onClick={() => handleMessage(app.chatRoomId)}
+                          className="flex items-center gap-1 px-3 py-1 rounded-md bg-blue-500 hover:bg-blue-600 text-white text-sm shadow-sm transition"
+                        >
+                          <MessageSquare className="w-4 h-4" />
+                          Message
+                        </button>
+                      ) : (
+                        <span className="text-gray-500 text-sm">
+                          {app.status === "Pending"
+                            ? "Your application is under review."
+                            : "No messages available."}
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -179,4 +143,4 @@ const EmployerApplications = () => {
   )
 }
 
-export default EmployerApplications
+export default CandidateApplications

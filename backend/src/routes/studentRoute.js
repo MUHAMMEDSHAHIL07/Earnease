@@ -5,6 +5,7 @@ import {  getAllJobs, getJobById } from "../controllers/studentController/lisJob
 import { applyJob } from "../controllers/studentController/jobApplication.js"
 import { getStudentJobList } from "../controllers/studentController/getAppliedJob.js"
 import { deleteSavedJob, getSavedJob, postSavedJob } from "../controllers/studentController/savedJob.js"
+import { getStudentChats, getStudentMessageInbox } from "../controllers/studentController/studentChat.js"
 
 
 const router = express.Router()
@@ -17,4 +18,6 @@ router.post("/applyJob/:id",jwtMiddleware,checkRole(["student"]),applyJob)
 router.post("/saveJob",jwtMiddleware,checkRole(["student"]),postSavedJob)
 router.get("/getSavedJob",jwtMiddleware,checkRole(["student"]),getSavedJob)
 router.delete("/removeSavedJob/:id",jwtMiddleware,checkRole(["student"]),deleteSavedJob)
+router.get("/inbox",jwtMiddleware,checkRole(["student"]),getStudentMessageInbox)
+router.get("/chats",jwtMiddleware,checkRole(["student"]),getStudentChats)
 export default router

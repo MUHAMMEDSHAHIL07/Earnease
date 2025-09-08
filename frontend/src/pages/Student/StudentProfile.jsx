@@ -8,10 +8,9 @@ import { Link } from "react-router-dom";
 const StudentProfile = () => {
   const { user } = useAuth();
   const [job, setJobs] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterStatus, setFilterStatus] = useState("all")
-  const [showFilterMenu, setShowFilterMenu] = useState(false)
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -20,13 +19,13 @@ const StudentProfile = () => {
           "http://localhost:5000/api/student/applications",
           { withCredentials: true }
         );
-        setJobs(res.data.application || []);
+        setJobs(res.data.applications || []);
       } catch (err) {
-        console.error("Error fetching jobs:", err)
+        console.error("Error fetching jobs:", err);
       }
     };
-    fetchJobs()
-  }, [])
+    fetchJobs();
+  }, []);
 
   const statusStyles = {
     accepted:
@@ -48,16 +47,20 @@ const StudentProfile = () => {
   const filteredJobs = job.filter((item) => {
     const matchesSearch =
       item?.job?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item?.employer?.companyname?.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesStatus = filterStatus === "all" ? true : item.status === filterStatus
-      return matchesSearch && matchesStatus;
+      item?.employer?.companyname?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      filterStatus === "all" ? true : item.status === filterStatus;
+    return matchesSearch && matchesStatus;
   });
+  console.log("Job item:", job);
+
 
   return (
     <>
       <Navbar />
       <div className="p-4 sm:p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen font-sans">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Profile Card */}
           <Card className="text-center">
             <div className="flex flex-col items-center">
               <img
@@ -92,13 +95,14 @@ const StudentProfile = () => {
             </div>
           </Card>
 
-  
+          {/* Right Section */}
           <div className="lg:col-span-3 space-y-6">
+            {/* Quick Links */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Link to="/savedjobs">
-              <Card className="flex items-center justify-center gap-2 text-gray-700 font-medium hover:bg-purple-50">
-                <Bookmark size={18} className="text-purple-500"/> Saved Jobs
-              </Card>
+                <Card className="flex items-center justify-center gap-2 text-gray-700 font-medium hover:bg-purple-50">
+                  <Bookmark size={18} className="text-purple-500" /> Saved Jobs
+                </Card>
               </Link>
               <Card className="flex items-center justify-center gap-2 text-gray-700 font-medium hover:bg-orange-50">
                 <FileText size={18} className="text-orange-500" /> My Applications
@@ -108,8 +112,10 @@ const StudentProfile = () => {
               </Card>
             </div>
 
+            {/* Jobs Table */}
             <Card>
               <div className="flex flex-col sm:flex-row justify-between mb-5 gap-3">
+                {/* Search */}
                 <div className="relative w-full sm:w-64">
                   <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
                   <input
@@ -121,13 +127,14 @@ const StudentProfile = () => {
                   />
                 </div>
 
-  
+                {/* Filter */}
                 <div className="relative">
                   <button
                     onClick={() => setShowFilterMenu((prev) => !prev)}
                     className="border px-3 py-2 rounded-lg flex items-center gap-2 text-sm hover:bg-gray-100 transition"
                   >
-                    <Filter size={16} /> {filterStatus === "all" ? "All Status" : filterStatus}
+                    <Filter size={16} />{" "}
+                    {filterStatus === "all" ? "All Status" : filterStatus}
                   </button>
                   {showFilterMenu && (
                     <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-md z-10">
@@ -135,12 +142,11 @@ const StudentProfile = () => {
                         <div
                           key={status}
                           onClick={() => {
-                            setFilterStatus(status)
-                            setShowFilterMenu(false)
+                            setFilterStatus(status);
+                            setShowFilterMenu(false);
                           }}
-                          className={`px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 capitalize ${
-                            filterStatus === status ? "bg-gray-50 font-medium" : ""
-                          }`}
+                          className={`px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 capitalize ${filterStatus === status ? "bg-gray-50 font-medium" : ""
+                            }`}
                         >
                           {status}
                         </div>
@@ -150,6 +156,7 @@ const StudentProfile = () => {
                 </div>
               </div>
 
+              {/* Table */}
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[600px]">
                   <thead>
@@ -158,7 +165,7 @@ const StudentProfile = () => {
                       <th className="pb-3">Company</th>
                       <th className="pb-3">Applied Date</th>
                       <th className="pb-3">Status</th>
-                      <th className="pb-3">Actions</th>
+                      <th className="pb-3">Chat</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -185,8 +192,19 @@ const StudentProfile = () => {
                               {job.status}
                             </span>
                           </td>
-                          <td className="py-3 text-blue-500 cursor-pointer hover:underline">
-                            View Details
+                          <td className="py-3">
+                            {job.status === "accepted" ? (
+                              <Link
+                                to={`/chat/${job.chatRoomId}`}
+                                className="text-blue-600 hover:underline font-medium"
+                              >
+                                message
+                              </Link>
+                            ) : (
+                              <span className="text-gray-400 text-sm italic">
+                                Not Available
+                              </span>
+                            )}
                           </td>
                         </tr>
                       ))
@@ -205,6 +223,7 @@ const StudentProfile = () => {
         </div>
       </div>
     </>
-  )
-}
-export default StudentProfile
+  );
+};
+
+export default StudentProfile;

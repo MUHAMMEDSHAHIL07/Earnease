@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { Menu, X } from "lucide-react"
-import axios from "axios"
-import logo from "../assets/logo.png"
-import Swal from "sweetalert2"
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, MessageCircle } from "lucide-react";
+import axios from "axios";
+import logo from "../assets/logo.png";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [user, setUser] = useState(null)
-  const navigate = useNavigate()
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const stored = localStorage.getItem("earneaseUser")
+    const stored = localStorage.getItem("earneaseUser");
     if (stored) {
       setUser(JSON.parse(stored));
     }
@@ -89,7 +89,18 @@ const Navbar = () => {
               About Us
             </Link>
 
-            {user? (
+
+            {user && (
+              <Link
+                to={"/student/inbox"}
+                className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 text-sm font-semibold transition-all duration-200"
+              >
+                <MessageCircle className="w-5 h-5" />
+                <span>Messages</span>
+              </Link>
+            )}
+
+            {user ? (
               <div className="relative group">
                 {user.avatarUrl && (
                   <img
@@ -142,9 +153,8 @@ const Navbar = () => {
       )}
 
       <div
-        className={`fixed top-0 right-0 w-4/5 max-w-sm h-full bg-white z-50 shadow-2xl transform transition-transform duration-500 ease-in-out ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 w-4/5 max-w-sm h-full bg-white z-50 shadow-2xl transform transition-transform duration-500 ease-in-out ${menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="flex justify-between items-center px-4 py-4 border-b">
           <img src={logo} alt="Logo" className="h-10" />
@@ -184,6 +194,14 @@ const Navbar = () => {
           >
             About Us
           </Link>
+          <Link
+            to="/student/inbox"
+            onClick={() => setMenuOpen(false)}
+            className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 text-lg font-semibold py-2 hover:bg-blue-50 rounded-md px-3"
+          >
+            <MessageCircle className="w-5 h-5" />
+            <span>Messages</span>
+          </Link>
 
           <hr className="my-4 border-gray-200" />
 
@@ -207,15 +225,13 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <>
-              <Link
-                to="/login"
-                onClick={() => setMenuOpen(false)}
-                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-full text-center font-semibold text-lg hover:bg-blue-800 transition-all duration-200 shadow-md"
-              >
-                Login
-              </Link>
-            </>
+            <Link
+              to="/login"
+              onClick={() => setMenuOpen(false)}
+              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-full text-center font-semibold text-lg hover:bg-blue-800 transition-all duration-200 shadow-md"
+            >
+              Login
+            </Link>
           )}
         </div>
       </div>

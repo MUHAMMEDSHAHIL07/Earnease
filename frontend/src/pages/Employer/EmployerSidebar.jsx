@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {Briefcase,Users,CreditCard,LayoutDashboard,MessageSquare,UserCircle,ClipboardList,LogOut,Menu,X,} from "lucide-react"
+import {Briefcase,Users,CreditCard,LayoutDashboard,MessageSquare,UserCircle,ClipboardList,LogOut,Menu,X, ChartGanttIcon, MessageSquareCode,} from "lucide-react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import axios from "axios"
@@ -96,11 +96,14 @@ const EmployerSidebar = () => {
             <Link to="/employer/getApplication" className={navItemClass("/employer/getApplication")}>
               <ClipboardList size={20} /> Applications
             </Link>
-            <div className={navItemClass("/candidates")}>
+            <Link to="/employer/candidates" className={navItemClass("/employer/candidates")}>
               <Users size={20} /> Candidates
-            </div>
+            </Link>
             <Link to="/employer/editProfile" className={navItemClass("/employer/editProfile")}>
               <UserCircle size={20} /> Profile
+            </Link>
+             <Link to="/employer/inbox" className={navItemClass("/employer/inbox")}>
+              <MessageSquareCode  size={20} /> Messages
             </Link>
             <Link to="/employer/paymenthistroy" className={navItemClass("/employer/paymenthistroy")}>
               <CreditCard size={20} /> Payments

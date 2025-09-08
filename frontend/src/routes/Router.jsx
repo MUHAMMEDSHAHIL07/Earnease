@@ -10,6 +10,7 @@ import Register from "../pages/Publicpages/Register"
 {/* ---------- STUDENT ROUTES ---------- */ }
 import StudentDashboard from "../pages/Student/StudentDashboard";
 import JobListUI from "../pages/Student/StudentJob";
+import { useAuth } from "../context/authContext"
 
 {/* ---------- EMPLOYER ROUTES ---------- */ }
 import EmployerDashboard from "../pages/Employer/EmployerDashboard";
@@ -36,8 +37,16 @@ import PaymentHistoryDashboard from "../pages/Employer/paymentHistory";
 import StudentProfile from "../pages/Student/StudentProfile";
 import SavedJobs from "../pages/Student/SavedJobs";
 import JobDetail from "../pages/Student/jobDetail";
+import ChatUI from "../pages/Publicpages/ChatUI";
+import EmployerChatUI from "../pages/Employer/EmployerChatUI";
+import CandidateApplications from "../pages/Employer/CandidateApplications";
+import EmployerMessagingDashboard from "../pages/Employer/EmployerMessageDashboard";
+import EmployerChatRoom from "../pages/Employer/EmployerChatRoom";
+import StudentMessagingDashboard from "../pages/Student/StudentMessageDashboard";
+import StudentChatRoom from "../pages/Student/StudentChatRoom";
 
 const Router = () => {
+  const { user } = useAuth();
   return (
     <Routes>
       {/* ---------- PUBLIC ROUTES ---------- */}
@@ -53,13 +62,19 @@ const Router = () => {
       <Route path="/jobdetail/:id" element={<JobDetail />} />
       <Route path="/job" element={<JobListUI />} />
 
-
       {/* ---------- STUDENT ROUTES ---------- */}
       <Route
         path="/student/dashboard"
         element={
           <ProtectedRoute allowedRoles={["student"]}>
             <StudentDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/chat/:chatRoomId"
+        element={
+          <ProtectedRoute allowedRoles={["student"]}>
+            <ChatUI currentUser={user} />
           </ProtectedRoute>
         }
       />
@@ -79,6 +94,19 @@ const Router = () => {
           </ProtectedRoute>
         }
       />
+       <Route
+        path="/student/inbox"
+        element={
+          <ProtectedRoute allowedRoles={["student"]}>
+            <StudentMessagingDashboard />
+          </ProtectedRoute>
+        }
+      >
+        <Route
+          path=":chatRoomId"
+          element={<StudentChatRoom currentUser={user} />}
+        />
+      </Route>
 
       {/* ---------- EMPLOYER ONLY ---------- */}
       <Route
@@ -89,6 +117,36 @@ const Router = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/employer/candidates"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <CandidateApplications />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employer/chat/:chatRoomId"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <EmployerChatUI currentUser={user} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/employer/inbox"
+        element={
+          <ProtectedRoute allowedRoles={["employer"]}>
+            <EmployerMessagingDashboard />
+          </ProtectedRoute>
+        }
+      >
+        <Route
+          path=":chatRoomId"
+          element={<EmployerChatRoom currentUser={user} />}
+        />
+      </Route>
+
       <Route
         path="/employer/paymenthistroy"
         element={
