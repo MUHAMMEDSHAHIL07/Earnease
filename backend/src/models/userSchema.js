@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose"
+
 const userSchema = new Schema({
    name: {
       type: String,
@@ -15,16 +16,37 @@ const userSchema = new Schema({
    phonenumber: {
       type: String,
    },
-   location:
-   {
+   location: {
       type: String
    },
-   availability: String,
-   bio: String,
-   about: String,
-   experience: String,
+   availability: {
+      type: String
+   },
+   bio: {
+      type: String
+   },
+   about: {
+      type: String
+   },
+   experience: {
+      type: String
+   },
    avatarUrl: {
       type: String
+   },
+   education: {
+      type: String
+   },
+   skills: [{
+      type: String
+   }],
+   profileCompleted: {
+      type: Boolean,
+      default: false
+   },
+   profileCompletionPercent: {
+      type: Number,
+      default: 0
    },
    resetToken: {
       type: String,
@@ -38,6 +60,10 @@ const userSchema = new Schema({
       type: String,
       default: "student"
    },
-   isBlocked: { type: Boolean, default: false }
+   isBlocked: {
+      type: Boolean,
+      default: false
+   }
 }, { timestamps: true })
+
 export const userModel = mongoose.model("users", userSchema)
