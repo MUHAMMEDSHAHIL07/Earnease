@@ -43,11 +43,14 @@ const JobListUI = () => {
   }, [])
   if (loading) {
     return (
+      <>
+      <Navbar/>
       <div className="flex justify-center items-center h-screen">
         <p className="text-lg font-semibold text-gray-600 animate-pulse">
           Loading...
         </p>
       </div>
+      </>
     );
   }
 

@@ -9,8 +9,7 @@ const StudentMessagingDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [showChatOnMobile, setShowChatOnMobile] = useState(false)
   const navigate = useNavigate()
-  const { chatRoomId } = useParams()
-
+  const { chatRoomId } = useParams()  
   useEffect(() => {
     const fetchInbox = async () => {
       try {

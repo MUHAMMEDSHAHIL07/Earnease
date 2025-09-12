@@ -5,13 +5,13 @@ const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [globalLoading, setGlobalLoading] = useState(true)
 
   const fetchUser = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/auth/me", { withCredentials: true })
       setUser(res.data.user)
-      
+
       if (res.data.user) {
         localStorage.setItem(
           "earneaseUser",
@@ -27,16 +27,16 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       localStorage.removeItem("earneaseUser")
     } finally {
-      setLoading(false)
+      setGlobalLoading(false)
     }
   };
-  
+
   useEffect(() => {
     fetchUser()
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, loading, fetchUser }}>
+    <AuthContext.Provider value={{ user, setUser, globalLoading, setGlobalLoading, fetchUser }}>
       {children}
     </AuthContext.Provider>
   );

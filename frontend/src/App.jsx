@@ -1,11 +1,13 @@
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Router from './routes/Router';
+import GlobalLoader from './components/GlobalLoader';
 
 function App() {
   return (
     <>
       <BrowserRouter>
+       <GlobalLoader />
         <Router />
       </BrowserRouter>
 
