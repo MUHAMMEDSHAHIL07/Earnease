@@ -56,6 +56,7 @@ const SkillsInput = ({ skills, setSkills }) => {
                     className="w-full bg-transparent placeholder-gray-400 text-gray-700 focus:outline-none"
                 />
             </div>
+          
         </div>
     );
 };

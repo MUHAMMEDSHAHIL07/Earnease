@@ -68,7 +68,7 @@ const JobListUI = () => {
       toast.error(msg);
 
       if (msg === "Please complete your profile before applying for jobs.") {
-        navigate("/editProfile")
+       navigate("/editProfile")
       }
     }
   }

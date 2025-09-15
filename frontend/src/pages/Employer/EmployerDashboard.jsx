@@ -1,51 +1,61 @@
 import React, { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import EmployerSidebar from "../Employer/EmployerSidebar"
+import EmployerSidebar from "../Employer/EmployerSidebar";
 
 const EmployerDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [employer, setEmployer] = useState(null);
-  const [getemployer,setGetEmployer] = useState("")
-  const [application,setApplications] = useState([])
+  const [getemployer, setGetEmployer] = useState("");
+  const [application, setApplications] = useState([]);
   const [job, setJob] = useState();
+  const [hiredCandidate, setHiredCandidate] = useState([]);
+  const [monthlyPayment, setMonthlyPayment] = useState([]);
   const navigate = useNavigate();
-  const [hiredCanidate,setHiredCandiate] = useState([])
-  const [montlyPayment,setMontlyPayment] = useState([])
-
 
   useEffect(() => {
     const store = localStorage.getItem("earneaseUser");
     if (store) {
       setEmployer(JSON.parse(store));
     }
-  }, [])
+  }, []);
 
-  useEffect(()=>{
-    axios.get("http://localhost:5000/api/employer/candidateHired",{withCredentials:true})
-    .then((res)=>setHiredCandiate(res.data))
-    .catch(err=>console.log(err))
-  })
-  useEffect(()=>{
-    axios.get("http://localhost:5000/api/employer/montlyPayment",{withCredentials:true})
-    .then((res)=>setMontlyPayment(res.data.monthlySpending))
-    .catch(err=>console.log(err))
-  })
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/employer/candidateHired", {
+        withCredentials: true,
+      })
+      .then((res) => setHiredCandidate(res.data))
+      .catch((err) => console.log(err));
+  }, []);
 
-  useEffect(()=>{
-    axios.get("http://localhost:5000/api/employer/getprofile",{withCredentials:true})
-    .then((res)=>setGetEmployer(res.data.employer))
-    .catch(err=>console.log(err))
-  },[])
- 
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/employer/montlyPayment", {
+        withCredentials: true,
+      })
+      .then((res) => setMonthlyPayment(res.data.monthlySpending))
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/employer/getprofile", {
+        withCredentials: true,
+      })
+      .then((res) => setGetEmployer(res.data.employer))
+      .catch((err) => console.log(err));
+  }, []);
 
   useEffect(() => {
     const JobGet = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/employer/getJobs", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          "http://localhost:5000/api/employer/getJobs",
+          {
+            withCredentials: true,
+          }
+        );
         setJob(res.data.getJob);
       } catch (error) {
         console.log(error.message);
@@ -54,14 +64,14 @@ const EmployerDashboard = () => {
     JobGet();
   }, []);
 
-  useEffect(()=>{
-    axios.get("http://localhost:5000/api/employer/getApplication",{withCredentials:true})
-    .then((res)=>setApplications(res.data.message))
-    .catch((err)=>console.log(err))
-  },[])
-
-
-  
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/employer/getApplication", {
+        withCredentials: true,
+      })
+      .then((res) => setApplications(res.data.message))
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-100 to-blue-50">
@@ -101,18 +111,28 @@ const EmployerDashboard = () => {
           </div>
           <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition-all">
             <p className="text-gray-500 text-sm">Total Applications</p>
-            <h3 className="text-2xl sm:text-3xl font-bold text-green-600">{application?application.length:0}</h3>
+            <h3 className="text-2xl sm:text-3xl font-bold text-green-600">
+              {application ? application.length : 0}
+            </h3>
             <p className="text-xs text-green-600 mt-1">+18% this week</p>
           </div>
           <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition-all">
             <p className="text-gray-500 text-sm">Candidates Hired</p>
-            <h3 className="text-2xl sm:text-3xl font-bold text-purple-600">{hiredCanidate.totalHired}</h3>
-            <p className="text-xs text-gray-500 mt-1">{hiredCanidate.hiredThisMonth} this month</p>
+            <h3 className="text-2xl sm:text-3xl font-bold text-purple-600">
+              {hiredCandidate.totalHired}
+            </h3>
+            <p className="text-xs text-gray-500 mt-1">
+              {hiredCandidate.hiredThisMonth} this month
+            </p>
           </div>
           <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition-all">
             <p className="text-gray-500 text-sm">Monthly Spending</p>
-            <h3 className="text-2xl sm:text-3xl font-bold text-yellow-600">₹ {montlyPayment}</h3>
-            <p className="text-xs text-gray-500 mt-1">All payments up to date</p>
+            <h3 className="text-2xl sm:text-3xl font-bold text-yellow-600">
+              ₹ {monthlyPayment}
+            </h3>
+            <p className="text-xs text-gray-500 mt-1">
+              All payments up to date
+            </p>
           </div>
         </div>
 
@@ -123,16 +143,18 @@ const EmployerDashboard = () => {
           >
             + Post New Job
           </button>
-          <button className="bg-white border border-gray-300 hover:border-blue-500 hover:text-blue-600 text-gray-700 px-6 py-3 rounded-xl font-medium shadow w-full sm:w-auto"
-          onClick={()=>navigate("/employer/getApplication")}
+          <button
+            className="bg-white border border-gray-300 hover:border-blue-500 hover:text-blue-600 text-gray-700 px-6 py-3 rounded-xl font-medium shadow w-full sm:w-auto"
+            onClick={() => navigate("/employer/getApplication")}
           >
             View Applications
           </button>
         </div>
 
-
         <div className="bg-white p-6 rounded-2xl shadow mb-8 overflow-x-auto">
-          <h3 className="text-xl font-semibold mb-4 text-gray-800">Recent Activity</h3>
+          <h3 className="text-xl font-semibold mb-4 text-gray-800">
+            Recent Activity
+          </h3>
           <table className="w-full text-sm text-left">
             <thead className="text-gray-500">
               <tr>
@@ -175,4 +197,4 @@ const EmployerDashboard = () => {
   );
 };
 
-export default EmployerDashboard
+export default EmployerDashboard;
