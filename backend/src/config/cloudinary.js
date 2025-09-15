@@ -17,5 +17,15 @@ const storage = new CloudinaryStorage({
   },
 });
 
+const studentStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "earnease/students",
+    allowed_formats: ["jpg", "jpeg", "png"], 
+    resource_type: "image",
+  },
+})
+
 export const upload = multer({ storage });
+export const uploadStudent = multer({storage: studentStorage})
 export { cloudinary };

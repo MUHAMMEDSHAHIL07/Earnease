@@ -44,6 +44,7 @@ import EmployerMessagingDashboard from "../pages/Employer/EmployerMessageDashboa
 import EmployerChatRoom from "../pages/Employer/EmployerChatRoom";
 import StudentMessagingDashboard from "../pages/Student/StudentMessageDashboard";
 import StudentChatRoom from "../pages/Student/StudentChatRoom";
+import EditStudentProfile from "../pages/Student/EditProfile";
 
 const Router = () => {
   const { user } = useAuth();
@@ -91,6 +92,14 @@ const Router = () => {
         element={
           <ProtectedRoute allowedRoles={["student"]}>
             <SavedJobs />
+          </ProtectedRoute>
+        }
+      />
+            <Route
+        path="/editProfile"
+        element={
+          <ProtectedRoute allowedRoles={["student"]}>
+            <EditStudentProfile />
           </ProtectedRoute>
         }
       />

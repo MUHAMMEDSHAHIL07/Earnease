@@ -117,7 +117,7 @@ const EmployerDetail = () => {
               : "bg-green-600 hover:bg-green-700 text-white"
               }`}
           >
-            {loading === "approve" ? "Approving..." : "✅ Approve"}
+            {loading === "approve" ? "Approving..." : "Approve"}
           </button>
 
           <button
@@ -128,14 +128,14 @@ const EmployerDetail = () => {
               : "bg-red-600 hover:bg-red-700 text-white"
               }`}
           >
-            {loading === "reject" ? "Rejecting..." : "❌ Reject"}
+            {loading === "reject" ? "Rejecting..." : " Reject"}
           </button>
 
           <button
             onClick={() => navigate(-1)}
             className="border border-gray-400 text-gray-700 font-medium px-6 py-2 rounded-lg hover:bg-gray-100 transition"
           >
-            🔙 Back
+             Back
           </button>
         </div>
       </div>

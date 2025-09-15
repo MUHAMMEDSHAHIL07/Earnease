@@ -19,22 +19,22 @@ export default function initSocket(server) {
     try {
       const user = jwt.verify(token, process.env.JWT_SECRET);
       socket.user = user;
-      next();
+      next()
     } catch (err) {
       next(new Error("Auth failed"));
     }
-  });
+  })
 
   io.on("connection", (socket) => {
-    console.log("New user connected", socket.id);
+    console.log("New user connected", socket.id)
 
     socket.on("joinRoom", async (chatRoomId) => {
       const chatRoom = await chatRoomModel.findById(chatRoomId).populate("jobApplication");
-      if (!chatRoom) return;
+      if (!chatRoom) return
 
       if (chatRoom.jobApplication.status !== "accepted") {
         console.log("Chat not allowed, application not accepted");
-        return;
+        return
       }
 
       if (
@@ -42,21 +42,19 @@ export default function initSocket(server) {
         String(chatRoom.employer) !== socket.user.id
       ) {
         console.log("Unauthorized join attempt");
-        return;
+        return
       }
-
-      socket.join(chatRoomId);
-      console.log(`User ${socket.id} joined room ${chatRoomId}`);
-    });
+      socket.join(chatRoomId)
+    })
 
     socket.on("sendMessage", ({ chatRoomId, message }) => {
       io.to(chatRoomId).emit("receiveMessage", message);
-    });
+    })
 
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
-    });
-  });
+    })
+  })
 
-  return io;
+  return io
 }

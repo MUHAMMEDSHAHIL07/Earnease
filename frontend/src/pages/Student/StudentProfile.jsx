@@ -3,14 +3,15 @@ import { Search, Filter, CheckCircle, FileText, DollarSign, Bookmark, Settings }
 import { useAuth } from "../../context/authContext";
 import axios from "axios";
 import Navbar from "../../components/Navbar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const StudentProfile = () => {
-  const { user } = useAuth();
-  const [job, setJobs] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [showFilterMenu, setShowFilterMenu] = useState(false);
+  const { user } = useAuth()
+  const [job, setJobs] = useState([])
+  const [searchTerm, setSearchTerm] = useState("")
+  const [filterStatus, setFilterStatus] = useState("all")
+  const [showFilterMenu, setShowFilterMenu] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -18,14 +19,14 @@ const StudentProfile = () => {
         const res = await axios.get(
           "http://localhost:5000/api/student/applications",
           { withCredentials: true }
-        );
-        setJobs(res.data.applications || []);
+        )
+        setJobs(res.data.applications || [])
       } catch (err) {
-        console.error("Error fetching jobs:", err);
+        console.error("Error fetching jobs:", err)
       }
-    };
-    fetchJobs();
-  }, []);
+    }
+    fetchJobs()
+  }, [])
 
   const statusStyles = {
     accepted:
@@ -34,7 +35,7 @@ const StudentProfile = () => {
       "bg-yellow-100 text-yellow-700 border border-yellow-300 font-medium px-3 py-1 rounded-full shadow-sm",
     rejected:
       "bg-red-100 text-red-700 border border-red-300 font-medium px-3 py-1 rounded-full shadow-sm",
-  };
+  }
 
   const Card = ({ children, className }) => (
     <div
@@ -47,12 +48,11 @@ const StudentProfile = () => {
   const filteredJobs = job.filter((item) => {
     const matchesSearch =
       item?.job?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item?.employer?.companyname?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      filterStatus === "all" ? true : item.status === filterStatus;
-    return matchesSearch && matchesStatus;
-  });
-  console.log("Job item:", job);
+      item?.employer?.companyname?.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = filterStatus === "all" ? true : item.status === filterStatus
+    return matchesSearch && matchesStatus
+  })
+  console.log("Job", job)
 
 
   return (
@@ -60,7 +60,6 @@ const StudentProfile = () => {
       <Navbar />
       <div className="p-4 sm:p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen font-sans">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Profile Card */}
           <Card className="text-center">
             <div className="flex flex-col items-center">
               <img
@@ -71,7 +70,9 @@ const StudentProfile = () => {
               <h2 className="mt-4 font-semibold text-lg">{user?.name}</h2>
               <p className="text-sm text-gray-500">{user?.email}</p>
               <p className="mt-2 text-gray-600 text-sm">{user?.bio}</p>
-              <button className="mt-5 border border-blue-500 text-blue-500 px-5 py-2 rounded-lg w-full hover:bg-blue-500 hover:text-white transition font-medium">
+              <button className="mt-5 border border-blue-500 text-blue-500 px-5 py-2 rounded-lg w-full hover:bg-blue-500 hover:text-white transition font-medium"
+              onClick={()=>navigate("/editProfile")}
+              >
                 Edit Profile
               </button>
             </div>
@@ -95,9 +96,7 @@ const StudentProfile = () => {
             </div>
           </Card>
 
-          {/* Right Section */}
           <div className="lg:col-span-3 space-y-6">
-            {/* Quick Links */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Link to="/savedjobs">
                 <Card className="flex items-center justify-center gap-2 text-gray-700 font-medium hover:bg-purple-50">
@@ -112,10 +111,8 @@ const StudentProfile = () => {
               </Card>
             </div>
 
-            {/* Jobs Table */}
             <Card>
               <div className="flex flex-col sm:flex-row justify-between mb-5 gap-3">
-                {/* Search */}
                 <div className="relative w-full sm:w-64">
                   <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
                   <input
@@ -127,7 +124,6 @@ const StudentProfile = () => {
                   />
                 </div>
 
-                {/* Filter */}
                 <div className="relative">
                   <button
                     onClick={() => setShowFilterMenu((prev) => !prev)}
@@ -156,7 +152,6 @@ const StudentProfile = () => {
                 </div>
               </div>
 
-              {/* Table */}
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[600px]">
                   <thead>
@@ -223,7 +218,7 @@ const StudentProfile = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default StudentProfile;
+export default StudentProfile

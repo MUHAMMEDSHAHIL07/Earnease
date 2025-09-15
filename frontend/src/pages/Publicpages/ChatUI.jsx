@@ -13,12 +13,12 @@ const ChatUI = ({ currentUser }) => {
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-    };
+    }
 
     useEffect(scrollToBottom, [messages])
 
     useEffect(() => {
-        if (!chatRoomId) return;
+        if (!chatRoomId) return
 
         const fetchMessages = async () => {
             try {
@@ -32,21 +32,21 @@ const ChatUI = ({ currentUser }) => {
             }
         };
 
-        fetchMessages();
+        fetchMessages()
 
-        socket.emit("joinRoom", chatRoomId);
+        socket.emit("joinRoom", chatRoomId)
 
         socket.on("receiveMessage", (newMessage) => {
             setMessages((prev) => {
                 const exists = prev.find((msg) => msg._id === newMessage._id)
-                if (exists) return prev;
+                if (exists) return prev
                 return [...prev, newMessage]
             })
         })
 
         return () => {
             socket.off("receiveMessage")
-        };
+        }
     }, [chatRoomId])
 
     const handleSendMessage = async () => {
@@ -57,9 +57,9 @@ const ChatUI = ({ currentUser }) => {
                 { text: inputText },
                 { withCredentials: true }
             );
-            setInputText("");
+            setInputText("")
         } catch (err) {
-            console.error("Error sending message:", err);
+            console.error("Error sending message:", err)
         }
     };
     const isCurrentUser = (msg) => {
@@ -73,10 +73,10 @@ const ChatUI = ({ currentUser }) => {
 
     const handleKeyPress = (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
+            e.preventDefault()
+            handleSendMessage()
         }
-    };
+    }
 
     return (
         <div className="h-screen w-screen bg-gray-100 flex flex-col">
@@ -123,7 +123,7 @@ const ChatUI = ({ currentUser }) => {
                                         </span>
                                     </div>
                                 </div>
-                            );
+                            )
                         })
                 ) : (
                     <p className="text-center text-gray-400">No messages yet</p>
@@ -157,7 +157,7 @@ const ChatUI = ({ currentUser }) => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
 export default ChatUI

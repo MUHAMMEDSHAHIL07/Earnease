@@ -25,10 +25,10 @@ const EmployerManagement = () => {
                 toast.info("block successfully")
             })
             .catch((error) => {
-                console.error(error.message);
+                console.error(error.message)
                 const msg = error.response?.data?.message || error.message
-                toast.error(msg);
-            });
+                toast.error(msg)
+            })
     }
     const unBlock = (id) => {
         axios.patch(`http://localhost:5000/admin/employerStatus/${id}`, { isBlocked: false }, { withCredentials: true })
@@ -41,9 +41,9 @@ const EmployerManagement = () => {
                 toast.success("unblock successfully")
             })
             .catch((error) => {
-                console.error(error.message);
-                toast.error(error.message);
-            });
+                console.error(error.message)
+                toast.error(error.message)
+            })
     }
 
     return (
@@ -120,7 +120,7 @@ const EmployerManagement = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default EmployerManagement;
+export default EmployerManagement
