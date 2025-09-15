@@ -3,8 +3,9 @@ import { userModel } from "../../models/userSchema.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { chatRoomModel } from "../../models/chatRoom.js";
+import { recentActivityModel } from "../../models/recentActivity.js";
 
-dotenv.config();
+dotenv.config()
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -16,32 +17,37 @@ const transporter = nodemailer.createTransport({
 
 export const approveJobApplication = async (req, res) => {
   try {
-    const { id } = req.params;
-    const application = await jobApplicationModel.findById(id).populate("student job employer");
+    const { id } = req.params
+    const application = await jobApplicationModel.findById(id).populate("student job employer")
     if (!application) {
-      return res.status(404).json({ message: "Job application not found" });
+      return res.status(404).json({ message: "Job application not found" })
     }
 
-    const student = await userModel.findById(application.student);
+    const student = await userModel.findById(application.student)
     if (!student) {
-      return res.status(404).json({ message: "Student not found" });
+      return res.status(404).json({ message: "Student not found" })
     }
 
-    application.status = "accepted";
-    await application.save();
+    application.status = "accepted"
+    await application.save()
 
-    let chatRoom = await chatRoomModel.findOne({ jobApplication: application._id });
+    let chatRoom = await chatRoomModel.findOne({ jobApplication: application._id })
     if (!chatRoom) {
       chatRoom = new chatRoomModel({
         jobApplication: application._id,
         employer: application.employer._id,
         student: application.student._id,
         isActive: true,
-      });
+      })
     } else {
-      chatRoom.isActive = true;
+      chatRoom.isActive = true
     }
-    await chatRoom.save();
+    await chatRoom.save()
+    await recentActivityModel.create({
+      employer: req.user.id,
+      type: "Application Accept",
+      description: `You accepted the application of : ${student.name}`,
+    })
 
     await transporter.sendMail({
       to: student.email,
@@ -68,39 +74,44 @@ export const approveJobApplication = async (req, res) => {
           </p>
         </div>
       `,
-    });
+    })
 
     return res.status(200).json({
       success: true,
       message: "Job application approved & chat unlocked",
       chatRoomId: chatRoom._id,
-    });
+    })
   } catch (err) {
-    console.error("Error in approveJobApplication:", err);
-    return res.status(500).json({ message: err.message });
+    console.error("Error in approveJobApplication:", err)
+    return res.status(500).json({ message: err.message })
   }
 }
 
 export const rejectJobApplication = async (req, res) => {
   try {
-    const applicationId = req.params.id;
-    const application = await jobApplicationModel.findById(applicationId);
+    const applicationId = req.params.id
+    const application = await jobApplicationModel.findById(applicationId)
     if (!application) {
-      return res.status(404).json({ message: "Job application not found" });
+      return res.status(404).json({ message: "Job application not found" })
     }
 
-    const student = await userModel.findById(application.student);
+    const student = await userModel.findById(application.student)
     if (!student) {
-      return res.status(404).json({ message: "Student not found" });
+      return res.status(404).json({ message: "Student not found" })
     }
-    application.status = "rejected";
-    await application.save();
+    application.status = "rejected"
+    await application.save()
+    await recentActivityModel.create({
+      employer: req.user.id,
+      type: "Application Reject",
+      description: `You rejected the application of : ${student.name}`,
+    })
 
     await chatRoomModel.findOneAndUpdate(
       { jobApplication: application._id },
       { isActive: false }
-    );
-    
+    )
+
     await transporter.sendMail({
       to: student.email,
       subject: "Job Application Unsuccessful",
@@ -123,9 +134,9 @@ export const rejectJobApplication = async (req, res) => {
       `,
     });
 
-    return res.status(200).json({ success: true, message: "Student application rejected & chat locked" });
+    return res.status(200).json({ success: true, message: "Student application rejected & chat locked" })
   } catch (err) {
-    console.error("Error in rejectStudentApplication:", err);
-    return res.status(500).json({ message: err.message });
+    console.error("Error in rejectStudentApplication:", err)
+    return res.status(500).json({ message: err.message })
   }
-};
+}

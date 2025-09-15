@@ -42,12 +42,17 @@ export const verifyPayment = async (req, res) => {
       method: paymentData.method,
       description: `${subscriptionType} subscription payment`,
       createdAt: new Date(paymentData.created_at * 1000)
-    });
+    })
+    await recentActivityModel.create({
+      employer: req.user.id,
+      type: "Payment",
+      description: `Your payment for the ${subscriptionType} subscription was successful`
+    })
 
     return res.json({
       success: true,
       message: "Payment verified and saved successfully"
-    });
+    })
   } catch (error) {
     console.error("Error verifying payment:", error)
     return res.status(500).json({ success: false, message: "Internal server error" })

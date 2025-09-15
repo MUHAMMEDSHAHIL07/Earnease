@@ -1,9 +1,10 @@
 import { employerModel } from "../../models/employerSchema.js"
-import {jobModel} from "../../models/jobSchema.js"
+import { jobModel } from "../../models/jobSchema.js"
+import { recentActivityModel } from "../../models/recentActivity.js";
 
-export const jobPost = async(req, res) => {
+export const jobPost = async (req, res) => {
   try {
-    const {title, Description, Location, Salary, Category, WorkHour,Skills, Gender} = req.body
+    const { title, Description, Location, Salary, Category, WorkHour, Skills, Gender } = req.body
     const employer = await employerModel.findById(req.user.id)
 
     if (!employer) {
@@ -16,14 +17,14 @@ export const jobPost = async(req, res) => {
     const now = new Date();
 
     if (!employer.isSubscribed || !employer.subscriptionExpiry || employer.subscriptionExpiry < now) {
-      if (employer.jobPostCount >= 3) { 
+      if (employer.jobPostCount >= 3) {
         return res.status(403).json({ message: "Free job limit reached. Please subscribe" });
       }
       employer.jobPostCount += 1
     } else {
       const planCheck = {
         single: employer.singlePostLimit,
-        monthly: employer.monthlyPostLimit, 
+        monthly: employer.monthlyPostLimit,
         yearly: employer.yearlyPostLimit
       };
       const currentPlanLimit = planCheck[employer.subscriptionType] || "free"
@@ -33,7 +34,7 @@ export const jobPost = async(req, res) => {
       }
       employer.subscriptionPostCount += 1
     }
-    
+
     await employer.save();
     const newJob = new jobModel({
       employer: req.user.id,
@@ -48,6 +49,11 @@ export const jobPost = async(req, res) => {
     });
 
     await newJob.save();
+    await recentActivityModel.create({
+      employer: req.user.id,
+      type: "Job Post",
+      description: `You posted a new job: ${newJob.title}`
+    })
 
     return res.status(201).json({ message: "Job created", Job: newJob })
   } catch (error) {
@@ -56,44 +62,50 @@ export const jobPost = async(req, res) => {
 };
 
 
-export const getAllJob = async(req,res)=>{
-    try{
-        const getJob = await jobModel.find({employer:req.user.id})
-        return res.status(200).json({getJob})
-    }
-    catch(error){
-        return res.status(500).json(error.message)
-    }
+export const getAllJob = async (req, res) => {
+  try {
+    const getJob = await jobModel.find({ employer: req.user.id })
+    return res.status(200).json({ getJob })
+  }
+  catch (error) {
+    return res.status(500).json(error.message)
+  }
 }
-export const getJobById = async(req,res)=>{
-    try{
-        const getJob = await jobModel.findOne({_id:req.params.id,employer:req.user.id})
-        if(!getJob) return res.status(404).json({message:"job not found"})
-            return res.status(200).json({ getJob: getJob }); 
-    }
-    catch(error){
-        return res.status(500).json({message:error.message})
-    }
-}
-
-export const editJob = async(req,res)=>{
-    try{
-        const editJob = await jobModel.findOneAndUpdate({_id:req.params.id,employer:req.user.id},{$set:req.body})
-        if(!editJob) return res.status(404).json("job not found")
-            return res.status(200).json({message:editJob})
-    }
-    catch(error){
-        return res.status(500).json({message:error.message})
-    }
+export const getJobById = async (req, res) => {
+  try {
+    const getJob = await jobModel.findOne({ _id: req.params.id, employer: req.user.id })
+    if (!getJob) return res.status(404).json({ message: "job not found" })
+    return res.status(200).json({ getJob: getJob });
+  }
+  catch (error) {
+    return res.status(500).json({ message: error.message })
+  }
 }
 
-export const deleteJob = async(req,res)=>{
-    try{
-        const jobDelete = await jobModel.findOneAndDelete({_id:req.params.id,employer:req.user.id})
-        if(!jobDelete) return res.status(404).json({message:"no job found"})
-            res.status(200).json({message:"job deleted successfully"})
-    }
-    catch(error){
-        return res.status(500).json({message:error.message})
-    }
+export const editJob = async (req, res) => {
+  try {
+    const updatedJob  = await jobModel.findOneAndUpdate({ _id: req.params.id, employer: req.user.id }, { $set: req.body })
+    if (!updatedJob ) return res.status(404).json("job not found")
+    await recentActivityModel.create({
+      employer: req.user.id,
+      type: "Job Edit",
+      description: `You edited the job: ${updatedJob .title}`,
+    })
+    return res.status(200).json({ message: updatedJob  })
+  }
+  catch (error) {
+    return res.status(500).json({ message: error.message })
+  }
+}
+
+export const deleteJob = async (req, res) => {
+  try {
+    const jobDelete = await jobModel.findOneAndDelete({ _id: req.params.id, employer: req.user.id })
+    if (!jobDelete) return res.status(404).json({ message: "no job found" })
+
+    res.status(200).json({ message: "job deleted successfully" })
+  }
+  catch (error) {
+    return res.status(500).json({ message: error.message })
+  }
 }

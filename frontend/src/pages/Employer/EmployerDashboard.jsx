@@ -6,12 +6,24 @@ import EmployerSidebar from "../Employer/EmployerSidebar";
 const EmployerDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [employer, setEmployer] = useState(null);
-  const [getemployer, setGetEmployer] = useState("");
+  const [getemployer, setGetEmployer] = useState({});
   const [application, setApplications] = useState([]);
-  const [job, setJob] = useState();
-  const [hiredCandidate, setHiredCandidate] = useState([]);
-  const [monthlyPayment, setMonthlyPayment] = useState([]);
+  const [job, setJob] = useState([]);
+  const [hiredCandidate, setHiredCandidate] = useState({});
+  const [monthlyPayment, setMonthlyPayment] = useState(0);
+  const [recentActivity, setRecentActivity] = useState([]);
   const navigate = useNavigate();
+
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   useEffect(() => {
     const store = localStorage.getItem("earneaseUser");
@@ -22,11 +34,21 @@ const EmployerDashboard = () => {
 
   useEffect(() => {
     axios
+      .get("http://localhost:5000/api/employer/recentActivity", {
+        withCredentials: true,
+      })
+      .then((res) => setRecentActivity(res.data.data))
+      .catch((err) => console.error(err));
+  }, [])
+  console.log(recentActivity)
+
+  useEffect(() => {
+    axios
       .get("http://localhost:5000/api/employer/candidateHired", {
         withCredentials: true,
       })
       .then((res) => setHiredCandidate(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
@@ -35,7 +57,7 @@ const EmployerDashboard = () => {
         withCredentials: true,
       })
       .then((res) => setMonthlyPayment(res.data.monthlySpending))
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
@@ -44,24 +66,16 @@ const EmployerDashboard = () => {
         withCredentials: true,
       })
       .then((res) => setGetEmployer(res.data.employer))
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
-    const JobGet = async () => {
-      try {
-        const res = await axios.get(
-          "http://localhost:5000/api/employer/getJobs",
-          {
-            withCredentials: true,
-          }
-        );
-        setJob(res.data.getJob);
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    JobGet();
+    axios
+      .get("http://localhost:5000/api/employer/getJobs", {
+        withCredentials: true,
+      })
+      .then((res) => setJob(res.data.getJob))
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
@@ -70,7 +84,7 @@ const EmployerDashboard = () => {
         withCredentials: true,
       })
       .then((res) => setApplications(res.data.message))
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   return (
@@ -101,7 +115,7 @@ const EmployerDashboard = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition-all">
             <p className="text-gray-500 text-sm">Jobs Posted</p>
             <h3 className="text-2xl sm:text-3xl font-bold text-blue-600">
@@ -161,34 +175,25 @@ const EmployerDashboard = () => {
                 <th className="py-3">Activity Type</th>
                 <th>Description</th>
                 <th>Date</th>
-                <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-t">
-                <td className="py-3">Application</td>
-                <td>New application for Senior Developer position</td>
-                <td>Today, 2:30 PM</td>
-                <td className="text-blue-600 font-medium">New</td>
-              </tr>
-              <tr className="border-t">
-                <td className="py-3">Hiring</td>
-                <td>Offer accepted for Frontend Developer role</td>
-                <td>Yesterday</td>
-                <td className="text-green-600 font-medium">Completed</td>
-              </tr>
-              <tr className="border-t">
-                <td className="py-3">Job Post</td>
-                <td>New job post: UX Designer</td>
-                <td>Yesterday</td>
-                <td className="text-gray-700 font-medium">Active</td>
-              </tr>
-              <tr className="border-t">
-                <td className="py-3">Payment</td>
-                <td>Monthly subscription payment processed</td>
-                <td>2 days ago</td>
-                <td className="text-green-600 font-medium">Completed</td>
-              </tr>
+              {recentActivity?.length > 0 ? (
+                recentActivity.map((activity) => (
+                  <tr key={activity._id} className="border-t">
+                    <td className="py-3 font-medium text-gray-700">{activity.type}</td>
+                    <td>{activity.description}</td>
+                    <td className="text-gray-500">{formatDate(activity.createdAt)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" className="text-center py-4 text-gray-500">
+                    No recent activity found.
+                  </td>
+                </tr>
+              )}
+
             </tbody>
           </table>
         </div>
@@ -197,4 +202,4 @@ const EmployerDashboard = () => {
   );
 };
 
-export default EmployerDashboard;
+export default EmployerDashboard

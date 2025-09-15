@@ -53,7 +53,7 @@ const JobDetail = () => {
     return (
         <>
             <Navbar />
-            <div className="bg-gray-50 min-h-screen flex justify-center py-10">
+            <div className="bg-gray-50  flex justify-center py-10">
                 <div className="bg-white w-full md:w-2/5 lg:w-2/5 rounded-2xl shadow-xl overflow-hidden">
                     <div className="bg-gradient-to-r from-blue-600 to-indigo-500 text-white p-6 flex items-center gap-5">
                         {job?.employer?.avatarUrl && (

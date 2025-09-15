@@ -1,5 +1,6 @@
 import { employerModel } from "../../models/employerSchema.js";
 import EmployerVerification from "../../models/employerVerifiySchema.js";
+import { recentActivityModel } from "../../models/recentActivity.js";
 
 export const editProfile = async(req,res)=>{
     try{
@@ -15,6 +16,11 @@ export const editProfile = async(req,res)=>{
         await EmployerVerification.findOneAndUpdate({employerId: employerid},{
            companyType,about,licenseUrl,location,contactNumber,industry,address,websiteUrl
         })
+        await recentActivityModel.create({
+              employer: req.user.id,
+              type: "Profile Edit",
+              description: `You edited your profile`,
+            })
         res.status(200).json({message:"profile updated"})
     }
     catch(error){

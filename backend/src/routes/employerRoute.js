@@ -14,6 +14,7 @@ import { approveJobApplication, rejectJobApplication } from "../controllers/empl
 import { getEmployerChats, getEmployerMessageInbox } from "../controllers/employerController/employerChat.js";
 import { candidateHired } from "../controllers/employerController/totalCandidate.js";
 import { monthlySpending } from "../controllers/employerController/monthlySpending.js";
+import { recentActivity } from "../controllers/employerController/recentActivityController.js";
 
 
 const router = express.Router()
@@ -37,4 +38,5 @@ router.get("/chats", jwtMiddleware,checkRole(["employer"]), getEmployerChats)
 router.get("/inbox", jwtMiddleware,checkRole(["employer"]), getEmployerMessageInbox)
 router.get("/candidateHired", jwtMiddleware,checkRole(["employer"]), candidateHired)
 router.get("/montlyPayment", jwtMiddleware,checkRole(["employer"]), monthlySpending)
+router.get("/recentActivity", jwtMiddleware,checkRole(["employer"]), recentActivity)
 export default router   

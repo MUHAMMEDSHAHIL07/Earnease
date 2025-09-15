@@ -69,11 +69,16 @@ const EmployerSidebar = () => {
       )}
 
       <aside
-        className={`fixed top-0 right-0 h-screen w-64 bg-white shadow-lg z-50 transform transition-transform duration-[900ms] ease-in-out flex flex-col justify-between 
-        ${sidebarOpen ? "translate-x-0" : "translate-x-full"} 
-        md:translate-x-0 md:static md:shadow-none md:flex h-[100vh]`}
+        className={`
+          fixed md:sticky top-0 right-0 md:left-0
+          h-screen w-64 bg-white shadow-lg z-50 
+          transform transition-transform duration-[900ms] ease-in-out 
+          flex flex-col justify-between
+          ${sidebarOpen ? "translate-x-0" : "translate-x-full"} 
+          md:translate-x-0
+        `}
       >
-        <div className="p-6 overflow-y-auto flex-1">
+        <div className="p-6 overflow-y-auto flex-1 min-h-0">
           <div className="flex justify-between items-center md:hidden mb-4">
             <img src={logo} alt="Logo" className="w-32" />
             <button onClick={() => setSidebarOpen(false)}>
@@ -114,7 +119,7 @@ const EmployerSidebar = () => {
           </nav>
         </div>
 
-        <div className="p-6 border-t border-gray-200">
+        <div className="p-6 border-t border-gray-200 flex-shrink-0">
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:text-white hover:bg-red-500 transition-all duration-200 rounded-lg font-medium group"
