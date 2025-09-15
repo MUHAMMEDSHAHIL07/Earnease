@@ -3,23 +3,23 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const ForgotPassword =()=> {
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("student");
-  const [loading, setLoad] = useState(false);
+  const [email, setEmail] = useState("")
+  const [role, setRole] = useState("student")
+  const [loading, setLoad] = useState(false)
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoad(true);
+    e.preventDefault()
+    setLoad(true)
     try {
-      await axios.post("http://localhost:5000/api/auth/forgot-password", { email, role });
+      await axios.post("http://localhost:5000/api/auth/forgot-password", { email, role })
       toast.success("Reset link sent check your inbox");
       setEmail("");
     } catch (err) {
-      toast.error(err.response?.data?.message );
+      toast.error(err.response?.data?.message )
     } finally {
-      setLoad(false);
+      setLoad(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-white flex items-center justify-center px-4">
@@ -64,6 +64,6 @@ const ForgotPassword =()=> {
         </form>
       </div>
     </div>
-  );
+  )
 }
 export default ForgotPassword
