@@ -13,7 +13,6 @@ It features user-friendly dashboards, real-time communication, job tracking, and
 - Real-time in-app chat with employers  
 - Save jobs for later  
 - Rate and report employers after job completion  
-- Dark/Light mode toggle  
 - Notification system for updates and job alerts  
 - Monthly earnings tracker  
 
@@ -39,7 +38,8 @@ It features user-friendly dashboards, real-time communication, job tracking, and
 - **Backend**: Node.js, Express.js  
 - **Database**: MongoDB + Mongoose  
 - **Authentication**: JWT + Email OTP  
-- **Payments**: Razorpay  
+- **Payments**: Razorpay
+- **Real-time Chat:**: Socket.IO  
 - **Icons/Animations**: Lucide, Framer Motion  
 - **Deployment**: Vercel (Frontend), Render (Backend)
 
