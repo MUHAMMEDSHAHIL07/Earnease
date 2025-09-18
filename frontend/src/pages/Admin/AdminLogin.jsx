@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/authContext';
+import { useAuth } from "../../context/AuthContext"
 import toast from 'react-hot-toast';
 
 const AdminLogin = () => {
