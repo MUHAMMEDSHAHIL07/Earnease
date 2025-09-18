@@ -30,7 +30,7 @@ const Navbar = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete("http://localhost:5000/api/auth/logout", {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/auth/logout`, {
           withCredentials: true,
         });
         localStorage.removeItem("earneaseUser");
