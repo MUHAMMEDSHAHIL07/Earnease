@@ -12,7 +12,7 @@ const JobDetail = () => {
     const applyJob = async (id) => {
         try {
             await axios.post(
-                `http://localhost:5000/api/student/applyJob/${id}`,
+                `${import.meta.env.VITE_API_URL}/api/student/applyJob/${id}`,
                 {},
                 { withCredentials: true }
             );
@@ -26,7 +26,7 @@ const JobDetail = () => {
         const fetchJob = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/api/student/getJob/${id}`,
+                    `${import.meta.env.VITE_API_URL}/api/student/getJob/${id}`,
                     { withCredentials: true }
                 )
                 setJob(res.data)

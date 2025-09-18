@@ -6,7 +6,7 @@ const Subscription = () => {
   const handlePayment = async (subscriptionType, amount) => {
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/employer/paymentJob",
+        `${import.meta.env.VITE_API_URL}/api/employer/paymentJob`,
         { subscriptionType, amount },
         { withCredentials: true }
       );
@@ -21,7 +21,7 @@ const Subscription = () => {
         order_id: order.id,
         handler: async function (response) {
           await axios.post(
-            "http://localhost:5000/api/employer/verifypayment",
+           `${import.meta.env.VITE_API_URL}/api/employer/verifypayment`,
             {
               ...response,
               subscriptionType

@@ -15,7 +15,7 @@ const EmployerMessagingDashboard = () => {
   useEffect(() => {
     const fetchInbox = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/employer/inbox', { withCredentials: true })
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/employer/inbox`, { withCredentials: true })
         if (res.data.chatRooms) {
           const mapped = res.data.chatRooms.map((room) => ({
             id: room._id,
@@ -66,9 +66,9 @@ const EmployerMessagingDashboard = () => {
       <EmployerSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       
       <div className="flex-1 flex overflow-hidden">
-        {/* Conversations List */}
+  
         <div className={`w-full lg:w-[380px] bg-white border-r border-gray-200 flex flex-col ${showChatOnMobile ? 'hidden lg:flex' : 'flex'}`}>
-          {/* Header */}
+ 
           <div className="p-6 border-b border-gray-100 flex-shrink-0">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -81,7 +81,7 @@ const EmployerMessagingDashboard = () => {
             <p className="text-sm text-gray-500">Manage conversations with candidates</p>
           </div>
 
-          {/* Search */}
+
           <div className="p-4 border-b border-gray-100 flex-shrink-0">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -95,7 +95,6 @@ const EmployerMessagingDashboard = () => {
             </div>
           </div>
 
-          {/* Conversations */}
           <div className="flex-1 overflow-y-auto">
             {filteredConversations.length > 0 ? (
               filteredConversations.map((chat) => (
@@ -146,7 +145,7 @@ const EmployerMessagingDashboard = () => {
           </div>
         </div>
 
-        {/* Chat Room Area */}
+
         <div className={`flex-1 flex flex-col bg-white ${showChatOnMobile ? 'flex' : 'hidden lg:flex'}`}>
           {chatRoomId ? (
             <div className="flex-1 overflow-hidden">

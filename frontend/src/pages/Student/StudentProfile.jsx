@@ -36,7 +36,7 @@ const StudentProfile = () => {
     const fetchJobs = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/student/applications",
+          `${import.meta.env.VITE_API_URL}/api/student/applications`,
           { withCredentials: true }
         )
         setJobs(res.data.applications || [])

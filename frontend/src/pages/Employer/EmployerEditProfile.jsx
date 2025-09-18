@@ -86,7 +86,7 @@ const EmployerEditProfile = () => {
     try {
       await toast.promise(
         axios.patch(
-          "http://localhost:5000/api/employer/editprofile",
+         `${import.meta.env.VITE_API_URL}/api/employer/editprofile`,
           form,
           { withCredentials: true }
         ),

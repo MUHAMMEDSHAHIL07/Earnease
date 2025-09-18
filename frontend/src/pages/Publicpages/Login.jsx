@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginSchema } from "../../Schema";
 import { GoogleLogin } from "@react-oauth/google";
-import { useAuth } from "../../context/authContext";
+import { useAuth } from "../../context/AuthContext"
 import toast from "react-hot-toast";
 
 
@@ -49,7 +49,7 @@ const Login = () => {
       setLoading(true);
       try {
         const { data } = await axios.post(
-          "http://localhost:5000/api/auth/login",
+          `${import.meta.env.VITE_API_URL}/api/auth/login`,
           vals,
           { withCredentials: true }
         );
@@ -92,7 +92,7 @@ const Login = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:5000/api/auth/googlelogin",
+       `${import.meta.env.VITE_API_URL}/api/auth/googlelogin`,
         { credential: credResp.credential },
         { withCredentials: true }
       );
@@ -155,7 +155,7 @@ const Login = () => {
   const finishSignup = async (role) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/googlelogin",
+       `${import.meta.env.VITE_API_URL}/api/auth/googlelogin`,
         { credential: googleCred, role },
         { withCredentials: true }
       );

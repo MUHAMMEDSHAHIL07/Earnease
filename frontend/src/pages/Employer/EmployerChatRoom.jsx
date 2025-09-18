@@ -16,7 +16,7 @@ const EmployerChatRoom = ({ currentUser }) => {
     
     const fetchUserDetails = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/employer/chats", { withCredentials: true })
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/employer/chats`, { withCredentials: true })
         if (res.data.data) {
           const chatRoom = res.data.data.find(room => room._id === chatRoomId)
           if (chatRoom && chatRoom.student) {
@@ -36,7 +36,7 @@ const EmployerChatRoom = ({ currentUser }) => {
     const fetchMessages = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/chat/messages/${chatRoomId}`,
+          `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
           { withCredentials: true }
         );
         setMessages(res.data.data)
@@ -70,7 +70,7 @@ const EmployerChatRoom = ({ currentUser }) => {
     
     try {
       await axios.post(
-        `http://localhost:5000/api/chat/sendMessage/${chatRoomId}`,
+        `${import.meta.env.VITE_API_URL}/api/chat/sendMessage/${chatRoomId}`,
         { text: inputText },
         { withCredentials: true }
       )

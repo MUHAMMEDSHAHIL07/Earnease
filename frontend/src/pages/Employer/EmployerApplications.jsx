@@ -10,7 +10,7 @@ const EmployerApplications = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/employer/getApplication?status=pending", {
+      .get(`${import.meta.env.VITE_API_URL}/api/employer/getApplication?status=pending`, {
         withCredentials: true,
       })
       .then((res) => setApplications(res.data.message))
@@ -21,7 +21,7 @@ const EmployerApplications = () => {
     setLoading({ id, action })
     axios
       .patch(
-        `http://localhost:5000/api/employer/${action}Job/${id}`,
+       `${import.meta.env.VITE_API_URL}/api/employer/${action}Job/${id}`,
         {},
         { withCredentials: true }
       )

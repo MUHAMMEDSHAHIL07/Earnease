@@ -23,7 +23,7 @@ const ViewJob = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/employer/deleteJob/${id}`, { withCredentials: true })
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/employer/deleteJob/${id}`, { withCredentials: true })
         setJob((prev) => prev.filter((job) => job._id !== id))
         Swal.fire({
           icon: "success",
@@ -46,7 +46,7 @@ const ViewJob = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/employer/getJobs", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/employer/getJobs`, {
           withCredentials: true,
         });
         setJob(res.data.getJob)

@@ -13,7 +13,7 @@ const StudentMessagingDashboard = () => {
   useEffect(() => {
     const fetchInbox = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/student/inbox', { withCredentials: true })
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/student/inbox`, { withCredentials: true })
         if (res.data.chatRooms) {
           const mapped = res.data.chatRooms.map((room) => ({
             id: room._id,

@@ -13,7 +13,7 @@ export default function ResetPassword() {
     e.preventDefault();
     setLoad(true);
     try {
-      await axios.post(`http://localhost:5000/api/auth/reset-password/${token}`, { password })
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`, { password })
       toast.success("Password updated please login");
       navigate("/login");
     } catch (err) {

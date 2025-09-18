@@ -34,7 +34,7 @@ const EmployerDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/employer/recentActivity", {
+      .get(`${import.meta.env.VITE_API_URL}/api/employer/recentActivity`, {
         withCredentials: true,
       })
       .then((res) => setRecentActivity(res.data.data))
@@ -44,7 +44,7 @@ const EmployerDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/employer/candidateHired", {
+      .get(`${import.meta.env.VITE_API_URL}/api/employer/candidateHired`, {
         withCredentials: true,
       })
       .then((res) => setHiredCandidate(res.data))
@@ -53,7 +53,7 @@ const EmployerDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/employer/montlyPayment", {
+      .get(`${import.meta.env.VITE_API_URL}/api/employer/montlyPayment`, {
         withCredentials: true,
       })
       .then((res) => setMonthlyPayment(res.data.monthlySpending))
@@ -62,7 +62,7 @@ const EmployerDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/employer/getprofile", {
+      .get(`${import.meta.env.VITE_API_URL}/api/employer/getprofile`, {
         withCredentials: true,
       })
       .then((res) => setGetEmployer(res.data.employer))
@@ -71,7 +71,7 @@ const EmployerDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/employer/getJobs", {
+      .get(`${import.meta.env.VITE_API_URL}/api/employer/getJobs`, {
         withCredentials: true,
       })
       .then((res) => setJob(res.data.getJob))
@@ -80,7 +80,7 @@ const EmployerDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/employer/getApplication", {
+      .get(`${import.meta.env.VITE_API_URL}/api/employer/getApplication`, {
         withCredentials: true,
       })
       .then((res) => setApplications(res.data.message))

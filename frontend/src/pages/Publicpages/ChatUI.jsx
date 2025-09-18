@@ -23,7 +23,7 @@ const ChatUI = ({ currentUser }) => {
         const fetchMessages = async () => {
             try {
                 const res = await axios.get(
-                    `http://localhost:5000/api/chat/messages/${chatRoomId}`,
+                  `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
                     { withCredentials: true }
                 )
                 setMessages(res.data.data)
@@ -53,7 +53,7 @@ const ChatUI = ({ currentUser }) => {
         if (!inputText.trim()) return
         try {
             await axios.post(
-                `http://localhost:5000/api/chat/sendMessage/${chatRoomId}`,
+                `${import.meta.env.VITE_API_URL}/api/chat/sendMessage/${chatRoomId}`,
                 { text: inputText },
                 { withCredentials: true }
             );

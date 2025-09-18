@@ -41,8 +41,8 @@ const Register = () => {
 
     const endpoint =
       activeTab === 'student'
-        ? 'http://localhost:5000/api/auth/userregister'
-        : 'http://localhost:5000/api/auth/employerregister';
+        ? `${import.meta.env.VITE_API_URL}/api/auth/userregister`
+        : `${import.meta.env.VITE_API_URL}/api/auth/employerregister`;
 
     const payload =
       activeTab === 'student'
@@ -81,8 +81,8 @@ const Register = () => {
 
     const endpoint =
       activeTab === 'student'
-        ? 'http://localhost:5000/api/auth/userregister'
-        : 'http://localhost:5000/api/auth/employerregister';
+        ? `${import.meta.env.VITE_API_URL}/api/auth/userregister`
+        : `${import.meta.env.VITE_API_URL}/api/auth/employerregister`;
 
     const payload =
       activeTab === 'student'

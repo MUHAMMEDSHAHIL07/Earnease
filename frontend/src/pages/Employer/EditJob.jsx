@@ -27,7 +27,7 @@ const EditJob = () => {
     onSubmit: async (values) => {
       try {
         const res = await axios.patch(
-          `http://localhost:5000/api/employer/editjob/${id}`,
+          `${import.meta.env.VITE_API_URL}/api/employer/editjob/${id}`,
           values,
           { withCredentials: true }
         );
@@ -43,7 +43,7 @@ const EditJob = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/employer/getJob/${id}`, {
+      .get(`${import.meta.env.VITE_API_URL}/api/employer/getJob/${id}`, {
         withCredentials: true,
       })
       .then((res) => {

@@ -30,7 +30,7 @@ const EmployerSidebar = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete("http://localhost:5000/api/auth/logout", {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/api/auth/logout`, {
           withCredentials: true,
         });
         localStorage.removeItem("earneaseUser");
@@ -90,7 +90,6 @@ const EmployerSidebar = () => {
             <img src={logo} alt="logo" className="w-40 h-14 object-contain" />
           </div>
 
-          {/* Navigation */}
           <nav className="space-y-2 text-gray-700 font-medium">
             <Link to="/employer/dashboard" className={navItemClass("/employer/dashboard")}>
               <LayoutDashboard size={20} /> Dashboard
@@ -133,7 +132,7 @@ const EmployerSidebar = () => {
         </div>
       </aside>
     </>
-  );
-};
+  )
+}
 
 export default EmployerSidebar

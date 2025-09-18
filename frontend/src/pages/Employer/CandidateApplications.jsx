@@ -12,7 +12,7 @@ const CandidateApplications = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/employer/getApplication", {
+      .get(`${import.meta.env.VITE_API_URL}/api/employer/getApplication`, {
         withCredentials: true,
       })
       .then((res) => setApplications(res.data.message))
@@ -23,7 +23,6 @@ const CandidateApplications = () => {
   }, [])
 
 const handleMessage = (chatRoomId) => {
-  console.log("handleMessage called with chatRoomId:", chatRoomId); // Log actual value
   if (chatRoomId) {
     navigate(`/employer/chat/${chatRoomId}`);
   } else {

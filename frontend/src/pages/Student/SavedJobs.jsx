@@ -13,7 +13,7 @@ const SavedJobs = () => {
   const applyJob = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/student/applyJob/${id}`,
+       `${import.meta.env.VITE_API_URL}/api/student/applyJob/${id}`,
         {},
         { withCredentials: true }
       );
@@ -30,7 +30,7 @@ const SavedJobs = () => {
 
   const handleremove = async (jobId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/student/removeSavedJob/${jobId}`, { withCredentials: true })
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/student/removeSavedJob/${jobId}`, { withCredentials: true })
       setGetJobs((prevJobs) => prevJobs.filter((saved) => saved.job._id !== jobId))
       toast.success("Job removed from saved")
     } catch (err) {
@@ -43,7 +43,7 @@ const SavedJobs = () => {
     const fetchSavedJobs = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/student/getSavedJob",
+          `${import.meta.env.VITE_API_URL}/api/student/getSavedJob`,
           { withCredentials: true }
         );
         setGetJobs(res.data)

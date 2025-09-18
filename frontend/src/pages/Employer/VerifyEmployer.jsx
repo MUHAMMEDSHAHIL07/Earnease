@@ -59,7 +59,7 @@ const VerifyEmployer = () => {
 
         try {
             setLoading(true);
-            const res = await axios.post("http://localhost:5000/api/employer/verify", data, {
+            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/employer/verify`, data, {
                 withCredentials: true,
             });
             toast.success(res.data.message);

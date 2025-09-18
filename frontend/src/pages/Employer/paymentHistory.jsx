@@ -15,7 +15,7 @@ const PaymentHistoryDashboard = () => {
     const fetchPayment = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/employer/getEmployerPayments",
+         `${import.meta.env.VITE_API_URL}/api/employer/getEmployerPayments`,
           { withCredentials: true }
         );
         const formatted = res.data.map(p => ({

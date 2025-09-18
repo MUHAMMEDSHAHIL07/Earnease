@@ -12,7 +12,7 @@ const PostJob = () => {
     useEffect(()=>{
       const checkLimit = async ()=>{
         try{
-          const res = await axios.get("http://localhost:5000/api/employer/checkpostlimit",{withCredentials:true})
+          const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/employer/checkpostlimit`,{withCredentials:true})
           if(res.data.canPost){
               isAllowed(true)
           }
@@ -42,7 +42,7 @@ const PostJob = () => {
     onSubmit: async (values, { resetForm }) => {
       try {
         const res = await axios.post(
-          "http://localhost:5000/api/employer/jobPost",
+          `${import.meta.env.VITE_API_URL}/api/employer/jobPost`,
           values,
           { withCredentials: true }
         );
