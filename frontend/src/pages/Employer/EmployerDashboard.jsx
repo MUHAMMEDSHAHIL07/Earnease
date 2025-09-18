@@ -4,15 +4,15 @@ import axios from "axios";
 import EmployerSidebar from "../Employer/EmployerSidebar";
 
 const EmployerDashboard = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [employer, setEmployer] = useState(null);
-  const [getemployer, setGetEmployer] = useState({});
-  const [application, setApplications] = useState([]);
-  const [job, setJob] = useState([]);
-  const [hiredCandidate, setHiredCandidate] = useState({});
-  const [monthlyPayment, setMonthlyPayment] = useState(0);
-  const [recentActivity, setRecentActivity] = useState([]);
-  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [employer, setEmployer] = useState(null)
+  const [getemployer, setGetEmployer] = useState({})
+  const [application, setApplications] = useState([])
+  const [job, setJob] = useState([])
+  const [hiredCandidate, setHiredCandidate] = useState({})
+  const [monthlyPayment, setMonthlyPayment] = useState(0)
+  const [recentActivity, setRecentActivity] = useState([])
+  const navigate = useNavigate()
 
   const formatDate = (dateString) => {
     const options = {
@@ -22,7 +22,7 @@ const EmployerDashboard = () => {
       hour: "2-digit",
       minute: "2-digit",
     };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    return new Date(dateString).toLocaleDateString(undefined,options)
   };
 
   useEffect(() => {
@@ -38,9 +38,9 @@ const EmployerDashboard = () => {
         withCredentials: true,
       })
       .then((res) => setRecentActivity(res.data.data))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
   }, [])
-  console.log(recentActivity)
+
 
   useEffect(() => {
     axios
@@ -48,8 +48,8 @@ const EmployerDashboard = () => {
         withCredentials: true,
       })
       .then((res) => setHiredCandidate(res.data))
-      .catch((err) => console.error(err));
-  }, []);
+      .catch((err) => console.error(err))
+  }, [])
 
   useEffect(() => {
     axios
@@ -58,7 +58,7 @@ const EmployerDashboard = () => {
       })
       .then((res) => setMonthlyPayment(res.data.monthlySpending))
       .catch((err) => console.error(err));
-  }, []);
+  }, [])
 
   useEffect(() => {
     axios
@@ -67,7 +67,7 @@ const EmployerDashboard = () => {
       })
       .then((res) => setGetEmployer(res.data.employer))
       .catch((err) => console.error(err));
-  }, []);
+  }, [])
 
   useEffect(() => {
     axios
@@ -76,7 +76,7 @@ const EmployerDashboard = () => {
       })
       .then((res) => setJob(res.data.getJob))
       .catch((err) => console.error(err));
-  }, []);
+  }, [])
 
   useEffect(() => {
     axios
@@ -85,7 +85,7 @@ const EmployerDashboard = () => {
       })
       .then((res) => setApplications(res.data.message))
       .catch((err) => console.error(err));
-  }, []);
+  }, [])
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-100 to-blue-50">
@@ -199,7 +199,7 @@ const EmployerDashboard = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default EmployerDashboard

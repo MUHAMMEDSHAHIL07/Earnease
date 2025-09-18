@@ -5,6 +5,23 @@ import axios from "axios";
 import Navbar from "../../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 
+const Card = ({ children, className }) => (
+  <div
+    className={`bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition-all duration-300 ${className}`}
+  >
+    {children}
+  </div>
+)
+
+const statusStyles = {
+  accepted:
+    "bg-green-100 text-green-700 border border-green-300 font-medium px-3 py-1 rounded-full shadow-sm",
+  pending:
+    "bg-yellow-100 text-yellow-700 border border-yellow-300 font-medium px-3 py-1 rounded-full shadow-sm",
+  rejected:
+    "bg-red-100 text-red-700 border border-red-300 font-medium px-3 py-1 rounded-full shadow-sm",
+}
+
 const StudentProfile = () => {
   const { user } = useAuth()
   const [job, setJobs] = useState([])
@@ -12,6 +29,8 @@ const StudentProfile = () => {
   const [filterStatus, setFilterStatus] = useState("all")
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const navigate = useNavigate()
+  const appliedCount = job.length
+  const acceptedCount = job.filter(item => item.status === "accepted").length
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -27,23 +46,7 @@ const StudentProfile = () => {
     }
     fetchJobs()
   }, [])
-
-  const statusStyles = {
-    accepted:
-      "bg-green-100 text-green-700 border border-green-300 font-medium px-3 py-1 rounded-full shadow-sm",
-    pending:
-      "bg-yellow-100 text-yellow-700 border border-yellow-300 font-medium px-3 py-1 rounded-full shadow-sm",
-    rejected:
-      "bg-red-100 text-red-700 border border-red-300 font-medium px-3 py-1 rounded-full shadow-sm",
-  }
-
-  const Card = ({ children, className }) => (
-    <div
-      className={`bg-white shadow-md rounded-2xl p-5 hover:shadow-lg transition-all duration-300 ${className}`}
-    >
-      {children}
-    </div>
-  );
+  console.log(job)
 
   const filteredJobs = job.filter((item) => {
     const matchesSearch =
@@ -52,7 +55,6 @@ const StudentProfile = () => {
     const matchesStatus = filterStatus === "all" ? true : item.status === filterStatus
     return matchesSearch && matchesStatus
   })
-  console.log("Job", job)
 
 
   return (
@@ -71,7 +73,7 @@ const StudentProfile = () => {
               <p className="text-sm text-gray-500">{user?.email}</p>
               <p className="mt-2 text-gray-600 text-sm">{user?.bio}</p>
               <button className="mt-5 border border-blue-500 text-blue-500 px-5 py-2 rounded-lg w-full hover:bg-blue-500 hover:text-white transition font-medium"
-              onClick={()=>navigate("/editProfile")}
+                onClick={() => navigate("/editProfile")}
               >
                 Edit Profile
               </button>
@@ -80,12 +82,12 @@ const StudentProfile = () => {
             <div className="mt-6 grid grid-cols-3 gap-3">
               <div className="bg-blue-50 rounded-lg p-3">
                 <FileText className="mx-auto text-blue-500 mb-1" />
-                <p className="font-bold">24</p>
+                <p className="font-bold">{appliedCount}</p>
                 <p className="text-xs text-gray-500">Applied</p>
               </div>
               <div className="bg-green-50 rounded-lg p-3">
                 <CheckCircle className="mx-auto text-green-500 mb-1" />
-                <p className="font-bold">3</p>
+                <p className="font-bold">{acceptedCount}</p>
                 <p className="text-xs text-gray-500">Accepted</p>
               </div>
               <div className="bg-purple-50 rounded-lg p-3">
@@ -114,7 +116,7 @@ const StudentProfile = () => {
             <Card>
               <div className="flex flex-col sm:flex-row justify-between mb-5 gap-3">
                 <div className="relative w-full sm:w-64">
-                  <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+                  <Search className="absolute left-3 top-2.5 text-gray-400 pointer-events-none" size={18} />
                   <input
                     type="text"
                     placeholder="Search by company or job title..."

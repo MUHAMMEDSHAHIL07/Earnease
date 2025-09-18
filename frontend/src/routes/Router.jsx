@@ -14,7 +14,6 @@ import { useAuth } from "../context/authContext"
 
 {/* ---------- EMPLOYER ROUTES ---------- */ }
 import EmployerDashboard from "../pages/Employer/EmployerDashboard";
-import VerifyEmployer from "../pages/Employer/verifyEmployer";
 import VerificationPending from "../pages/Employer/VerificationPending";
 import PostJob from "../pages/Employer/PostJob";
 import ViewJob from "../pages/Employer/ViewJob";
@@ -45,6 +44,7 @@ import EmployerChatRoom from "../pages/Employer/EmployerChatRoom";
 import StudentMessagingDashboard from "../pages/Student/StudentMessageDashboard";
 import StudentChatRoom from "../pages/Student/StudentChatRoom";
 import EditStudentProfile from "../pages/Student/EditProfile";
+import VerifyEmployer from "../pages/Employer/VerifyEmployer";
 
 const Router = () => {
   const { user } = useAuth();
