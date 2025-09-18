@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Send, MoreVertical, Phone, Video } from "lucide-react";
-import socket from "../../socket/socket";
+import { Send } from "lucide-react";
+import { getSocket } from "../../socket/socket";
 
 const StudentChatRoom = ({ currentUser }) => {
   const { chatRoomId } = useParams();
@@ -10,10 +10,11 @@ const StudentChatRoom = ({ currentUser }) => {
   const [inputText, setInputText] = useState("");
   const [employerInfo, setEmployerInfo] = useState({ name: "", avatarUrl: "" });
   const messagesEndRef = useRef(null);
+  const socket = getSocket();
 
   useEffect(() => {
     if (!chatRoomId) return;
-    
+
     const fetchUserDetails = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/student/chats`, { withCredentials: true });
@@ -36,7 +37,7 @@ const StudentChatRoom = ({ currentUser }) => {
     const fetchMessages = async () => {
       try {
         const res = await axios.get(
-         `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
+          `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
           { withCredentials: true }
         );
         setMessages(res.data.data);
@@ -48,18 +49,26 @@ const StudentChatRoom = ({ currentUser }) => {
     fetchUserDetails();
     fetchMessages();
 
-    socket.emit("joinRoom", chatRoomId);
+    if (socket) {
+      socket.emit("joinRoom", chatRoomId);
 
-    socket.on("receiveMessage", (newMessage) => {
-      setMessages((prev) => {
-        const exists = prev.find((msg) => msg._id === newMessage._id);
-        if (exists) return prev;
-        return [...prev, newMessage];
-      });
-    });
+      const handleReceiveMessage = (newMessage) => {
+        setMessages((prev) => {
+          const exists = prev.find((msg) => msg._id === newMessage._id);
+          if (exists) return prev;
+          return [...prev, newMessage];
+        });
+      };
 
-    return () => socket.off("receiveMessage");
-  }, [chatRoomId]);
+      socket.on("receiveMessage", handleReceiveMessage);
+
+      return () => {
+        if (socket) {
+          socket.off("receiveMessage", handleReceiveMessage);
+        }
+      };
+    }
+  }, [chatRoomId, socket]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -67,7 +76,7 @@ const StudentChatRoom = ({ currentUser }) => {
 
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
-    
+
     try {
       await axios.post(
         `${import.meta.env.VITE_API_URL}/api/chat/sendMessage/${chatRoomId}`,
@@ -144,17 +153,15 @@ const StudentChatRoom = ({ currentUser }) => {
                         </div>
                       )}
                       <div
-                        className={`px-4 py-2 rounded-2xl shadow-sm ${
-                          isCurrent
+                        className={`px-4 py-2 rounded-2xl shadow-sm ${isCurrent
                             ? "bg-blue-500 text-white rounded-br-md"
                             : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
-                        }`}
+                          }`}
                       >
                         <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">{msg.text}</p>
                         <div
-                          className={`text-xs mt-1 ${
-                            isCurrent ? "text-blue-100" : "text-gray-500"
-                          }`}
+                          className={`text-xs mt-1 ${isCurrent ? "text-blue-100" : "text-gray-500"
+                            }`}
                         >
                           {formatTime(msg.createdAt)}
                         </div>
@@ -198,11 +205,10 @@ const StudentChatRoom = ({ currentUser }) => {
           <button
             onClick={handleSendMessage}
             disabled={!inputText.trim()}
-            className={`p-3 rounded-xl transition-all shadow-sm flex-shrink-0 ${
-              inputText.trim()
+            className={`p-3 rounded-xl transition-all shadow-sm flex-shrink-0 ${inputText.trim()
                 ? "bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg transform hover:scale-105"
                 : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            }`}
+              }`}
           >
             <Send className="w-5 h-5" />
           </button>

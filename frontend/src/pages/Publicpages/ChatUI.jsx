@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, MoreVertical, Smile, Send, Plus } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import socket from "../../socket/socket";
+import { getSocket } from "../../socket/socket";
+
 
 const ChatUI = ({ currentUser }) => {
     const [messages, setMessages] = useState([])
@@ -10,6 +11,7 @@ const ChatUI = ({ currentUser }) => {
     const { chatRoomId } = useParams()
     const messagesEndRef = useRef(null)
     const navigate = useNavigate()
+    const socket = getSocket()
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -23,7 +25,7 @@ const ChatUI = ({ currentUser }) => {
         const fetchMessages = async () => {
             try {
                 const res = await axios.get(
-                  `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
+                    `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
                     { withCredentials: true }
                 )
                 setMessages(res.data.data)
@@ -34,20 +36,26 @@ const ChatUI = ({ currentUser }) => {
 
         fetchMessages()
 
-        socket.emit("joinRoom", chatRoomId)
+        if (socket) {
+            socket.emit("joinRoom", chatRoomId);
 
-        socket.on("receiveMessage", (newMessage) => {
-            setMessages((prev) => {
-                const exists = prev.find((msg) => msg._id === newMessage._id)
-                if (exists) return prev
-                return [...prev, newMessage]
-            })
-        })
+            const handleReceiveMessage = (newMessage) => {
+                setMessages((prev) => {
+                    const exists = prev.find((msg) => msg._id === newMessage._id);
+                    if (exists) return prev;
+                    return [...prev, newMessage];
+                });
+            };
 
-        return () => {
-            socket.off("receiveMessage")
+            socket.on("receiveMessage", handleReceiveMessage);
+
+            return () => {
+                if (socket) {
+                    socket.off("receiveMessage", handleReceiveMessage);
+                }
+            };
         }
-    }, [chatRoomId])
+    }, [chatRoomId, socket]);
 
     const handleSendMessage = async () => {
         if (!inputText.trim()) return

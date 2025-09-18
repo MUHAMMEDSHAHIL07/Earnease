@@ -2,15 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, MoreVertical, Send, Plus } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import socket from "../../socket/socket";
+import { getSocket } from "../../socket/socket";
 
 const EmployerChatUI = ({ currentUser }) => {
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState([])
     const [inputText, setInputText] = useState("");
     const { chatRoomId } = useParams();
     const messagesEndRef = useRef(null);
     const navigate = useNavigate();
-
+    const socket = getSocket()
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -33,18 +33,25 @@ const EmployerChatUI = ({ currentUser }) => {
         };
 
         fetchMessages();
-        socket.emit("joinRoom", chatRoomId);
+        if (socket) {
+            socket.emit("joinRoom", chatRoomId);
 
-        socket.on("receiveMessage", (newMessage) => {
-            setMessages((prev) => {
-                const exists = prev.find((msg) => msg._id === newMessage._id);
-                if (exists) return prev;
-                return [...prev, newMessage]
-            })
-        })
+            const handleReceiveMessage = (newMessage) => {
+                setMessages((prev) => {
+                    const exists = prev.find((msg) => msg._id === newMessage._id);
+                    if (exists) return prev;
+                    return [...prev, newMessage];
+                });
+            };
 
-        return () => socket.off("receiveMessage");
-    }, [chatRoomId]);
+            socket.on("receiveMessage", handleReceiveMessage);
+            return () => {
+                if (socket) {
+                    socket.off("receiveMessage", handleReceiveMessage);
+                }
+            };
+        }
+    }, [chatRoomId, socket]);
 
     const handleSendMessage = async () => {
         if (!inputText.trim()) return;
