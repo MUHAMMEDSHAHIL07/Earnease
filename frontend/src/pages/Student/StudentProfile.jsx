@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search, Filter, CheckCircle, FileText, DollarSign, Bookmark, Settings } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/authContext";
 import axios from "axios";
 import Navbar from "../../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";

@@ -1,7 +1,7 @@
 import { Toaster } from 'react-hot-toast';
 import Router from './routes/Router';
 import GlobalLoader from './components/GlobalLoader';
-import { useAuth } from './context/AuthContext';
+import { useAuth } from './context/authContext';
 import { connectSocket, disconnectSocket } from './socket/socket';
 import { useEffect } from 'react';
 

@@ -10,7 +10,7 @@ import Register from "../pages/Publicpages/Register"
 {/* ---------- STUDENT ROUTES ---------- */ }
 import StudentDashboard from "../pages/Student/StudentDashboard";
 import JobListUI from "../pages/Student/StudentJob";
-import { useAuth } from "../context/AuthContext"
+import { useAuth } from "../context/authContext"
 
 {/* ---------- EMPLOYER ROUTES ---------- */ }
 import EmployerDashboard from "../pages/Employer/EmployerDashboard";

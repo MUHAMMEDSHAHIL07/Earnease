@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { LoginSchema } from "../../Schema";
 import { GoogleLogin } from "@react-oauth/google";
-import { useAuth } from "../../context/AuthContext"
+import { useAuth } from "../../context/authContext"
 import toast from "react-hot-toast";
 
 
