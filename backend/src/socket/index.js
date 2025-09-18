@@ -4,13 +4,26 @@ import jwt from "jsonwebtoken";
 import cookie from "cookie";
 
 export default function initSocket(server) {
-  const io = new Server(server, {
-    cors: {
-      origin: ["http://localhost:5173","https://earnease-portal.vercel.app/"],
-      methods: ["GET", "POST"],
-      credentials: true,
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://earnease-portal.vercel.app"
+];
+
+const io = new Server(server, {
+  cors: {
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); 
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
     },
-  });
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
 
   io.use((socket, next) => {
     const cookies = cookie.parse(socket.handshake.headers.cookie || "");

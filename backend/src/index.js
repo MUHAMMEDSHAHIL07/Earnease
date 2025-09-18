@@ -16,9 +16,23 @@ const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 
 connectDB();
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://earnease-portal.vercel.app"
+];
+
 app.use(cors({
-  origin:"http://localhost:5173",credentials: true
-}))
+  origin: function(origin, callback){
+    if (!origin) return callback(null, true); 
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
 
 app.use(express.json())
 app.use(cookieParser()) 
