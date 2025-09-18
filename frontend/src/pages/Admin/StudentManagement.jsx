@@ -6,7 +6,7 @@ const StudentManagement = () => {
     const [student, setStudent] = useState([])
 
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/getAllStudent")
+        axios.get(`${import.meta.env.VITE_API_URL}/admin/getAllStudent`)
             .then((res) => setStudent(res.data.student))
             .catch((error) => {
                 console.error(error.message);
@@ -17,7 +17,7 @@ const StudentManagement = () => {
 
 
     const block = (id) => {
-        axios.patch(`http://localhost:5000/admin/userStatus/${id}`, { isBlocked: true }, { withCredentials: true })
+        axios.patch(`${import.meta.env.VITE_API_URL}/admin/userStatus/${id}`, { isBlocked: true }, { withCredentials: true })
             .then(() => {
                 setStudent((prev) =>
                     prev.map((student) =>
@@ -33,7 +33,7 @@ const StudentManagement = () => {
             });
     }
     const unBlock = (id) => {
-        axios.patch(`http://localhost:5000/admin/userStatus/${id}`, { isBlocked: false }, { withCredentials: true })
+        axios.patch(`${import.meta.env.VITE_API_URL}/admin/userStatus/${id}`, { isBlocked: false }, { withCredentials: true })
             .then(() => {
                 setStudent((prev) =>
                     prev.map((student) =>

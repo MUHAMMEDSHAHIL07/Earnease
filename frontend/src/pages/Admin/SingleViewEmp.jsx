@@ -9,7 +9,7 @@ const SingleViewEmployer = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/admin/getEmployer/${id}`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/admin/getEmployer/${id}`, { withCredentials: true })
       .then((res) => setData(res.data))
       .catch(console.error);
   }, [id]);

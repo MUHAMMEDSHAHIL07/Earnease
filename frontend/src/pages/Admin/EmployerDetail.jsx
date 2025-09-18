@@ -13,7 +13,7 @@ const EmployerDetail = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/admin/employers/pending/${id}`)
+      .get(`${import.meta.env.VITE_API_URL}/admin/employers/pending/${id}`)
       .then((res) => setData(res.data.verification))
       .catch((err) => console.log(err.message))
   }, [id])
@@ -21,7 +21,7 @@ const EmployerDetail = () => {
   const handleApprove = () => {
     setLoading("approve")
     axios
-      .patch(`http://localhost:5000/admin/employers/approveEmployer/${id}`)
+      .patch(`${import.meta.env.VITE_API_URL}/admin/employers/approveEmployer/${id}`)
       .then(() => {
         toast.success("Employer approved successfully")
         navigate("/admin/employers/pending")
@@ -34,7 +34,7 @@ const EmployerDetail = () => {
     setLoading("reject")
 
     axios
-      .patch(`http://localhost:5000/admin/employers/rejectEmployer/${id}`, { rejectionReason })
+      .patch(`${import.meta.env.VITE_API_URL}/admin/employers/rejectEmployer/${id}`, { rejectionReason })
       .then(() => {
         toast.success("Employer rejected successfully")
         navigate("/admin/employers/pending")

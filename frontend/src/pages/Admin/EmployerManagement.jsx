@@ -8,14 +8,14 @@ const EmployerManagement = () => {
     const navigate= useNavigate()
 
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/getAllEmployer")
+        axios.get(`${import.meta.env.VITE_API_URL}/admin/getAllEmployer`)
             .then((res) => setEmployer(res.data.employer))
             .catch(err => console.log(err.message))
     }, [])
 
 
     const block = (id) => {
-        axios.patch(`http://localhost:5000/admin/employerStatus/${id}`, { isBlocked: true }, { withCredentials: true })
+        axios.patch(`${import.meta.env.VITE_API_URL}/admin/employerStatus/${id}`, { isBlocked: true }, { withCredentials: true })
             .then(() => {
                 setEmployer((prev) =>
                     prev.map((employer) =>
@@ -31,7 +31,7 @@ const EmployerManagement = () => {
             })
     }
     const unBlock = (id) => {
-        axios.patch(`http://localhost:5000/admin/employerStatus/${id}`, { isBlocked: false }, { withCredentials: true })
+        axios.patch(`${import.meta.env.VITE_API_URL}/admin/employerStatus/${id}`, { isBlocked: false }, { withCredentials: true })
             .then(() => {
                 setEmployer((prev) =>
                     prev.map((employer) =>

@@ -19,7 +19,7 @@ const AdminDashboard = () => {
   })
 
   useEffect(()=>{
-    axios.get("http://localhost:5000/admin/dashboard-stats")
+    axios.get(`${import.meta.env.VITE_API_URL}/admin/dashboard-stats`)
     .then(res=>setStats(res.data))
     .catch(err=>console.log(err.message))
   },[])  
