@@ -30,7 +30,7 @@ const EmployerEditProfile = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}api/employer/getprofile`, {
+      .get(`${import.meta.env.VITE_API_URL}/api/employer/getprofile`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -50,7 +50,7 @@ const EmployerEditProfile = () => {
       })
       .catch(console.error);
   }, []);
-
+  console.log('form'.form)
   const handleImageUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
