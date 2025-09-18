@@ -25,9 +25,9 @@ const JobListUI = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const jobsRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/student/getAllJobs`)
+        const jobsRes = await axios.get("https://earnease.onrender.com/api/student/getAllJobs")
         setJobs(jobsRes.data.jobs)
-        const savedRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/student/getAllJobs`, {
+        const savedRes = await axios.get("https://earnease.onrender.com/api/student/getAllJobs", {
           withCredentials: true,
         });
         const savedIds = savedRes.data.map((item) => item.job._id)
@@ -58,7 +58,7 @@ const JobListUI = () => {
   const applyJob = async (id) => {
     try {
       await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/student/applyJob/${id}`,
+        `https://earnease.onrender.com/api/student/applyJob/${id}`,
         {},
         { withCredentials: true }
       )
@@ -77,14 +77,14 @@ const JobListUI = () => {
     try {
       if (savedJobs.includes(jobId)) {
         await axios.delete(
-          `${import.meta.env.VITE_API_URL}/api/student/removeSavedJob/${jobId}`,
+          `https://earnease.onrender.com/api/student/removeSavedJob/${jobId}`,
           { withCredentials: true }
         )
         setSavedJobs(savedJobs.filter((id) => id !== jobId))
         toast.success("Job removed from saved jobs")
       } else {
         await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/student/saveJob`,
+          `https://earnease.onrender.com/api/student/saveJob`,
           { jobId },
           { withCredentials: true }
         );
