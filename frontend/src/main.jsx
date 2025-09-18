@@ -4,7 +4,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import App from './App.jsx';
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext.jsx";
 
 const CLIENTID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
