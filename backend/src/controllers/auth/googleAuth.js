@@ -29,8 +29,8 @@ export const GoogleLogin = async (req, res) => {
         const token = jwt.sign({ id: student._id, role: "student" }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.cookie("token", token, {
           httpOnly: true,
-          secure: false,
-          sameSite: "Lax",
+          secure: true,
+          sameSite: "None",
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });
         return res.json({
@@ -59,8 +59,8 @@ export const GoogleLogin = async (req, res) => {
 
         res.cookie("token", token, {
           httpOnly: true,
-          secure: false,
-          sameSite: "Lax",
+          secure: true,
+          sameSite: "None",
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
