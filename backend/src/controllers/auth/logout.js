@@ -2,8 +2,8 @@ export const logout = async(req,res)=>{
     try{
             res.clearCookie("token",{
             httpOnly: true,
-            secure: false,
-            sameSite: 'Strict',
+            secure: true,
+            sameSite: 'None',
             })
             res.status(200).json({message:"logout succesfully"})
     }
