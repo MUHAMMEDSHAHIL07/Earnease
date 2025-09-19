@@ -3,6 +3,7 @@ import {User, Mail, Phone, MapPin, Calendar,GraduationCap, Award, FileText, Brie
 import Navbar from '../../components/Navbar';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const SkillsInput = ({ skills, setSkills,onRemoveSkill  }) => {
     const [inputValue, setInputValue] = useState("")
@@ -141,6 +142,7 @@ const InputField = React.memo(({
 });
 
 const EditStudentProfile = () => {
+    const navigate = useNavigate()
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -219,8 +221,8 @@ const EditStudentProfile = () => {
                     success: "Profile updated successfully!",
                     error: "Failed to update profile."
                 }
-            );
-
+            )
+            navigate("/student-profile")
             setCompleteProfile(res.data.updatedProfile.profileCompletionPercent)
             setFormData(prev => ({ ...prev, avatarUrl: res.data.updatedProfile.avatarUrl }))
         } catch (err) {

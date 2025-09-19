@@ -7,7 +7,6 @@ export const connectSocket = () => {
     withCredentials: true,
   })
   socket.on('connect', () => {
-    console.log('Socket connected successfully:', socket.id)
   })
 }
 export const disconnectSocket = () => {

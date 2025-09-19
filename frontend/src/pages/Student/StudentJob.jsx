@@ -33,7 +33,6 @@ const JobListUI = () => {
         const savedIds = savedRes.data.map((item) => item.job._id)
         setSavedJobs(savedIds)
       } catch (error) {
-        console.log(error.response?.data?.message)
       }
       finally {
         setLoading(false)

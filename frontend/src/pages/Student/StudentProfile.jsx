@@ -46,7 +46,6 @@ const StudentProfile = () => {
     }
     fetchJobs()
   }, [])
-  console.log(job)
 
   const filteredJobs = job.filter((item) => {
     const matchesSearch =
