@@ -4,26 +4,43 @@ import Navbar from '../../components/Navbar';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const SkillsInput = ({ skills, setSkills }) => {
+const SkillsInput = ({ skills, setSkills,onRemoveSkill  }) => {
     const [inputValue, setInputValue] = useState("")
-
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value)
+    const addSkillFromInput = () => {
+        const newSkill = inputValue.trim()
+        if (newSkill && !skills.includes(newSkill)) {
+            setSkills([...skills, newSkill])
+            setInputValue("")
+        }
+    }
+    const handleSubmit = (e) => {
+        e.preventDefault() 
+        addSkillFromInput()
     };
 
-    const handleInputKeyDown = (e) => {
-        if (e.key === "Enter" || e.key === "Tab" || e.key === ",") {
-            e.preventDefault();
-            const newSkill = inputValue.trim().replace(/,$/, '')
+
+    const handleInputChange = (e) => {
+        const value = e.target.value
+        if (value.endsWith(',')) {
+            const newSkill = value.slice(0, -1).trim()
             if (newSkill && !skills.includes(newSkill)) {
                 setSkills([...skills, newSkill])
-                setInputValue("")
+                setInputValue('')
             }
+        } else {
+            setInputValue(value)
+        }
+    }
+
+    const handleInputKeyDown = (e) => {
+        if (e.key === "Tab" && inputValue) {
+            e.preventDefault()
+            addSkillFromInput()
         }
     }
 
     const removeSkill = (skillToRemove) => {
-        setSkills(skills.filter(skill => skill !== skillToRemove))
+        onRemoveSkill(skillToRemove)
     }
 
     return (
@@ -32,6 +49,7 @@ const SkillsInput = ({ skills, setSkills }) => {
                 <Award size={16} className="text-blue-500" />
                 Skills
             </label>
+             <form onSubmit={handleSubmit}>
             <div className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70">
                 <div className="flex flex-wrap gap-2 mb-2">
                     {skills.map((skill, index) => (
@@ -56,6 +74,7 @@ const SkillsInput = ({ skills, setSkills }) => {
                     className="w-full bg-transparent placeholder-gray-400 text-gray-700 focus:outline-none"
                 />
             </div>
+            </form>
           
         </div>
     );
@@ -208,6 +227,12 @@ const EditStudentProfile = () => {
             console.error(err)
         }
     }
+    const handleRemoveSkill = async(skillToRemove)=>{
+         setFormData(prev => ({
+            ...prev,
+            skills: prev.skills.filter(skill => skill !== skillToRemove)
+        }))
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -337,6 +362,7 @@ const EditStudentProfile = () => {
                                     <SkillsInput
                                         skills={formData.skills}
                                         setSkills={(newSkills) => setFormData(prev => ({ ...prev, skills: newSkills }))}
+                                        onRemoveSkill={handleRemoveSkill}
                                     />
                                 </div>
 

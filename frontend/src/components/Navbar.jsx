@@ -208,11 +208,11 @@ const Navbar = () => {
           {user ? (
             <>
               <Link
-                to="/dashboard"
+                to="/student-profile"
                 onClick={() => setMenuOpen(false)}
                 className="text-gray-700 hover:text-blue-600 text-lg font-semibold py-2 hover:bg-blue-50 rounded-md px-3"
               >
-                Dashboard
+                Profile
               </Link>
               <button
                 onClick={() => {
