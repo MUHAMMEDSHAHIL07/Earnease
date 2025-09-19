@@ -6,7 +6,7 @@ import { connectSocket, disconnectSocket } from './socket/socket';
 import { useEffect } from 'react';
 
 function App() {
-  const { user } = useAuth()
+  const { user, globalLoading } = useAuth()
   useEffect(()=>{
     if (user) {
       connectSocket();
@@ -15,10 +15,13 @@ function App() {
       disconnectSocket();
     };
   },[user])
+
+    if (globalLoading) {
+    return <GlobalLoader />
+  }
   
   return (
     <>
-       <GlobalLoader />
         <Router />
 
       <Toaster
