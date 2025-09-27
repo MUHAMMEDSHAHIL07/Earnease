@@ -54,7 +54,7 @@ Earnease bridges that gap by providing a trusted, student-friendly platform that
 
 ## 🌐 Live Demo
 
-🔗 Not hosted yet..!
+🔗 https://earnease-portal.vercel.app/
 
 ---
 
