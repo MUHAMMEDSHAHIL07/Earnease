@@ -54,7 +54,7 @@ Earnease bridges that gap by providing a trusted, student-friendly platform that
 
 ## 🌐 Live Demo
 
-🔗 Not hosted yet..!
+🔗 https://earnease-portal.vercel.app/
 
 ---
 
@@ -62,7 +62,7 @@ Earnease bridges that gap by providing a trusted, student-friendly platform that
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/earnease.git
+git clone https://github.com/MUHAMMEDSHAHIL07/Earnease.git
 
 # Frontend
 cd frontend
