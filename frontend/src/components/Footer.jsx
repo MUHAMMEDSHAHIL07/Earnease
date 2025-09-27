@@ -65,10 +65,9 @@ const Footer = () => {
       </div>
 
       <div className="border-t border-gray-700 mt-10 pt-4 text-center text-sm text-gray-500">
-        © {new Date().getFullYear()} Earnease. All rights reserved.
+        © {new Date().getFullYear()} Earnease. All rights reserved
       </div>
     </motion.footer>
-  );
-};
-
-export default Footer;
+  )
+}
+export default Footer
