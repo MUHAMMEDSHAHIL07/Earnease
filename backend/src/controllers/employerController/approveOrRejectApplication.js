@@ -1,19 +1,13 @@
 import { jobApplicationModel } from "../../models/jobApplication.js";
 import { userModel } from "../../models/userSchema.js";
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import { chatRoomModel } from "../../models/chatRoom.js";
 import { recentActivityModel } from "../../models/recentActivity.js";
+import { Resend } from 'resend';
 
 dotenv.config()
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export const approveJobApplication = async (req, res) => {
   try {
@@ -49,7 +43,8 @@ export const approveJobApplication = async (req, res) => {
       description: `You accepted the application of : ${student.name}`,
     })
 
-    await transporter.sendMail({
+    await resend.emails.send({
+     from: 'onboarding@resend.dev',
       to: student.email,
       subject: "Job Application Approved",
       html: `
@@ -112,7 +107,8 @@ export const rejectJobApplication = async (req, res) => {
       { isActive: false }
     )
 
-    await transporter.sendMail({
+    await resend.emails.send({
+      from: 'onboarding@resend.dev',
       to: student.email,
       subject: "Job Application Unsuccessful",
       html: `
