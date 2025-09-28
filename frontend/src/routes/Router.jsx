@@ -45,6 +45,7 @@ import StudentMessagingDashboard from "../pages/Student/StudentMessageDashboard"
 import StudentChatRoom from "../pages/Student/StudentChatRoom";
 import EditStudentProfile from "../pages/Student/EditProfile";
 import VerifyEmployer from "../pages/Employer/VerifyEmployer";
+import AboutUs from "../pages/Publicpages/AboutUs";
 
 const Router = () => {
   const { user } = useAuth();
@@ -62,6 +63,7 @@ const Router = () => {
       <Route path="/adminlog" element={<AdminLogin />} />
       <Route path="/jobdetail/:id" element={<JobDetail />} />
       <Route path="/job" element={<JobListUI />} />
+      <Route path="/aboutus" element={<AboutUs />} />
 
       {/* ---------- STUDENT ROUTES ---------- */}
       <Route

@@ -76,12 +76,12 @@ const Navbar = () => {
             >
               Find Jobs
             </Link>
-            <Link
+            {/* <Link
               to="/how-it-works"
               className="text-gray-700 hover:text-blue-600 text-sm font-semibold transition-all duration-200"
             >
               How It Works
-            </Link>
+            </Link> */}
             <Link
               to="/aboutus"
               className="text-gray-700 hover:text-blue-600 text-sm font-semibold transition-all duration-200"
