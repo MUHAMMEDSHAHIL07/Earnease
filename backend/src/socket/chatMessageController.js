@@ -1,5 +1,6 @@
 import { messageModel } from "../models/message.js";
 import { chatRoomModel } from "../models/chatRoom.js";
+import mongoose from "mongoose";
 
 let io;
 export const setSocketIO = (ioInstance) => {
@@ -8,8 +9,6 @@ export const setSocketIO = (ioInstance) => {
 
 export const getMessage = async (req, res) => {
     const { chatRoomId } = req.params;
-    console.log('req.user:', req.user);
-    console.log('chatRoomId:', chatRoomId);
     if (!mongoose.Types.ObjectId.isValid(chatRoomId)) {
         return res.status(400).json({ message: 'Invalid chat room ID format' });
     } 

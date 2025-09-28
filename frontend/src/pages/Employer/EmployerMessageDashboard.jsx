@@ -18,7 +18,7 @@ const EmployerMessagingDashboard = () => {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/employer/inbox`, { withCredentials: true })
         if (res.data.chatRooms) {
           const mapped = res.data.chatRooms.map((room) => ({
-            id: room._id,
+            id: room._id,   
             student: {
               name: room.student.name,
               avatar: room.student.avatarUrl ? (
