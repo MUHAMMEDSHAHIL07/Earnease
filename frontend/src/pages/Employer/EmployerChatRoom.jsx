@@ -10,6 +10,7 @@ const EmployerChatRoom = ({ currentUser }) => {
   const [inputText, setInputText] = useState("")
   const [studentInfo, setStudentInfo] = useState({ name: "", avatarUrl: "" })
   const messagesEndRef = useRef(null)
+  const inputRef = useRef(null)
   const socket = getSocket()
 
   useEffect(() => {
@@ -34,10 +35,11 @@ const EmployerChatRoom = ({ currentUser }) => {
       }
     };
 
-    const fetchMessages = async () => {
+    const fetchMessages = async (id) => {
+      console.log("The ID being sent to the API is:", id)
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
+          `${import.meta.env.VITE_API_URL}/api/chat/messages/${id}`,
           { withCredentials: true }
         );
         setMessages(res.data.data)
@@ -47,7 +49,7 @@ const EmployerChatRoom = ({ currentUser }) => {
     };
 
     fetchUserDetails()
-    fetchMessages()
+    fetchMessages(chatRoomId)
 
     if (socket) {
       socket.emit("joinRoom", chatRoomId);
@@ -187,6 +189,7 @@ const EmployerChatRoom = ({ currentUser }) => {
           <div className="flex-1">
             <div className="relative">
               <input
+                ref={inputRef} 
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}

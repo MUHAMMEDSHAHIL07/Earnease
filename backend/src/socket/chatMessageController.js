@@ -7,26 +7,32 @@ export const setSocketIO = (ioInstance) => {
 };
 
 export const getMessage = async (req, res) => {
+    const { chatRoomId } = req.params;
+    console.log('req.user:', req.user);
+    console.log('chatRoomId:', chatRoomId);
+    if (!mongoose.Types.ObjectId.isValid(chatRoomId)) {
+        return res.status(400).json({ message: 'Invalid chat room ID format' });
+    } 
     try {
-        const chatRoom = await chatRoomModel.findById(req.params.chatRoomId);
-        if (!chatRoom) return res.status(404).json({ message: "Chat not found" });
-
+        const chatRoom = await chatRoomModel.findById(chatRoomId);
+        if (!chatRoom) {
+            return res.status(404).json({ message: "Chat not found" });
+        }
         if (
             String(chatRoom.student) !== req.user.id &&
             String(chatRoom.employer) !== req.user.id
         ) {
             return res.status(403).json({ message: "Not authorized to access this chat" });
         }
-
         const messages = await messageModel
-            .find({ chatRoom: chatRoom._id })
-            .populate("sender", "name avatarUrl") 
+            .find({ chatRoom: chatRoomId })
+            .populate("sender", "name avatarUrl")
             .sort({ createdAt: 1 });
 
         res.json({ success: true, data: messages });
-        console.log(messages)
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        console.error("Error in getMessage controller:", err);
+        res.status(500).json({ message: "An internal server error occurred." });
     }
 };
 
