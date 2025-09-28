@@ -4,25 +4,25 @@ import jwt from "jsonwebtoken";
 import cookie from "cookie";
 
 export default function initSocket(server) {
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://earnease-portal.vercel.app"
-];
+  const allowedOrigins = [
+    "http://localhost:5173",
+    "https://earnease-portal.vercel.app"
+  ];
 
-const io = new Server(server, {
-  cors: {
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true); 
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
+  const io = new Server(server, {
+    cors: {
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
+      methods: ["GET", "POST"],
+      credentials: true,
     },
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+  });
 
 
   io.use((socket, next) => {
@@ -44,6 +44,11 @@ const io = new Server(server, {
     socket.on("joinRoom", async (chatRoomId) => {
       const chatRoom = await chatRoomModel.findById(chatRoomId).populate("jobApplication");
       if (!chatRoom) return
+
+      if (!chatRoom.jobApplication) {
+        console.log("Chat not allowed, job application missing")
+        return
+      }
 
       if (chatRoom.jobApplication.status !== "accepted") {
         console.log("Chat not allowed, application not accepted");
