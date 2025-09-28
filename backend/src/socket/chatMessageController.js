@@ -20,6 +20,7 @@ export const getMessage = async (req, res) => {
 
         const messages = await messageModel
             .find({ chatRoom: chatRoom._id })
+            .populate("sender", "name avatarUrl") 
             .sort({ createdAt: 1 });
 
         res.json({ success: true, data: messages });
@@ -42,8 +43,9 @@ export const sendMessage = async (req, res) => {
             senderRole: req.user.role,
             text,
         })
+        const populatedMessage = await newMessage.populate("sender", "name avatarUrl")
         if (io) {
-            io.to(chatRoomId).emit("receiveMessage", newMessage);
+            io.to(chatRoomId).emit("receiveMessage", populatedMessage);
         }
 
         res.json({ success: true, data: newMessage });
