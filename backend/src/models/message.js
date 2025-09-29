@@ -13,7 +13,7 @@ const messageSchema = new mongoose.Schema({
     },
     senderRole: {
         type: String,
-        enum: ["employer","student"],
+        enum: ["employer","users"],
         required: true,
     },
     text: {
