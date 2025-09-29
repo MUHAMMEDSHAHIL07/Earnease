@@ -77,10 +77,17 @@ const StudentChatRoom = ({ currentUser }) => {
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
 
+    const payload = {
+      chatRoom: chatRoomId,
+      sender: currentUser._id,
+      senderRole: "users",
+      message: inputText
+    };
+
     try {
       await axios.post(
         `${import.meta.env.VITE_API_URL}/api/chat/sendMessage/${chatRoomId}`,
-        { text: inputText },
+        payload,
         { withCredentials: true }
       );
       setInputText("")
@@ -154,8 +161,8 @@ const StudentChatRoom = ({ currentUser }) => {
                       )}
                       <div
                         className={`px-4 py-2 rounded-2xl shadow-sm ${isCurrent
-                            ? "bg-blue-500 text-white rounded-br-md"
-                            : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
+                          ? "bg-blue-500 text-white rounded-br-md"
+                          : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
                           }`}
                       >
                         <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">{msg.text}</p>
@@ -206,8 +213,8 @@ const StudentChatRoom = ({ currentUser }) => {
             onClick={handleSendMessage}
             disabled={!inputText.trim()}
             className={`p-3 rounded-xl transition-all shadow-sm flex-shrink-0 ${inputText.trim()
-                ? "bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg transform hover:scale-105"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              ? "bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg transform hover:scale-105"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
           >
             <Send className="w-5 h-5" />
