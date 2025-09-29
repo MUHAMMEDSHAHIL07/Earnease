@@ -76,12 +76,7 @@ const Navbar = () => {
             >
               Find Jobs
             </Link>
-            {/* <Link
-              to="/how-it-works"
-              className="text-gray-700 hover:text-blue-600 text-sm font-semibold transition-all duration-200"
-            >
-              How It Works
-            </Link> */}
+
             <Link
               to="/aboutus"
               className="text-gray-700 hover:text-blue-600 text-sm font-semibold transition-all duration-200"
@@ -180,13 +175,7 @@ const Navbar = () => {
           >
             Find Jobs
           </Link>
-          <Link
-            to="/how-it-works"
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-700 hover:text-blue-600 text-lg font-semibold py-2 hover:bg-blue-50 rounded-md px-3"
-          >
-            How It Works
-          </Link>
+          
           <Link
             to="/aboutus"
             onClick={() => setMenuOpen(false)}
