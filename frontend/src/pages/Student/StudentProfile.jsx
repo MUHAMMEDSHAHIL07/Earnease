@@ -4,6 +4,7 @@ import { useAuth } from "../../context/authContext";
 import axios from "axios";
 import Navbar from "../../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
+import GlobalLoader from "../../components/GlobalLoader";
 
 const Card = ({ children, className }) => (
   <div
@@ -29,11 +30,13 @@ const StudentProfile = () => {
   const [filterStatus, setFilterStatus] = useState("all")
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(true)
   const appliedCount = job.length
   const acceptedCount = job.filter(item => item.status === "accepted").length
 
   useEffect(() => {
     const fetchJobs = async () => {
+      setLoading(true)
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/student/applications`,
@@ -42,6 +45,9 @@ const StudentProfile = () => {
         setJobs(res.data.applications || [])
       } catch (err) {
         console.error("Error fetching jobs:", err)
+      }
+      finally {
+        setLoading(false)
       }
     }
     fetchJobs()
@@ -154,65 +160,68 @@ const StudentProfile = () => {
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[600px]">
-                  <thead>
-                    <tr className="text-left text-gray-500 text-sm border-b">
-                      <th className="pb-3">Job Title</th>
-                      <th className="pb-3">Company</th>
-                      <th className="pb-3">Applied Date</th>
-                      <th className="pb-3">Status</th>
-                      <th className="pb-3">Chat</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredJobs.length > 0 ? (
-                      filteredJobs.map((job, idx) => (
-                        <tr
-                          key={idx}
-                          className="text-sm border-b hover:bg-gray-50 transition"
-                        >
-                          <td className="py-3 font-medium">{job?.job?.title}</td>
-                          <td className="py-3 flex items-center gap-2">
-                            <img
-                              src={job?.employer?.avatarUrl}
-                              alt="logo"
-                              className="w-6 h-6 rounded object-cover"
-                            />
-                            {job?.employer?.companyname}
-                          </td>
-                          <td className="py-3">
-                            {new Date(job.appliedAt).toISOString().split("T")[0]}
-                          </td>
-                          <td className="py-3">
-                            <span className={statusStyles[job.status]}>
-                              {job.status}
-                            </span>
-                          </td>
-                          <td className="py-3">
-                            {job.status === "accepted" ? (
-                              <Link
-                                to={`/chat/${job.chatRoomId}`}
-                                className="text-blue-600 hover:underline font-medium"
-                              >
-                                message
-                              </Link>
-                            ) : (
-                              <span className="text-gray-400 text-sm italic">
-                                Not Available
+                {loading ? (
+                  <div className="flex justify-center py-20">
+                    <GlobalLoader/>
+                  </div>
+                ) : (
+                  <table className="w-full min-w-[600px]">
+                    <thead>
+                      <tr className="text-left text-gray-500 text-sm border-b">
+                        <th className="pb-3">Job Title</th>
+                        <th className="pb-3">Company</th>
+                        <th className="pb-3">Applied Date</th>
+                        <th className="pb-3">Status</th>
+                        <th className="pb-3">Chat</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredJobs.length > 0 ? (
+                        filteredJobs.map((job, idx) => (
+                          <tr key={idx} className="text-sm border-b hover:bg-gray-50 transition">
+                            <td className="py-3 font-medium">{job?.job?.title}</td>
+                            <td className="py-3 flex items-center gap-2">
+                              <img
+                                src={job?.employer?.avatarUrl}
+                                alt="logo"
+                                className="w-6 h-6 rounded object-cover"
+                              />
+                              {job?.employer?.companyname}
+                            </td>
+                            <td className="py-3">
+                              {new Date(job.appliedAt).toISOString().split("T")[0]}
+                            </td>
+                            <td className="py-3">
+                              <span className={statusStyles[job.status]}>
+                                {job.status}
                               </span>
-                            )}
+                            </td>
+                            <td className="py-3">
+                              {job.status === "accepted" ? (
+                                <Link
+                                  to={`/chat/${job.chatRoomId}`}
+                                  className="text-blue-600 hover:underline font-medium"
+                                >
+                                  message
+                                </Link>
+                              ) : (
+                                <span className="text-gray-400 text-sm italic">
+                                  Not Available
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="5" className="text-center py-6 text-gray-500">
+                            No matching jobs found
                           </td>
                         </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="5" className="text-center py-6 text-gray-500">
-                          No matching jobs found
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+                      )}
+                    </tbody>
+                  </table>
+                )}
               </div>
             </Card>
           </div>

@@ -4,6 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar"; 
+import GlobalLoader from "../../components/GlobalLoader";
 
 const SavedJobs = () => {
   const [getJobs, setGetJobs] = useState([])
@@ -58,11 +59,7 @@ const SavedJobs = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-lg font-semibold text-gray-600 animate-pulse">
-          Loading...
-        </p>
-      </div>
+     <GlobalLoader/>
     )
   }
 

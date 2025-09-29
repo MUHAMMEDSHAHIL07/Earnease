@@ -8,7 +8,6 @@ import ResetPassword from "../pages/Publicpages/ResetPassword";
 import NotFound from "../pages/Publicpages/Notfound";
 import Register from "../pages/Publicpages/Register"
 {/* ---------- STUDENT ROUTES ---------- */ }
-import StudentDashboard from "../pages/Student/StudentDashboard";
 import JobListUI from "../pages/Student/StudentJob";
 import { useAuth } from "../context/authContext"
 
@@ -66,14 +65,6 @@ const Router = () => {
       <Route path="/aboutus" element={<AboutUs />} />
 
       {/* ---------- STUDENT ROUTES ---------- */}
-      <Route
-        path="/student/dashboard"
-        element={
-          <ProtectedRoute allowedRoles={["student"]}>
-            <StudentDashboard />
-          </ProtectedRoute>
-        }
-      />
       <Route path="/chat/:chatRoomId"
         element={
           <ProtectedRoute allowedRoles={["student"]}>

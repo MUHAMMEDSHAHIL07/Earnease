@@ -4,9 +4,11 @@ import Navbar from '../../components/Navbar';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import GlobalLoader from '../../components/GlobalLoader'; // import your loader
 
-const SkillsInput = ({ skills, setSkills,onRemoveSkill  }) => {
+const SkillsInput = ({ skills, setSkills, onRemoveSkill }) => {
     const [inputValue, setInputValue] = useState("")
+
     const addSkillFromInput = () => {
         const newSkill = inputValue.trim()
         if (newSkill && !skills.includes(newSkill)) {
@@ -14,11 +16,11 @@ const SkillsInput = ({ skills, setSkills,onRemoveSkill  }) => {
             setInputValue("")
         }
     }
+
     const handleSubmit = (e) => {
         e.preventDefault() 
         addSkillFromInput()
     };
-
 
     const handleInputChange = (e) => {
         const value = e.target.value
@@ -50,33 +52,32 @@ const SkillsInput = ({ skills, setSkills,onRemoveSkill  }) => {
                 <Award size={16} className="text-blue-500" />
                 Skills
             </label>
-             <form onSubmit={handleSubmit}>
-            <div className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70">
-                <div className="flex flex-wrap gap-2 mb-2">
-                    {skills.map((skill, index) => (
-                        <div key={index} className="flex items-center gap-1 bg-blue-500 text-white text-sm font-medium px-3 py-1 rounded-full">
-                            {skill}
-                            <button
-                                type="button"
-                                onClick={() => removeSkill(skill)}
-                                className="text-white/80 hover:text-white"
-                            >
-                                <X size={14} />
-                            </button>
-                        </div>
-                    ))}
+            <form onSubmit={handleSubmit}>
+                <div className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70">
+                    <div className="flex flex-wrap gap-2 mb-2">
+                        {skills.map((skill, index) => (
+                            <div key={index} className="flex items-center gap-1 bg-blue-500 text-white text-sm font-medium px-3 py-1 rounded-full">
+                                {skill}
+                                <button
+                                    type="button"
+                                    onClick={() => removeSkill(skill)}
+                                    className="text-white/80 hover:text-white"
+                                >
+                                    <X size={14} />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={handleInputChange}
+                        onKeyDown={handleInputKeyDown}
+                        placeholder="Enter skills and press Enter or comma"
+                        className="w-full bg-transparent placeholder-gray-400 text-gray-700 focus:outline-none"
+                    />
                 </div>
-                <input
-                    type="text"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyDown={handleInputKeyDown}
-                    placeholder="Enter skills and press Enter or comma"
-                    className="w-full bg-transparent placeholder-gray-400 text-gray-700 focus:outline-none"
-                />
-            </div>
             </form>
-          
         </div>
     );
 };
@@ -158,13 +159,16 @@ const EditStudentProfile = () => {
     });
 
     const [completeProfile, setCompleteProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
-        axios
-            .get(`${import.meta.env.VITE_API_URL}/api/student/getprofile`, {
-                withCredentials: true,
-            })
-            .then((res) => {
+        const fetchProfile = async () => {
+            setLoading(true)
+            try {
+                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/student/getprofile`, {
+                    withCredentials: true,
+                })
                 const student = res.data.student || {};
                 setFormData({
                     name: student.name || "",
@@ -180,8 +184,15 @@ const EditStudentProfile = () => {
                     avatarUrl: student.avatarUrl || ""
                 });
                 setCompleteProfile(student.profileCompletionPercent || 0)
-            })
-            .catch(console.error)
+            } catch(err) {
+                console.error(err)
+                toast.error("Failed to fetch profile.")
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchProfile()
     }, [])
 
     const handleFileChange = (e) => {
@@ -189,9 +200,7 @@ const EditStudentProfile = () => {
     }
 
     const handleSave = async () => {
-
         const data = new FormData()
-
         data.append("name", formData.name)
         data.append("email", formData.email)
         data.append("phonenumber", formData.phone)
@@ -200,40 +209,37 @@ const EditStudentProfile = () => {
         data.append("education", formData.education)
         data.append("bio", formData.bio)
         data.append("experience", formData.experience)
-
-        formData.skills.forEach(skill => {
-            data.append("skills", skill)
-        })
-
-        if (formData.avatarFile) {
-            data.append("avatarUrl", formData.avatarFile)
-        }
+        formData.skills.forEach(skill => data.append("skills", skill))
+        if(formData.avatarFile) data.append("avatarUrl", formData.avatarFile)
 
         try {
-            const res = await toast.promise(
-                axios.patch(
-                   `${import.meta.env.VITE_API_URL}/api/student/editprofile`,
-                    data,
-                    { withCredentials: true }
-                ),
-                {
-                    loading: "Updating profile...",
-                    success: "Profile updated successfully!",
-                    error: "Failed to update profile."
-                }
-            )
+            setSaving(true)
+            const res = await axios.patch(`${import.meta.env.VITE_API_URL}/api/student/editprofile`, data, { withCredentials: true })
+            toast.success("Profile updated successfully!")
             navigate("/student-profile")
             setCompleteProfile(res.data.updatedProfile.profileCompletionPercent)
             setFormData(prev => ({ ...prev, avatarUrl: res.data.updatedProfile.avatarUrl }))
-        } catch (err) {
+        } catch(err) {
             console.error(err)
+            toast.error("Failed to update profile.")
+        } finally {
+            setSaving(false)
         }
     }
-    const handleRemoveSkill = async(skillToRemove)=>{
-         setFormData(prev => ({
+
+    const handleRemoveSkill = (skillToRemove) => {
+        setFormData(prev => ({
             ...prev,
             skills: prev.skills.filter(skill => skill !== skillToRemove)
         }))
+    }
+
+    if(loading){
+        return (
+            <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
+                <GlobalLoader/>
+            </div>
+        )
     }
 
     return (
@@ -245,9 +251,7 @@ const EditStudentProfile = () => {
                     <span>Profile Completion</span>
                     {completeProfile !== null && (
                         <>
-                            <span className="font-semibold text-blue-600">
-                                {completeProfile}%
-                            </span>
+                            <span className="font-semibold text-blue-600">{completeProfile}%</span>
                             <div className="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
                                 <div
                                     className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500 ease-out"
@@ -396,15 +400,21 @@ const EditStudentProfile = () => {
                                 <button
                                     type="button"
                                     className="px-8 py-3 rounded-xl border border-gray-300 text-gray-700 font-medium"
+                                    onClick={() => navigate("/student-profile")}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleSave}
                                     type="button"
-                                    className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium shadow-lg"
+                                    disabled={saving}
+                                    className={`px-8 py-3 rounded-xl text-white font-medium shadow-lg ${
+                                        saving
+                                            ? "bg-gray-400 cursor-not-allowed"
+                                            : "bg-gradient-to-r from-blue-500 to-blue-600"
+                                    }`}
                                 >
-                                    Save
+                                    {saving ? "Saving..." : "Save"}
                                 </button>
                             </div>
                         </div>

@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import GlobalLoader from "../../components/GlobalLoader";
 
 const JobDetail = () => {
     const { id } = useParams()
@@ -42,11 +43,7 @@ const JobDetail = () => {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                <p className="text-lg font-semibold text-gray-600 animate-pulse">
-                    Loading...
-                </p>
-            </div>
+           <GlobalLoader/>
         );
     }
 

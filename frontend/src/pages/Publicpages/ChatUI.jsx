@@ -97,7 +97,6 @@ const ChatUI = ({ currentUser }) => {
                         <h3 className="font-semibold text-sm">Chat Room</h3>
                     </div>
                 </div>
-                <MoreVertical className="w-5 h-5" />
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">

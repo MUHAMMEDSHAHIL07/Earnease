@@ -3,13 +3,15 @@ import axios from 'axios';
 import { Search, MessageCircle } from 'lucide-react';
 import { useNavigate, Outlet, useParams } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
+import GlobalLoader from '../../components/GlobalLoader';
 
 const StudentMessagingDashboard = () => {
   const [conversations, setConversations] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [showChatOnMobile, setShowChatOnMobile] = useState(false)
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
-  const { chatRoomId } = useParams()  
+  const { chatRoomId } = useParams()
   useEffect(() => {
     const fetchInbox = async () => {
       try {
@@ -35,6 +37,9 @@ const StudentMessagingDashboard = () => {
       } catch (error) {
         console.error('Failed to fetch inbox', error)
       }
+      finally {
+        setLoading(false)
+      }
     };
     fetchInbox()
   }, [chatRoomId, navigate])
@@ -59,7 +64,7 @@ const StudentMessagingDashboard = () => {
     <div className="flex flex-col h-screen bg-gray-50">
       <Navbar />
       <div className="flex-1 flex overflow-hidden">
-        
+
         <div className={`w-full lg:w-[380px] bg-white border-r border-gray-200 flex flex-col ${showChatOnMobile ? 'hidden lg:flex' : 'flex'}`}>
           <div className="p-6 border-b border-gray-100 flex-shrink-0">
             <div className="flex items-center gap-3 mb-2">
@@ -87,15 +92,18 @@ const StudentMessagingDashboard = () => {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto">
-            {filteredConversations.length > 0 ? (
+          <div className="flex-1 overflow-y-auto relative">
+            {loading ? (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <GlobalLoader/>
+              </div>
+            ) : filteredConversations.length > 0 ? (
               filteredConversations.map((chat) => (
                 <div
                   key={chat.id}
                   onClick={() => handleConversationClick(chat.id)}
-                  className={`p-4 border-b border-gray-50 cursor-pointer transition-all hover:bg-gray-50 ${
-                    chatRoomId === chat.id ? 'bg-blue-50 border-r-4 border-r-blue-500' : ''
-                  }`}
+                  className={`p-4 border-b border-gray-50 cursor-pointer transition-all hover:bg-gray-50 ${chatRoomId === chat.id ? 'bg-blue-50 border-r-4 border-r-blue-500' : ''
+                    }`}
                 >
                   <div className="flex items-start gap-3">
                     <div className="relative flex-shrink-0">
@@ -135,6 +143,7 @@ const StudentMessagingDashboard = () => {
               </div>
             )}
           </div>
+
         </div>
 
         <div className={`flex-1 flex flex-col bg-white ${showChatOnMobile ? 'flex' : 'hidden lg:flex'}`}>

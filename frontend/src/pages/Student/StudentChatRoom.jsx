@@ -3,10 +3,12 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Send } from "lucide-react";
 import { getSocket } from "../../socket/socket";
+import GlobalLoader from "../../components/GlobalLoader";
 
 const StudentChatRoom = ({ currentUser }) => {
   const { chatRoomId } = useParams();
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true)
   const [inputText, setInputText] = useState("");
   const [employerInfo, setEmployerInfo] = useState({ name: "", avatarUrl: "" });
   const messagesEndRef = useRef(null);
@@ -35,6 +37,7 @@ const StudentChatRoom = ({ currentUser }) => {
     };
 
     const fetchMessages = async () => {
+      setLoading(true)
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
@@ -43,6 +46,9 @@ const StudentChatRoom = ({ currentUser }) => {
         setMessages(res.data.data);
       } catch (err) {
         console.error("Error fetching messages:", err);
+      }
+      finally {
+        setLoading(false)
       }
     };
 
@@ -78,11 +84,12 @@ const StudentChatRoom = ({ currentUser }) => {
     if (!inputText.trim()) return;
 
     try {
-      await axios.post(
+      const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/chat/sendMessage/${chatRoomId}`,
         { text: inputText },
         { withCredentials: true }
       );
+      setMessages((prev) => [...prev, res.data.data])
       setInputText("")
     } catch (err) {
       console.error("Error sending message", err)
@@ -136,33 +143,29 @@ const StudentChatRoom = ({ currentUser }) => {
 
       <div className="flex-1 overflow-y-auto p-4 bg-gray-50 min-h-0">
         <div className="space-y-4">
-          {messages && messages.length > 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <GlobalLoader/>
+            </div>
+          ) : messages && messages.length > 0 ? (
             messages
               .filter((msg) => msg && msg.text)
               .map((msg, idx) => {
                 const isCurrent = isCurrentUser(msg);
                 return (
-                  <div
-                    key={msg._id || idx}
-                    className={`flex ${isCurrent ? "justify-end" : "justify-start"}`}
-                  >
-                    <div className={`flex items-end gap-2 max-w-xs md:max-w-md ${isCurrent ? 'flex-row-reverse' : 'flex-row'}`}>
+                  <div key={msg._id || idx} className={`flex ${isCurrent ? "justify-end" : "justify-start"}`}>
+                    <div className={`flex items-end gap-2 max-w-xs md:max-w-md ${isCurrent ? "flex-row-reverse" : "flex-row"}`}>
                       {!isCurrent && (
                         <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-xs font-medium text-gray-600 flex-shrink-0">
                           {employerInfo.name.charAt(0).toUpperCase()}
                         </div>
                       )}
                       <div
-                        className={`px-4 py-2 rounded-2xl shadow-sm ${isCurrent
-                            ? "bg-blue-500 text-white rounded-br-md"
-                            : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
+                        className={`px-4 py-2 rounded-2xl shadow-sm ${isCurrent ? "bg-blue-500 text-white rounded-br-md" : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
                           }`}
                       >
                         <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">{msg.text}</p>
-                        <div
-                          className={`text-xs mt-1 ${isCurrent ? "text-blue-100" : "text-gray-500"
-                            }`}
-                        >
+                        <div className={`text-xs mt-1 ${isCurrent ? "text-blue-100" : "text-gray-500"}`}>
                           {formatTime(msg.createdAt)}
                         </div>
                       </div>
@@ -206,8 +209,8 @@ const StudentChatRoom = ({ currentUser }) => {
             onClick={handleSendMessage}
             disabled={!inputText.trim()}
             className={`p-3 rounded-xl transition-all shadow-sm flex-shrink-0 ${inputText.trim()
-                ? "bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg transform hover:scale-105"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
+              ? "bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg transform hover:scale-105"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed"
               }`}
           >
             <Send className="w-5 h-5" />

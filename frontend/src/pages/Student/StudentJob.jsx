@@ -4,6 +4,7 @@ import { Bookmark, MapPin, IndianRupee, Building2, Lightbulb, AlignLeft, Search,
 import Navbar from "../../components/Navbar";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import GlobalLoader from "../../components/GlobalLoader";
 
 const JobListUI = () => {
   const [jobs, setJobs] = useState([]);
@@ -44,11 +45,7 @@ const JobListUI = () => {
     return (
       <>
         <Navbar />
-        <div className="flex justify-center items-center h-screen">
-          <p className="text-lg font-semibold text-gray-600 animate-pulse">
-            Loading...
-          </p>
-        </div>
+       <GlobalLoader/>
       </>
     );
   }
