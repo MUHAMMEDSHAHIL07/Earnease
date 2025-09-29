@@ -3,13 +3,15 @@ import { ArrowLeft, MoreVertical, Send, Plus } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { getSocket } from "../../socket/socket";
+import GlobalLoader from "../../components/GlobalLoader";
 
 const EmployerChatUI = ({ currentUser }) => {
     const [messages, setMessages] = useState([])
-    const [inputText, setInputText] = useState("");
-    const { chatRoomId } = useParams();
-    const messagesEndRef = useRef(null);
-    const navigate = useNavigate();
+    const [inputText, setInputText] = useState("")
+    const { chatRoomId } = useParams()
+    const messagesEndRef = useRef(null)
+    const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
     const socket = getSocket()
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -22,13 +24,17 @@ const EmployerChatUI = ({ currentUser }) => {
 
         const fetchMessages = async () => {
             try {
+                setLoading(true)
                 const res = await axios.get(
-                   `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
+                    `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
                     { withCredentials: true }
-                );
+                )
                 setMessages(res.data.data)
             } catch (err) {
                 console.error("Error fetching messages:", err)
+            }
+            finally {
+                setLoading(false)
             }
         };
 
@@ -57,7 +63,7 @@ const EmployerChatUI = ({ currentUser }) => {
         if (!inputText.trim()) return;
         try {
             await axios.post(
-               `${import.meta.env.VITE_API_URL}/api/chat/sendMessage/${chatRoomId}`,
+                `${import.meta.env.VITE_API_URL}/api/chat/sendMessage/${chatRoomId}`,
                 { text: inputText },
                 { withCredentials: true }
             );
@@ -84,7 +90,6 @@ const EmployerChatUI = ({ currentUser }) => {
 
     return (
         <div className="h-screen w-screen bg-gray-100 flex flex-col">
-            {/* Chat Header */}
             <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-3 flex items-center justify-between text-white shadow-md">
                 <div className="flex items-center space-x-3">
                     <button className="p-1 hover:bg-white/20 rounded-full" onClick={() => navigate(-1)}>
@@ -94,50 +99,54 @@ const EmployerChatUI = ({ currentUser }) => {
                         <h3 className="font-semibold text-sm">Employer Chat</h3>
                     </div>
                 </div>
-                <MoreVertical className="w-5 h-5" />
             </div>
 
-            {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
-                {messages && messages.length > 0 ? (
-                    messages
-                        .filter((msg) => msg && msg.text)
-                        .map((msg, idx) => {
-                            const currentUser = isCurrentUser(msg);
-                            return (
-                                <div
-                                    key={msg._id || idx}
-                                    className={`flex ${currentUser ? "justify-end" : "justify-start"}`}
-                                >
-                                    <div
-                                        className={`max-w-xs md:max-w-md px-4 py-2 rounded-2xl shadow-sm text-sm ${currentUser
-                                                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-md"
-                                                : "bg-white text-gray-800 rounded-bl-md border"
-                                            }`}
-                                    >
-                                        <p>{msg.text}</p>
-                                        <span
-                                            className={`text-[10px] block mt-1 ${currentUser ? "text-blue-100" : "text-gray-500"
-                                                }`}
+                {
+                    loading ? (
+                        <GlobalLoader />
+                    ) : (
+                        messages && messages.length > 0 ? (
+                            messages
+                                .filter((msg) => msg && msg.text)
+                                .map((msg, idx) => {
+                                    const currentUser = isCurrentUser(msg);
+                                    return (
+                                        <div
+                                            key={msg._id || idx}
+                                            className={`flex ${currentUser ? "justify-end" : "justify-start"}`}
                                         >
-                                            {msg.createdAt
-                                                ? new Date(msg.createdAt).toLocaleTimeString([], {
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                })
-                                                : ""}
-                                        </span>
-                                    </div>
-                                </div>
-                            );
-                        })
-                ) : (
-                    <p className="text-center text-gray-400">No messages yet</p>
-                )}
+                                            <div
+                                                className={`max-w-xs md:max-w-md px-4 py-2 rounded-2xl shadow-sm text-sm ${currentUser
+                                                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-md"
+                                                    : "bg-white text-gray-800 rounded-bl-md border"
+                                                    }`}
+                                            >
+                                                <p>{msg.text}</p>
+                                                <span
+                                                    className={`text-[10px] block mt-1 ${currentUser ? "text-blue-100" : "text-gray-500"
+                                                        }`}
+                                                >
+                                                    {msg.createdAt
+                                                        ? new Date(msg.createdAt).toLocaleTimeString([], {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                        })
+                                                        : ""}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                        ) : (
+                            <p className="text-center text-gray-400">No messages yet</p>
+                        )
+                    )
+                }
+
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
             <div className="bg-white border-t border-gray-200 p-4">
                 <div className="flex items-center space-x-3">
                     <button className="p-2 text-gray-500 hover:bg-gray-700 rounded-full">
@@ -157,8 +166,8 @@ const EmployerChatUI = ({ currentUser }) => {
                         onClick={handleSendMessage}
                         disabled={!inputText.trim()}
                         className={`p-3 rounded-full shadow-md ${inputText.trim()
-                                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
                             }`}
                     >
                         <Send className="w-5 h-5" />
@@ -166,7 +175,6 @@ const EmployerChatUI = ({ currentUser }) => {
                 </div>
             </div>
         </div>
-    );
-};
-
+    )
+}
 export default EmployerChatUI

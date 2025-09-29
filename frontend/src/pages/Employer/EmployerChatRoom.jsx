@@ -3,11 +3,13 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Send } from "lucide-react";
 import { getSocket } from "../../socket/socket";
+import GlobalLoader from "../../components/GlobalLoader";
 
 const EmployerChatRoom = ({ currentUser }) => {
   const { chatRoomId } = useParams()
   const [messages, setMessages] = useState([])
   const [inputText, setInputText] = useState("")
+  const [loading, setLoading] = useState(true)
   const [studentInfo, setStudentInfo] = useState({ name: "", avatarUrl: "" })
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
@@ -36,8 +38,8 @@ const EmployerChatRoom = ({ currentUser }) => {
     };
 
     const fetchMessages = async (id) => {
-      console.log("The ID being sent to the API is:", id)
       try {
+        setLoading(true)
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/chat/messages/${id}`,
           { withCredentials: true }
@@ -45,6 +47,9 @@ const EmployerChatRoom = ({ currentUser }) => {
         setMessages(res.data.data)
       } catch (err) {
         console.error("Error fetching messages:", err)
+      }
+      finally {
+        setLoading(false)
       }
     };
 
@@ -70,7 +75,7 @@ const EmployerChatRoom = ({ currentUser }) => {
         }
       };
     }
-  }, [chatRoomId, socket]); 
+  }, [chatRoomId, socket]);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
@@ -137,49 +142,55 @@ const EmployerChatRoom = ({ currentUser }) => {
 
       <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
         <div className="space-y-4">
-          {messages && messages.length > 0 ? (
-            messages
-              .filter((msg) => msg && msg.text)
-              .map((msg, idx) => {
-                const isCurrent = isCurrentUser(msg);
-                return (
-                  <div
-                    key={msg._id || idx}
-                    className={`flex ${isCurrent ? "justify-end" : "justify-start"}`}
-                  >
-                    <div className={`flex items-end gap-2 max-w-xs md:max-w-md ${isCurrent ? 'flex-row-reverse' : 'flex-row'}`}>
-                      {!isCurrent && (
-                        <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-xs font-medium text-gray-600 flex-shrink-0">
-                          {studentInfo.name.charAt(0).toUpperCase()}
-                        </div>
-                      )}
+          {
+            loading ? (
+              <GlobalLoader />
+            ) : (
+              messages && messages.length > 0 ? (
+                messages
+                  .filter((msg) => msg && msg.text)
+                  .map((msg, idx) => {
+                    const isCurrent = isCurrentUser(msg);
+                    return (
                       <div
-                        className={`px-4 py-2 rounded-2xl shadow-sm ${isCurrent
-                          ? "bg-blue-500 text-white rounded-br-md"
-                          : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
-                          }`}
+                        key={msg._id || idx}
+                        className={`flex ${isCurrent ? "justify-end" : "justify-start"}`}
                       >
-                        <p className="text-sm leading-relaxed">{msg.text}</p>
-                        <div
-                          className={`text-xs mt-1 ${isCurrent ? "text-blue-100" : "text-gray-500"
-                            }`}
-                        >
-                          {formatTime(msg.createdAt)}
+                        <div className={`flex items-end gap-2 max-w-xs md:max-w-md ${isCurrent ? 'flex-row-reverse' : 'flex-row'}`}>
+                          {!isCurrent && (
+                            <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-xs font-medium text-gray-600 flex-shrink-0">
+                              {studentInfo.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div
+                            className={`px-4 py-2 rounded-2xl shadow-sm ${isCurrent
+                              ? "bg-blue-500 text-white rounded-br-md"
+                              : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
+                              }`}
+                          >
+                            <p className="text-sm leading-relaxed">{msg.text}</p>
+                            <div
+                              className={`text-xs mt-1 ${isCurrent ? "text-blue-100" : "text-gray-500"
+                                }`}
+                            >
+                              {formatTime(msg.createdAt)}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    );
+                  })
+              ) : (
+                <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+                  <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                    <Send className="w-8 h-8 text-gray-400" />
                   </div>
-                );
-              })
-          ) : (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                <Send className="w-8 h-8 text-gray-400" />
-              </div>
-              <p className="text-sm">No messages yet</p>
-              <p className="text-xs text-gray-400 mt-1">Start a conversation!</p>
-            </div>
-          )}
+                  <p className="text-sm">No messages yet</p>
+                  <p className="text-xs text-gray-400 mt-1">Start a conversation!</p>
+                </div>
+              )
+            )
+          }
           <div ref={messagesEndRef} />
         </div>
       </div>
@@ -189,7 +200,7 @@ const EmployerChatRoom = ({ currentUser }) => {
           <div className="flex-1">
             <div className="relative">
               <input
-                ref={inputRef} 
+                ref={inputRef}
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}

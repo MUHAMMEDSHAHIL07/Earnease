@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import EmployerSidebar from "../Employer/EmployerSidebar";
+import GlobalLoader from "../../components/GlobalLoader";
 
 const EmployerDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -12,6 +13,7 @@ const EmployerDashboard = () => {
   const [hiredCandidate, setHiredCandidate] = useState({})
   const [monthlyPayment, setMonthlyPayment] = useState(0)
   const [recentActivity, setRecentActivity] = useState([])
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
   const formatDate = (dateString) => {
@@ -21,71 +23,52 @@ const EmployerDashboard = () => {
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    };
-    return new Date(dateString).toLocaleDateString(undefined,options)
-  };
+    }
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  }
 
   useEffect(() => {
     const store = localStorage.getItem("earneaseUser");
     if (store) {
       setEmployer(JSON.parse(store));
     }
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/employer/recentActivity`, {
-        withCredentials: true,
-      })
-      .then((res) => setRecentActivity(res.data.data))
-      .catch((err) => console.error(err))
-  }, [])
-
-
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/employer/candidateHired`, {
-        withCredentials: true,
-      })
-      .then((res) => setHiredCandidate(res.data))
-      .catch((err) => console.error(err))
   }, [])
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/employer/montlyPayment`, {
-        withCredentials: true,
-      })
-      .then((res) => setMonthlyPayment(res.data.monthlySpending))
-      .catch((err) => console.error(err));
+    const fetchData = async () => {
+      try {
+        await Promise.all([
+          axios.get(`${import.meta.env.VITE_API_URL}/api/employer/recentActivity`, { withCredentials: true })
+            .then((res) => setRecentActivity(res.data.data)),
+
+          axios.get(`${import.meta.env.VITE_API_URL}/api/employer/candidateHired`, { withCredentials: true })
+            .then((res) => setHiredCandidate(res.data)),
+
+          axios.get(`${import.meta.env.VITE_API_URL}/api/employer/montlyPayment`, { withCredentials: true })
+            .then((res) => setMonthlyPayment(res.data.monthlySpending)),
+
+          axios.get(`${import.meta.env.VITE_API_URL}/api/employer/getprofile`, { withCredentials: true })
+            .then((res) => setGetEmployer(res.data.employer)),
+
+          axios.get(`${import.meta.env.VITE_API_URL}/api/employer/getJobs`, { withCredentials: true })
+            .then((res) => setJob(res.data.getJob)),
+
+          axios.get(`${import.meta.env.VITE_API_URL}/api/employer/getApplication`, { withCredentials: true })
+            .then((res) => setApplications(res.data.message)),
+        ])
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
   }, [])
 
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/employer/getprofile`, {
-        withCredentials: true,
-      })
-      .then((res) => setGetEmployer(res.data.employer))
-      .catch((err) => console.error(err));
-  }, [])
-
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/employer/getJobs`, {
-        withCredentials: true,
-      })
-      .then((res) => setJob(res.data.getJob))
-      .catch((err) => console.error(err));
-  }, [])
-
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/employer/getApplication`, {
-        withCredentials: true,
-      })
-      .then((res) => setApplications(res.data.message))
-      .catch((err) => console.error(err));
-  }, [])
+  if (loading) {
+    return <GlobalLoader/>
+  }
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gradient-to-br from-gray-100 to-blue-50">
@@ -115,7 +98,7 @@ const EmployerDashboard = () => {
           </div>
         )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition-all">
             <p className="text-gray-500 text-sm">Jobs Posted</p>
             <h3 className="text-2xl sm:text-3xl font-bold text-blue-600">
@@ -150,6 +133,7 @@ const EmployerDashboard = () => {
           </div>
         </div>
 
+
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <button
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium shadow-md w-full sm:w-auto"
@@ -164,6 +148,7 @@ const EmployerDashboard = () => {
             View Applications
           </button>
         </div>
+
 
         <div className="bg-white p-6 rounded-2xl shadow mb-8 overflow-x-auto">
           <h3 className="text-xl font-semibold mb-4 text-gray-800">
@@ -193,7 +178,6 @@ const EmployerDashboard = () => {
                   </td>
                 </tr>
               )}
-
             </tbody>
           </table>
         </div>

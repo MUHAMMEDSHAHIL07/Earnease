@@ -3,10 +3,12 @@ import axios from 'axios';
 import { Search, MessageCircle } from 'lucide-react';
 import { useNavigate, Outlet, useParams } from 'react-router-dom';
 import EmployerSidebar from './EmployerSidebar';
+import GlobalLoader from '../../components/GlobalLoader';
 
 const EmployerMessagingDashboard = () => {
   const [conversations, setConversations] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [showChatOnMobile, setShowChatOnMobile] = useState(false)
   const navigate = useNavigate()
@@ -15,10 +17,11 @@ const EmployerMessagingDashboard = () => {
   useEffect(() => {
     const fetchInbox = async () => {
       try {
+        setLoading(true)
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/employer/inbox`, { withCredentials: true })
         if (res.data.chatRooms) {
           const mapped = res.data.chatRooms.map((room) => ({
-            id: room._id,   
+            id: room._id,
             student: {
               name: room.student.name,
               avatar: room.student.avatarUrl ? (
@@ -36,6 +39,9 @@ const EmployerMessagingDashboard = () => {
         }
       } catch (error) {
         console.error('Failed to fetch inbox', error)
+      }
+      finally {
+        setLoading(false)
       }
     }
     fetchInbox()
@@ -64,11 +70,11 @@ const EmployerMessagingDashboard = () => {
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       <EmployerSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-      
+
       <div className="flex-1 flex overflow-hidden">
-  
+
         <div className={`w-full lg:w-[380px] bg-white border-r border-gray-200 flex flex-col ${showChatOnMobile ? 'hidden lg:flex' : 'flex'}`}>
- 
+
           <div className="p-6 border-b border-gray-100 flex-shrink-0">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -96,52 +102,55 @@ const EmployerMessagingDashboard = () => {
           </div>
 
           <div className="flex-1 overflow-y-auto">
-            {filteredConversations.length > 0 ? (
-              filteredConversations.map((chat) => (
-                <div
-                  key={chat.id}
-                  onClick={() => handleConversationClick(chat.id)}
-                  className={`p-4 border-b border-gray-50 cursor-pointer transition-all hover:bg-gray-50 ${
-                    chatRoomId === chat.id ? 'bg-blue-50 border-r-4 border-r-blue-500' : ''
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="relative flex-shrink-0">
-                      {chat.student.avatar}
-                      {chat.isOnline && (
-                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
-                      )}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between items-start mb-1">
-                        <h3 className="font-medium text-gray-900 text-sm truncate pr-2">
-                          {chat.student.name}
-                        </h3>
-                        <div className="flex flex-col items-end gap-1">
-                          <span className="text-xs text-gray-500 whitespace-nowrap">
-                            {chat.timestamp}
-                          </span>
-                          {chat.unread > 0 && (
-                            <span className="bg-blue-500 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
-                              {chat.unread > 99 ? '99+' : chat.unread}
-                            </span>
-                          )}
-                        </div>
+            {
+              loading ? (
+                <GlobalLoader />
+              ) : filteredConversations.length > 0 ? (
+                filteredConversations.map((chat) => (
+                  <div
+                    key={chat.id}
+                    onClick={() => handleConversationClick(chat.id)}
+                    className={`p-4 border-b border-gray-50 cursor-pointer transition-all hover:bg-gray-50 ${chatRoomId === chat.id ? 'bg-blue-50 border-r-4 border-r-blue-500' : ''
+                      }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="relative flex-shrink-0">
+                        {chat.student.avatar}
+                        {chat.isOnline && (
+                          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
+                        )}
                       </div>
-                      <p className="text-sm text-gray-600 truncate leading-relaxed">
-                        {chat.lastMessage}
-                      </p>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-start mb-1">
+                          <h3 className="font-medium text-gray-900 text-sm truncate pr-2">
+                            {chat.student.name}
+                          </h3>
+                          <div className="flex flex-col items-end gap-1">
+                            <span className="text-xs text-gray-500 whitespace-nowrap">
+                              {chat.timestamp}
+                            </span>
+                            {chat.unread > 0 && (
+                              <span className="bg-blue-500 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                                {chat.unread > 99 ? '99+' : chat.unread}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-600 truncate leading-relaxed">
+                          {chat.lastMessage}
+                        </p>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+                  <MessageCircle className="w-12 h-12 text-gray-300 mb-3" />
+                  <p className="text-sm">No conversations found</p>
                 </div>
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-                <MessageCircle className="w-12 h-12 text-gray-300 mb-3" />
-                <p className="text-sm">No conversations found</p>
-              </div>
-            )}
+              )
+            }
           </div>
         </div>
 

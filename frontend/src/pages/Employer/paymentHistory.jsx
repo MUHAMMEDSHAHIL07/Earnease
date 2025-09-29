@@ -3,19 +3,22 @@ import { Check, Download, Eye, Filter, Search, Calendar, Menu } from 'lucide-rea
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import EmployerSidebar from './EmployerSidebar';
+import GlobalLoader from '../../components/GlobalLoader';
 
 const PaymentHistoryDashboard = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [paymentHistory, setPaymentHistory] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterStatus, setFilterStatus] = useState('all')
+  const [paymentHistory, setPaymentHistory] = useState([])
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchPayment = async () => {
       try {
+        setLoading(true)
         const res = await axios.get(
-         `${import.meta.env.VITE_API_URL}/api/employer/getEmployerPayments`,
+          `${import.meta.env.VITE_API_URL}/api/employer/getEmployerPayments`,
           { withCredentials: true }
         );
         const formatted = res.data.map(p => ({
@@ -31,14 +34,17 @@ const PaymentHistoryDashboard = () => {
       } catch (err) {
         console.log(err);
       }
-    };
-    fetchPayment();
-  }, []);
+      finally{
+        setLoading(false)
+      }
+    }
+    fetchPayment()
+  }, [])
 
   const filteredPayments = paymentHistory.filter(payment => {
     const matchesSearch =
       payment.planName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.paymentId.toLowerCase().includes(searchTerm.toLowerCase());
+      payment.paymentId.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesFilter =
       filterStatus === 'all' ||
       payment.status.toLowerCase() === filterStatus.toLowerCase();
@@ -47,7 +53,7 @@ const PaymentHistoryDashboard = () => {
 
   const totalAmount = paymentHistory
     .filter(p => p.status === 'Completed')
-    .reduce((sum, payment) => sum + parseFloat(payment.amount.replace('₹', '')), 0);
+    .reduce((sum, payment) => sum + parseFloat(payment.amount.replace('₹', '')), 0)
 
   const getStatusBadge = (status) => {
     if (status === 'Completed') {
@@ -69,7 +75,7 @@ const PaymentHistoryDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-      
+
       <div className={`transition-all duration-300 ${sidebarOpen ? "w-64" : "w-0"} overflow-hidden`}>
         <EmployerSidebar />
       </div>
@@ -113,7 +119,11 @@ const PaymentHistoryDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          {
+            loading ? (
+              <GlobalLoader/>
+            ):(
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50">
@@ -154,10 +164,12 @@ const PaymentHistoryDashboard = () => {
               <div className="text-center py-12 text-gray-500">No payments found</div>
             )}
           </div>
+            )
+          }
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default PaymentHistoryDashboard

@@ -4,11 +4,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import EmployerSidebar from "./EmployerSidebar";
 import toast from "react-hot-toast";
+import GlobalLoader from "../../components/GlobalLoader";
 
 const EmployerEditProfile = () => {
   const store = JSON.parse(localStorage.getItem("earneaseUser"))
   const [employer, setEmployer] = useState({})
   const [verification, setVerification] = useState({})
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -29,13 +31,15 @@ const EmployerEditProfile = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/employer/getprofile`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        setEmployer(res.data.employer || {})
-        setVerification(res.data.verification || {})
+    const fetchProfile = async () => {
+      setLoading(true)
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/employer/getprofile`,
+          { withCredentials: true }
+        );
+        setEmployer(res.data.employer || {});
+        setVerification(res.data.verification || {});
         setForm({
           companyname: res.data.employer?.companyname || "",
           email: res.data.employer?.email || "",
@@ -47,10 +51,15 @@ const EmployerEditProfile = () => {
           foundedYear: res.data.verification?.foundedYear || "",
           avatarUrl: res.data.employer?.avatarUrl || "",
         });
-      })
-      .catch(console.error);
-  }, []);
-  console.log('form'.form)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProfile()
+  }, [])
   const handleImageUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -86,7 +95,7 @@ const EmployerEditProfile = () => {
     try {
       await toast.promise(
         axios.patch(
-         `${import.meta.env.VITE_API_URL}/api/employer/editprofile`,
+          `${import.meta.env.VITE_API_URL}/api/employer/editprofile`,
           form,
           { withCredentials: true }
         ),
@@ -106,7 +115,10 @@ const EmployerEditProfile = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }
+  if (loading) {
+   return <GlobalLoader />
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">

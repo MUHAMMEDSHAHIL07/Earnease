@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { JobPostSchema } from "../../Schema";
+import GlobalLoader from "../../components/GlobalLoader";
 
 
 const EditJob = () => {
@@ -57,7 +58,7 @@ const EditJob = () => {
   }, [id]);
 
   if (loading) {
-    return <p className="text-center py-10">Loading...</p>;
+    return <GlobalLoader/>
   }
 
   return (
