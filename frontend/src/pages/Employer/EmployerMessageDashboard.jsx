@@ -230,5 +230,4 @@ const EmployerMessagingDashboard = () => {
     </div>
   )
 }
-
 export default EmployerMessagingDashboard

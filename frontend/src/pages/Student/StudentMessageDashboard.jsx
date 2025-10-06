@@ -12,9 +12,11 @@ const StudentMessagingDashboard = () => {
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
   const { chatRoomId } = useParams()
+
   useEffect(() => {
     const fetchInbox = async () => {
       try {
+        setLoading(true)
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/student/inbox`, { withCredentials: true })
         if (res.data.chatRooms) {
           const mapped = res.data.chatRooms.map((room) => ({
@@ -22,7 +24,11 @@ const StudentMessagingDashboard = () => {
             employer: {
               name: room.employer.companyname,
               avatar: room.employer.avatarUrl ? (
-                <img src={room.employer.avatarUrl} alt={room.employer.companyname} className="w-10 h-10 rounded-full object-cover" />
+                <img
+                  src={room.employer.avatarUrl}
+                  alt={room.employer.companyname}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-sm">
                   {room.employer.companyname.charAt(0).toUpperCase()}
@@ -30,41 +36,98 @@ const StudentMessagingDashboard = () => {
               ),
             },
             lastMessage: room.lastMessage || 'No messages yet',
-            timestamp: new Date(room.lastMessageTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            lastMessageTime: room.lastMessageTime ? new Date(room.lastMessageTime) : new Date(0),
+            timestamp: room.lastMessageTime
+              ? new Date(room.lastMessageTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              : '',
+            unread: room.unread || 0,
+            isOnline: room.isOnline || false,
           }));
-          setConversations(mapped)
+
+          mapped.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+
+          setConversations(mapped);
         }
       } catch (error) {
-        console.error('Failed to fetch inbox', error)
-      }
-      finally {
-        setLoading(false)
+        console.error('Failed to fetch inbox', error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchInbox()
-  }, [chatRoomId, navigate])
+    fetchInbox();
+  }, []);
 
   useEffect(() => {
-    if (chatRoomId) {
-      setShowChatOnMobile(true)
-    }
-  }, [chatRoomId])
+    if (chatRoomId) setShowChatOnMobile(true);
+  }, [chatRoomId]);
 
-  const filteredConversations = conversations.filter(chat =>
+  useEffect(() => {
+    if (!window.socket) return;
+
+    const handleNewMessage = (message) => {
+      setConversations((prev) => {
+        let updated = [...prev];
+        const index = updated.findIndex((c) => c.id === message.chatRoom);
+
+        if (index > -1) {
+          updated[index] = {
+            ...updated[index],
+            lastMessage: message.text,
+            lastMessageTime: new Date(message.createdAt),
+            timestamp: new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            unread: updated[index].unread + 1,
+          };
+        } else {
+          updated.push({
+            id: message.chatRoom,
+            employer: {
+              name: message.senderName,
+              avatar: (
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-semibold text-sm">
+                  {message.senderName.charAt(0).toUpperCase()}
+                </div>
+              ),
+            },
+            lastMessage: message.text,
+            lastMessageTime: new Date(message.createdAt),
+            timestamp: new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            unread: 1,
+            isOnline: false,
+          });
+        }
+
+        updated.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+        return updated;
+      });
+    };
+
+    window.socket.on('newMessage', handleNewMessage);
+
+    return () => {
+      window.socket.off('newMessage', handleNewMessage);
+    };
+  }, []);
+
+  const filteredConversations = conversations.filter((chat) =>
     chat.employer.name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  );
 
   const handleConversationClick = (chatId) => {
     navigate(`/student/inbox/${chatId}`);
     setShowChatOnMobile(true);
   };
 
+  const handleBackToList = () => {
+    setShowChatOnMobile(false);
+    navigate('/student/inbox');
+  };
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <Navbar />
       <div className="flex-1 flex overflow-hidden">
 
+        {/* Conversation List */}
         <div className={`w-full lg:w-[380px] bg-white border-r border-gray-200 flex flex-col ${showChatOnMobile ? 'hidden lg:flex' : 'flex'}`}>
           <div className="p-6 border-b border-gray-100 flex-shrink-0">
             <div className="flex items-center gap-3 mb-2">
@@ -77,7 +140,6 @@ const StudentMessagingDashboard = () => {
             </div>
             <p className="text-sm text-gray-500">Conversations with employers</p>
           </div>
-
 
           <div className="p-4 border-b border-gray-100 flex-shrink-0">
             <div className="relative">
@@ -95,7 +157,7 @@ const StudentMessagingDashboard = () => {
           <div className="flex-1 overflow-y-auto relative">
             {loading ? (
               <div className="absolute inset-0 flex items-center justify-center">
-                <GlobalLoader/>
+                <GlobalLoader />
               </div>
             ) : filteredConversations.length > 0 ? (
               filteredConversations.map((chat) => (
@@ -112,16 +174,11 @@ const StudentMessagingDashboard = () => {
                         <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
                       )}
                     </div>
-
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start mb-1">
-                        <h3 className="font-medium text-gray-900 text-sm truncate pr-2">
-                          {chat.employer.name}
-                        </h3>
+                        <h3 className="font-medium text-gray-900 text-sm truncate pr-2">{chat.employer.name}</h3>
                         <div className="flex flex-col items-end gap-1">
-                          <span className="text-xs text-gray-500 whitespace-nowrap">
-                            {chat.timestamp}
-                          </span>
+                          <span className="text-xs text-gray-500 whitespace-nowrap">{chat.timestamp}</span>
                           {chat.unread > 0 && (
                             <span className="bg-blue-500 text-white text-xs rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
                               {chat.unread > 99 ? '99+' : chat.unread}
@@ -129,9 +186,7 @@ const StudentMessagingDashboard = () => {
                           )}
                         </div>
                       </div>
-                      <p className="text-sm text-gray-600 truncate leading-relaxed">
-                        {chat.lastMessage}
-                      </p>
+                      <p className="text-sm text-gray-600 truncate leading-relaxed">{chat.lastMessage}</p>
                     </div>
                   </div>
                 </div>
@@ -143,16 +198,13 @@ const StudentMessagingDashboard = () => {
               </div>
             )}
           </div>
-
         </div>
 
         <div className={`flex-1 flex flex-col bg-white ${showChatOnMobile ? 'flex' : 'hidden lg:flex'}`}>
           {chatRoomId ? (
-            <>
-              <div className="flex-1 overflow-hidden">
-                <Outlet />
-              </div>
-            </>
+            <div className="flex-1 overflow-hidden">
+              <Outlet context={{ handleBackToList }} />
+            </div>
           ) : (
             <div className="flex-1 flex items-center justify-center bg-gray-50">
               <div className="text-center">
@@ -160,9 +212,7 @@ const StudentMessagingDashboard = () => {
                   <MessageCircle className="w-8 h-8 text-gray-400" />
                 </div>
                 <h3 className="text-lg font-medium text-gray-900 mb-2">Select a conversation</h3>
-                <p className="text-gray-500 max-w-sm">
-                  Choose from your existing conversations with employers
-                </p>
+                <p className="text-gray-500 max-w-sm">Choose from your existing conversations with employers</p>
               </div>
             </div>
           )}
@@ -171,5 +221,4 @@ const StudentMessagingDashboard = () => {
     </div>
   )
 }
-
 export default StudentMessagingDashboard
