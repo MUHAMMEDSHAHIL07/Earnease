@@ -15,12 +15,20 @@ const jobApplicationSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "accepted", "rejected"],
+    enum: ["pending", "accepted", "rejected","completed"],
     default: "pending"
   },
   appliedAt: {
     type: Date,
     default: Date.now()
+  },
+   paymentStatus: {
+    type: String,
+    enum: ["pending", "paid"],
+    default: "pending"
+  },
+  completedAt: {
+    type: Date
   }
 })
 export const jobApplicationModel = mongoose.model("jobapplication", jobApplicationSchema)

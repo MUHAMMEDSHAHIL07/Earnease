@@ -9,11 +9,11 @@ function App() {
   const { user, globalLoading } = useAuth()
   useEffect(()=>{
     if (user) {
-      connectSocket();
+      connectSocket()
     }
     return () => {
-      disconnectSocket();
-    };
+      disconnectSocket()
+    }
   },[user])
 
     if (globalLoading) {

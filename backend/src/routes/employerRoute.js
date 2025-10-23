@@ -8,7 +8,7 @@ import { editProfile } from "../controllers/employerController/editProfile.js";
 import { getProfileEmployer } from "../controllers/employerController/getProfile.js";
 import { checkJobLimit } from "../middleware/checkJobPostLimit.js";
 import { createJobPayment } from "../controllers/payment/createJob.js";
-import { verifyPayment } from "../controllers/payment/verifyPayment.js";
+import { verifyPayment, verifyPaymentCompletedJob } from "../controllers/payment/verifyPayment.js";
 import { getEmployerPayments } from "../controllers/payment/getEmployerPayment.js";
 import { approveJobApplication, rejectJobApplication } from "../controllers/employerController/approveOrRejectApplication.js";
 import { getEmployerChats, getEmployerMessageInbox } from "../controllers/employerController/employerChat.js";
@@ -33,6 +33,7 @@ router.patch("/editprofile",jwtMiddleware,checkRole(["employer"]),editProfile)
 router.get("/getprofile",jwtMiddleware,checkRole(["employer"]),getProfileEmployer)
 router.post("/paymentJob", jwtMiddleware, checkRole(["employer"]),createJobPayment)
 router.post("/verifypayment", jwtMiddleware, checkRole(["employer"]), verifyPayment)
+router.post("/verifyjobPayment", jwtMiddleware, checkRole(["employer"]), verifyPaymentCompletedJob)
 router.get("/getEmployerPayments", jwtMiddleware, checkRole(["employer"]), getEmployerPayments)
 router.get("/chats", jwtMiddleware,checkRole(["employer"]), getEmployerChats)
 router.get("/inbox", jwtMiddleware,checkRole(["employer"]), getEmployerMessageInbox)
