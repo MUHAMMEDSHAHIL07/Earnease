@@ -12,6 +12,8 @@ const CandidateApplications = () => {
   const [loading, setLoading] = useState({ id: null, action: null })
   const [globalLoading, setGlobalLoading] = useState(false)
   const navigate = useNavigate()
+  console.log("Razorpay key:", import.meta.env.VITE_RAZORPAY_KEY_ID)
+
 
   useEffect(() => {
     setGlobalLoading(true)
@@ -36,7 +38,6 @@ const CandidateApplications = () => {
     try {
       setLoading({ id: app._id, action: "complete" })
 
-      // Step 1: Get Razorpay order from backend
       const orderRes = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/employer/completeJob/${app._id}`,
         {},
@@ -45,9 +46,8 @@ const CandidateApplications = () => {
 
       const { orderId, amount } = orderRes.data
 
-      // Step 2: Open Razorpay checkout
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY,
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: amount,
         currency: "INR",
         name: "Earnease",
@@ -55,7 +55,7 @@ const CandidateApplications = () => {
         order_id: orderId,
         handler: async function (response) {
           try {
-            // Step 3: Verify payment after successful checkout
+           
             await axios.post(
               `${import.meta.env.VITE_API_URL}/api/employer/verifyjobPayment/${app._id}`,
               {
@@ -67,8 +67,8 @@ const CandidateApplications = () => {
             )
 
             setApplications(prev =>
-              prev.map(a =>
-                a._id === app._id ? { ...a, status: "completed", paymentStatus: "paid" } : a
+              prev.map(application =>
+                application._id === app._id ? { ...application, status: "completed", paymentStatus: "paid" } : application
               )
             )
 
@@ -90,6 +90,7 @@ const CandidateApplications = () => {
       rzp.open()
     } catch (err) {
       toast.error("Error initiating payment")
+      console.error(err)
     } finally {
       setLoading({ id: null, action: null })
     }
@@ -210,5 +211,4 @@ const CandidateApplications = () => {
     </div>
   )
 }
-
 export default CandidateApplications
