@@ -28,7 +28,7 @@ const PaymentHistoryDashboard = () => {
           date: new Date(p.createdAt).toLocaleDateString(),
           time: new Date(p.createdAt).toLocaleTimeString(),
           paymentMethod: p.method || "N/A",
-          status: p.status === "captured" ? "Completed" : "Pending",
+          status: p.status === "paid" || p.status === "captured" ? "Completed" : "Pending",
         }));
         setPaymentHistory(formatted);
       } catch (err) {
