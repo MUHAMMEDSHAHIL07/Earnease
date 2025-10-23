@@ -19,28 +19,24 @@ const CandidateApplications = () => {
       .get(`${import.meta.env.VITE_API_URL}/api/employer/getApplication`, {
         withCredentials: true
       })
-      .then((res) => {
-        setApplications(res.data.message)
-      })
-      .catch((err) => {
+      .then(res => setApplications(res.data.message))
+      .catch(err => {
         const msg = err.response?.data?.message || err.message
         toast.error(msg)
       })
       .finally(() => setGlobalLoading(false))
   }, [])
 
-  const handleMessage = (chatRoomId) => {
-    if (chatRoomId) {
-      navigate(`/employer/chat/${chatRoomId}`)
-    } else {
-      toast.error("Chat room not established yet.")
-    }
+  const handleMessage = chatRoomId => {
+    if (chatRoomId) navigate(`/employer/chat/${chatRoomId}`)
+    else toast.error("Chat room not established yet")
   }
 
-  const handleCompleteJob = async (app) => {
+  const handleCompleteJob = async app => {
     try {
       setLoading({ id: app._id, action: "complete" })
 
+      // Step 1: Get Razorpay order from backend
       const orderRes = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/employer/completeJob/${app._id}`,
         {},
@@ -49,6 +45,7 @@ const CandidateApplications = () => {
 
       const { orderId, amount } = orderRes.data
 
+      // Step 2: Open Razorpay checkout
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY,
         amount: amount,
@@ -58,6 +55,7 @@ const CandidateApplications = () => {
         order_id: orderId,
         handler: async function (response) {
           try {
+            // Step 3: Verify payment after successful checkout
             await axios.post(
               `${import.meta.env.VITE_API_URL}/api/employer/verifyjobPayment/${app._id}`,
               {
@@ -68,18 +66,15 @@ const CandidateApplications = () => {
               { withCredentials: true }
             )
 
-            setApplications((prev) =>
-              prev.map((a) =>
-                a._id === app._id
-                  ? { ...a, status: "completed", paymentStatus: "paid" }
-                  : a
+            setApplications(prev =>
+              prev.map(a =>
+                a._id === app._id ? { ...a, status: "completed", paymentStatus: "paid" } : a
               )
             )
 
             toast.success("Payment completed and job marked as completed")
           } catch (err) {
             toast.error("Payment verification failed")
-            console.error(err)
           }
         },
         prefill: {
@@ -95,7 +90,6 @@ const CandidateApplications = () => {
       rzp.open()
     } catch (err) {
       toast.error("Error initiating payment")
-      console.error(err)
     } finally {
       setLoading({ id: null, action: null })
     }
@@ -139,11 +133,8 @@ const CandidateApplications = () => {
                     </td>
                   </tr>
                 ) : (
-                  applications.map((app) => (
-                    <tr
-                      key={app._id}
-                      className="hover:bg-gray-50 transition-all duration-200"
-                    >
+                  applications.map(app => (
+                    <tr key={app._id} className="hover:bg-gray-50 transition-all duration-200">
                       <td className="px-6 py-4 font-medium text-gray-800">{app.student?.name}</td>
                       <td className="px-6 py-4 text-gray-600">{app.student?.email}</td>
                       <td className="px-6 py-4 text-gray-700">{app.job?.title}</td>
@@ -204,9 +195,7 @@ const CandidateApplications = () => {
 
                         {app.status?.toLowerCase() !== "accepted" && (
                           <span className="text-gray-500 text-sm">
-                            {app.status === "pending"
-                              ? "Under review"
-                              : "No actions available"}
+                            {app.status === "pending" ? "Under review" : "No actions available"}
                           </span>
                         )}
                       </td>

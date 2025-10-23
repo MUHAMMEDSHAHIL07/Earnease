@@ -15,6 +15,7 @@ import { getEmployerChats, getEmployerMessageInbox } from "../controllers/employ
 import { candidateHired } from "../controllers/employerController/totalCandidate.js";
 import { monthlySpending } from "../controllers/employerController/monthlySpending.js";
 import { recentActivity } from "../controllers/employerController/recentActivityController.js";
+import { completeJob } from "../controllers/payment/completeJobPayment.js";
 
 
 const router = express.Router()
@@ -33,6 +34,7 @@ router.patch("/editprofile",jwtMiddleware,checkRole(["employer"]),editProfile)
 router.get("/getprofile",jwtMiddleware,checkRole(["employer"]),getProfileEmployer)
 router.post("/paymentJob", jwtMiddleware, checkRole(["employer"]),createJobPayment)
 router.post("/verifypayment", jwtMiddleware, checkRole(["employer"]), verifyPayment)
+router.post("/completeJob/:id", jwtMiddleware, checkRole(["employer"]), completeJob)
 router.post("/verifyjobPayment/:id", jwtMiddleware, checkRole(["employer"]), verifyPaymentCompletedJob)
 router.get("/getEmployerPayments", jwtMiddleware, checkRole(["employer"]), getEmployerPayments)
 router.get("/chats", jwtMiddleware,checkRole(["employer"]), getEmployerChats)
