@@ -9,10 +9,10 @@ const SingleViewEmployer = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/admin/getEmployer/${id}`, { withCredentials: true })
+      .get(`${import.meta.env.VITE_API_URL}/api/admin/getEmployer/${id}`, { withCredentials: true })
       .then((res) => setData(res.data))
-      .catch(console.error);
-  }, [id]);
+      .catch(console.error)
+  }, [id])
 
   if (!data) return <div className="p-6 text-gray-600">Loading…</div>
 
@@ -27,7 +27,7 @@ const SingleViewEmployer = () => {
       {ok ? <CheckCircle size={14} /> : <XCircle size={14} />}
       {ok ? yesText : noText}
     </span>
-  );
+  )
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 py-12 px-4">
@@ -110,14 +110,14 @@ const SingleViewEmployer = () => {
         </section>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const Info = ({ label, value }) => (
   <div>
     <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{label}</p>
     <p className="mt-1 text-sm text-slate-800">{value || "—"}</p>
   </div>
-);
+)
 
-export default SingleViewEmployer;
+export default SingleViewEmployer

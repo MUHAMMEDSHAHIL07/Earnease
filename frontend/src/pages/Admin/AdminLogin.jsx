@@ -13,11 +13,11 @@ const AdminLogin = () => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value,
-    }));
-  };
+    }))
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
       const {data} = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/auth/adminlogin`,
@@ -33,9 +33,9 @@ const AdminLogin = () => {
       navigate('/admin/dashboard')
     } catch (error) {
       const msg = error.response?.data?.message || "Login failed"
-      toast.error(msg);
+      toast.error(msg)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -65,7 +65,6 @@ const AdminLogin = () => {
         </button>
       </form>
     </div>
-  );
-};
-
+  )
+}
 export default AdminLogin

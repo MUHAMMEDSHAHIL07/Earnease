@@ -6,18 +6,18 @@ const StudentManagement = () => {
     const [student, setStudent] = useState([])
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_API_URL}/admin/getAllStudent`)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/getAllStudent`)
             .then((res) => setStudent(res.data.student))
             .catch((error) => {
-                console.error(error.message);
+                console.error(error.message)
                 const msg = error.response?.data?.message || error.message
-                toast.error(msg);
-            });
+                toast.error(msg)
+            })
     }, [])
 
 
     const block = (id) => {
-        axios.patch(`${import.meta.env.VITE_API_URL}/admin/userStatus/${id}`, { isBlocked: true }, { withCredentials: true })
+        axios.patch(`${import.meta.env.VITE_API_URL}/api/admin/userStatus/${id}`, { isBlocked: true }, { withCredentials: true })
             .then(() => {
                 setStudent((prev) =>
                     prev.map((student) =>
@@ -27,13 +27,13 @@ const StudentManagement = () => {
                 toast.success("block successfully")
             })
             .catch((error) => {
-                console.error(error.message);
+                console.error(error.message)
                 const msg = error.response?.data?.message || error.message
-                toast.error(msg);
+                toast.error(msg)
             });
     }
     const unBlock = (id) => {
-        axios.patch(`${import.meta.env.VITE_API_URL}/admin/userStatus/${id}`, { isBlocked: false }, { withCredentials: true })
+        axios.patch(`${import.meta.env.VITE_API_URL}/api/admin/userStatus/${id}`, { isBlocked: false }, { withCredentials: true })
             .then(() => {
                 setStudent((prev) =>
                     prev.map((student) =>
@@ -43,9 +43,9 @@ const StudentManagement = () => {
                 toast.info("block successfully")
             })
             .catch((error) => {
-                console.error(error.message);
-                toast.error(error.message);
-            });
+                console.error(error.message)
+                toast.error(error.message)
+            })
     }
 
     return (
@@ -115,7 +115,7 @@ const StudentManagement = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default StudentManagement;
+export default StudentManagement
