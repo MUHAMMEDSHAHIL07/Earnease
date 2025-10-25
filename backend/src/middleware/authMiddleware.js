@@ -12,8 +12,8 @@ export const jwtMiddleware = async (req, res, next) => {
     return next()
   }
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { id, role } = decoded;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    const { id, role } = decoded
 
     let user;
     if (role === "student") {
@@ -26,8 +26,8 @@ export const jwtMiddleware = async (req, res, next) => {
     }
     
     if (!user) return res.status(404).json({ message: "User not found" })
-    req.user = user;       
-    next();
+    req.user = user    
+    next()
   } catch (error) {
     return res.status(401).json({ message: error.message})
   }
@@ -36,8 +36,8 @@ export const jwtMiddleware = async (req, res, next) => {
 export const checkRole = (allowedRoles) => {
   return (req, res, next) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ message: "Access denied" });
+      return res.status(403).json({ message: "Access denied" })
     }
-    next();
-  };
-};
+    next()
+  }
+}

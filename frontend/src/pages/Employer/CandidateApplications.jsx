@@ -12,7 +12,7 @@ const CandidateApplications = () => {
   const [loading, setLoading] = useState({ id: null, action: null })
   const [globalLoading, setGlobalLoading] = useState(false)
   const navigate = useNavigate()
-  console.log("Razorpay key:", import.meta.env.VITE_RAZORPAY_KEY_ID)
+
 
 
   useEffect(() => {

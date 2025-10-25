@@ -83,7 +83,7 @@ export const adminLogin = async (req, res) => {
                 avatarUrl: admincheck.avatarUrl || null,
                 role: "admin"
             }
-        });
+        })
     }
     catch (error) {
         return res.status(500).json({ message: "internal server error" + error.message })

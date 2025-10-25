@@ -8,7 +8,7 @@ const EmployerManagement = () => {
     const navigate= useNavigate()
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/getAllEmployer`)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/getAllEmployer`,{withCredentials: true})
             .then((res) => setEmployer(res.data.employer))
             .catch(err => console.log(err.message))
     }, [])
@@ -111,7 +111,7 @@ const EmployerManagement = () => {
                             {employer.length === 0 && (
                                 <tr>
                                     <td colSpan="5" className="px-4 py-6 text-center text-gray-500">
-                                        No students available.
+                                        No employer available.
                                     </td>
                                 </tr>
                             )}

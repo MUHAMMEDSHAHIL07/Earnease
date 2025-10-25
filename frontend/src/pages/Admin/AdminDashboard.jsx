@@ -18,11 +18,12 @@ const AdminDashboard = () => {
     totalStudent: 0,
     totalEmployer: 0,
     PendingEmployer: 0,
-    PostedJob :0
+    postedJob :0
   })
 
+
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_URL}/api/admin/dashboard-stats`)
+    axios.get(`${import.meta.env.VITE_API_URL}/api/admin/dashboard-stats`, {withCredentials: true})
       .then(res => setStats(res.data))
       .catch(err => console.log(err.message))
   }, [])
@@ -102,7 +103,7 @@ const AdminDashboard = () => {
           <StatCard 
             icon={<FileText size={20} />} 
             label="Posted Jobs" 
-            value={stats.PostedJob}
+            value={stats.postedJob}
             trend={5.2}
             gradient="bg-green-500"
           />

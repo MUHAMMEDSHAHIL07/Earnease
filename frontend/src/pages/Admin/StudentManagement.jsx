@@ -6,7 +6,7 @@ const StudentManagement = () => {
     const [student, setStudent] = useState([])
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/getAllStudent`)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/admin/getAllStudent`,{withCredentials: true})
             .then((res) => setStudent(res.data.student))
             .catch((error) => {
                 console.error(error.message)
@@ -40,7 +40,7 @@ const StudentManagement = () => {
                         student._id === id ? { ...student, isBlocked: false } : student
                     )
                 )
-                toast.info("block successfully")
+                toast.success("unblock successfully")
             })
             .catch((error) => {
                 console.error(error.message)

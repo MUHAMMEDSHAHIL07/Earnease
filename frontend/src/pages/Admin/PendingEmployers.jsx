@@ -10,7 +10,7 @@ const PendingEmployers = () => {
 
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/admin/employers/pending`)
+      .get(`${import.meta.env.VITE_API_URL}/api/admin/employers/pending`,{withCredentials: true})
       .then((res) => setPending(res.data.pending))
       .catch((err) => console.error("Error fetching:", err))
   }, [])
@@ -18,10 +18,10 @@ const PendingEmployers = () => {
   const handleAction = (id, action) => {
     setLoading({ id, action })
     axios
-      .patch(`${import.meta.env.VITE_API_URL}/api/admin/employers/${action}Employer/${id}`)
+      .patch(`${import.meta.env.VITE_API_URL}/api/admin/employers/${action}Employer/${id}`,{withCredentials: true})
       .then(() => {
-        setPending((prev) => prev.filter((item) => item._id !== id));
-        toast.success(`Application ${action === "approve" ? "approved" : "rejected"}`);
+        setPending((prev) => prev.filter((item) => item._id !== id))
+        toast.success(`Application ${action === "approve" ? "approved" : "rejected"}`)
       })
       .catch((err) => console.error(err.message))
       .finally(() => setLoading({ id: null, action: null }))
