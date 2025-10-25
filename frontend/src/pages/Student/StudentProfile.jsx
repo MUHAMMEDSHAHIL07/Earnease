@@ -21,6 +21,8 @@ const statusStyles = {
     "bg-yellow-100 text-yellow-700 border border-yellow-300 font-medium px-3 py-1 rounded-full shadow-sm",
   rejected:
     "bg-red-100 text-red-700 border border-red-300 font-medium px-3 py-1 rounded-full shadow-sm",
+  completed:
+  "bg-green-300 text-green-700 border border-green-300 font-medium px-3 py-1 rounded-full shadow-sm"
 }
 
 const StudentProfile = () => {
@@ -60,7 +62,7 @@ const StudentProfile = () => {
     const matchesStatus = filterStatus === "all" ? true : item.status === filterStatus
     return matchesSearch && matchesStatus
   })
-
+ console.log(filteredJobs)
 
   return (
     <>
@@ -141,7 +143,7 @@ const StudentProfile = () => {
                   </button>
                   {showFilterMenu && (
                     <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-md z-10">
-                      {["all", "pending", "accepted", "rejected"].map((status) => (
+                      {["all", "pending", "accepted", "rejected","completed"].map((status) => (
                         <div
                           key={status}
                           onClick={() => {

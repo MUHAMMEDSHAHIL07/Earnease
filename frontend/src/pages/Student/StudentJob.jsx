@@ -7,12 +7,12 @@ import { useNavigate } from "react-router-dom";
 import GlobalLoader from "../../components/GlobalLoader";
 
 const JobListUI = () => {
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
   const [savedJobs, setSavedJobs] = useState([])
+  const [appliedJob, setAppliedJob] = useState([])
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
-
   const SearchJOb = jobs.filter((job) => {
     const search = searchTerm.toLowerCase()
     return (
@@ -30,7 +30,13 @@ const JobListUI = () => {
         setJobs(jobsRes.data.jobs)
         const savedRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/student/getAllJobs`, {
           withCredentials: true,
-        });
+        })
+        const appliedRes = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/student/applications`,
+          { withCredentials: true }
+        )
+        const appliedJobId = appliedRes.data.applications.map((app) => app.job._id)
+        setAppliedJob(appliedJobId)
         const savedIds = savedRes.data.map((item) => item.job._id)
         setSavedJobs(savedIds)
       } catch (error) {
@@ -45,9 +51,9 @@ const JobListUI = () => {
     return (
       <>
         <Navbar />
-       <GlobalLoader/>
+        <GlobalLoader />
       </>
-    );
+    )
   }
 
 
@@ -58,13 +64,14 @@ const JobListUI = () => {
         {},
         { withCredentials: true }
       )
-      toast.success("Applied job successfully");
+      toast.success("Applied job successfully")
+      setAppliedJob((prev) => [...prev, id])
     } catch (error) {
       const msg = error.response?.data?.message || "Login failed";
-      toast.error(msg);
+      toast.error(msg)
 
       if (msg === "Please complete your profile before applying for jobs.") {
-       navigate("/editProfile")
+        navigate("/editProfile")
       }
     }
   }
@@ -83,14 +90,15 @@ const JobListUI = () => {
           `${import.meta.env.VITE_API_URL}/api/student/saveJob`,
           { jobId },
           { withCredentials: true }
-        );
+        )
         setSavedJobs([...savedJobs, jobId])
         toast.success("Job saved successfully")
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong")
     }
-  };
+  }
+  
 
   return (
     <>
@@ -174,11 +182,16 @@ const JobListUI = () => {
 
               <div className="flex flex-col gap-2 mt-auto">
                 <button
-                  className="bg-blue-600 hover:bg-blue-700 text-white text-sm py-2.5 rounded-md font-medium transition"
-                  onClick={() => applyJob(job._id)}
+                  className={`${appliedJob.includes(job._id)
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                    } text-white text-sm py-2.5 rounded-md font-medium transition`}
+                  onClick={() => !appliedJob.includes(job._id) && applyJob(job._id)}
+                  disabled={appliedJob.includes(job._id)}
                 >
-                  Apply Now
+                  {appliedJob.includes(job._id) ? "Applied" : "Apply Now"}
                 </button>
+
                 <button className="bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 text-sm py-2.5 rounded-md font-medium transition"
                   onClick={() => navigate(`/jobdetail/${job._id}`)}
                 >

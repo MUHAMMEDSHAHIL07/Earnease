@@ -10,14 +10,17 @@ const JobDetail = () => {
     const { id } = useParams()
     const [job, setJob] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [appliedJob, setAppliedJob] = useState([])
+
     const applyJob = async (id) => {
         try {
             await axios.post(
                 `${import.meta.env.VITE_API_URL}/api/student/applyJob/${id}`,
                 {},
                 { withCredentials: true }
-            );
-            toast.success("Applied job successfully");
+            )
+            setAppliedJob((prev) => [...prev, id])
+            toast.success("Applied job successfully")
         } catch (error) {
             toast.error(error.response?.data?.message || "Login failed")
         }
@@ -37,15 +40,34 @@ const JobDetail = () => {
             finally {
                 setLoading(false)
             }
-        };
+        }
         fetchJob()
     }, [id])
 
+    useEffect(() => {
+        const fetchAppliedJobs = async () => {
+            try {
+                const res = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/api/student/applications`,
+                    { withCredentials: true }
+                )
+                const appliedIds = res.data.applications.map((app) => app.job._id)
+                setAppliedJob(appliedIds)
+                
+                
+            } catch (error) {
+                console.error("Error fetching applied jobs:", error)
+            }
+        }
+
+        fetchAppliedJobs()
+    }, [])
     if (loading) {
         return (
-           <GlobalLoader/>
-        );
+            <GlobalLoader />
+        )
     }
+     const isApplied = appliedJob.includes(job._id)
 
     return (
         <>
@@ -118,9 +140,16 @@ const JobDetail = () => {
                             </div>
                         )}
                         <div className="flex justify-center">
-                            <button className="w-1/2 bg-gradient-to-r from-blue-600 to-indigo-500 text-white py-2 rounded-lg hover:scale-105 hover:shadow-md transition-transform font-semibold text-sm"
-                                onClick={() => applyJob(job._id)}>
-                                Apply Now
+                            <button
+                                onClick={() => !isApplied && applyJob(job._id)}
+                                disabled={isApplied}
+                                className={`w-1/2 py-2 rounded-lg font-semibold text-sm transition-transform 
+                  ${isApplied
+                                        ? "bg-gray-400 text-white cursor-not-allowed"
+                                        : "bg-gradient-to-r from-blue-600 to-indigo-500 text-white hover:scale-105 hover:shadow-md"
+                                    }`}
+                            >
+                                {isApplied ? "Applied" : "Apply Now"}
                             </button>
                         </div>
                     </div>
