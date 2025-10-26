@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const sendEmail = async (email, otp) => {
   try {
     await resend.emails.send({
-      from: 'onboarding@resend.dev', 
+      from: 'Earnease <earneasejobportal@gmail.com>',
       to: email,
       subject: 'Your Verification Code for Earnease',
       html: `

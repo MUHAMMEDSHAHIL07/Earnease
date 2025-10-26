@@ -44,7 +44,7 @@ export const approveJobApplication = async (req, res) => {
     })
 
     await resend.emails.send({
-     from: 'onboarding@resend.dev',
+     from: 'Earnease <earneasejobportal@gmail.com>',
       to: student.email,
       subject: "Job Application Approved",
       html: `
@@ -108,7 +108,7 @@ export const rejectJobApplication = async (req, res) => {
     )
 
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
+     from: 'Earnease <earneasejobportal@gmail.com>',
       to: student.email,
       subject: "Job Application Unsuccessful",
       html: `
