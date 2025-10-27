@@ -18,10 +18,10 @@ const PendingEmployers = () => {
   const handleAction = async (id, action) => {
     try {
       setLoading({ id, action })
-      setPending((prev) => prev.filter((item) => item._id !== id))
       await axios
         .patch(`${import.meta.env.VITE_API_URL}/api/admin/employers/${action}Employer/${id}`, {}, { withCredentials: true })
-         toast.success(`Application ${action === "approve" ? "approved" : "rejected"}`)
+      setPending((prev) => prev.filter((item) => item._id !== id))
+      toast.success(`Application ${action === "approve" ? "approved" : "rejected"}`)
     }
     catch (err) {
       toast.error("Action failed. Please try again.")
