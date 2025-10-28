@@ -14,9 +14,16 @@ export const sendEmail = async ({ to, subject, html, text }) => {
     sendSmtpEmail.textContent = text || "Your email client does not support HTML"
     sendSmtpEmail.sender = { name: "Earnease", email: "earneasejobportal@gmail.com" }
     sendSmtpEmail.to = [{ email: to }]
+
     const response = await apiInstance.sendTransacEmail(sendSmtpEmail)
-    console.log(`Email sent successfully to ${to}:`, response.messageId)
+    console.log(`✅ Email sent successfully to ${to}:`, response.messageId)
   } catch (error) {
-    console.error("Error sending email:", error?.response?.text || error.message)
+    console.error("Error sending email:")
+    if (error.response) {
+      console.error("Status Code:", error.response.status)
+      console.error("Body:", error.response.body)
+    } else {
+      console.error("Message:", error.message)
+    }
   }
 }
