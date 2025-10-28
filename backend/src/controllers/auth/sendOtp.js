@@ -5,7 +5,7 @@ import { sendEmail } from '../../utils/sendEmail.js'
 export const sendOtp = async (req, res) => {
   try {
     const { email } = req.body
-
+    console.log("Received email from frontend:", email)
     await otpModel.deleteMany({ email })
 
     const otp = otpGenerator.generate(6, {
