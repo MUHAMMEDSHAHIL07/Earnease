@@ -10,19 +10,19 @@ const transporter = nodemailer.createTransport({
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
     },
-});
+})
 
 
 export const getPendingVerification = async (req, res) => {
   try {
     const pending = await EmployerVerification
       .find({ status: "pending" })
-      .populate("employerId", "companyname email createdAt");
-    return res.status(200).json({ message: "data sent", pending });
+      .populate("employerId", "companyname email createdAt")
+    return res.status(200).json({ message: "data sent", pending })
   } catch (error) {
-    return res.status(500).json({ message: "internal server error: " + error.message });
+    return res.status(500).json({ message: "internal server error: " + error.message })
   }
-};
+}
 
 export const getSingleVerification = async (req, res) => {
   try {
@@ -33,14 +33,14 @@ export const getSingleVerification = async (req, res) => {
       .populate("employerId", "companyname email createdAt");
 
     if (!verification) {
-      return res.status(404).json({ message: "Verification not found" });
+      return res.status(404).json({ message: "Verification not found" })
     }
 
     res.status(200).json({ verification });
   } catch (error) {
-    res.status(500).json({ message: "Server error: " + error.message });
+    res.status(500).json({ message: "Server error: " + error.message })
   }
-};
+}
 
 
 
@@ -65,8 +65,9 @@ export const approveEmployer = async (req, res) => {
 
         await verification.save()
         await employer.save()
+        res.status(200).json({ success: true, message: "Employer rejected successfully" })
 
-        await transporter.sendMail({
+        transporter.sendMail({
             to: employer.email,
             subject: "Employer Verification Successful",
             html: `
@@ -96,13 +97,13 @@ export const approveEmployer = async (req, res) => {
             `,
         })
 
-        return res.status(200).json({ success: true, message: "Employer approved successfully" })
-
+      .then(() => console.log("Approval email sent"))
+      .catch((err) => console.log("Email send failed", err.message))
     } catch (err) {
         console.error("Error in approveEmployer:", err)
         return res.status(500).json({ message: err.message })
     }
-};
+}
 
 export const rejectEmployer = async (req, res) => {
     try {
@@ -128,8 +129,9 @@ export const rejectEmployer = async (req, res) => {
 
         await verification.save()
         await employer.save()
+        res.status(200).json({ success: true, message: "Employer rejected successfully" })
 
-        await transporter.sendMail({
+        transporter.sendMail({
             to: employer.email,
             subject: "Employer Verification Unsuccessful",
             html: `
@@ -157,12 +159,12 @@ export const rejectEmployer = async (req, res) => {
                     </p>
                 </div>
             `,
-        });
-
-        return res.status(200).json({ success: true, message: "Employer rejected successfully" })
+        })
+      .then(() => console.log("Rejection email sent"))
+      .catch((err) => console.error("Email send failed",err.message))
 
     } catch (err) {
         console.error("Error in rejectEmployer:", err)
         return res.status(500).json({ message: err.message })
     }
-};
+}
