@@ -3,11 +3,10 @@ import { userModel } from "../../models/userSchema.js";
 import dotenv from "dotenv";
 import { chatRoomModel } from "../../models/chatRoom.js";
 import { recentActivityModel } from "../../models/recentActivity.js";
-import { Resend } from 'resend';
+import { sendEmail } from "../../utils/sendEmail.js";
 
 dotenv.config()
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 
 export const approveJobApplication = async (req, res) => {
   try {
@@ -42,9 +41,7 @@ export const approveJobApplication = async (req, res) => {
       type: "Application Accept",
       description: `You accepted the application of : ${student.name}`,
     })
-
-    await resend.emails.send({
-     from: 'Earnease <earneasejobportal@gmail.com>',
+      await sendEmail({
       to: student.email,
       subject: "Job Application Approved",
       html: `
@@ -59,7 +56,7 @@ export const approveJobApplication = async (req, res) => {
           </p>
           <p style="font-size: 16px; color: #444;">Now you can start chatting with the employer inside Earnease 🚀.</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="http://localhost:5173/student/applications" style="background-color: #4CAF50; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 16px;">
+            <a href="https://earnease-portal.vercel.app/student-profile" style="background-color: #4CAF50; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 16px;">
               View Application & Chat
             </a>
           </div>
@@ -70,6 +67,7 @@ export const approveJobApplication = async (req, res) => {
         </div>
       `,
     })
+    
 
     return res.status(200).json({
       success: true,
@@ -107,8 +105,7 @@ export const rejectJobApplication = async (req, res) => {
       { isActive: false }
     )
 
-    await resend.emails.send({
-     from: 'Earnease <earneasejobportal@gmail.com>',
+     await sendEmail({
       to: student.email,
       subject: "Job Application Unsuccessful",
       html: `
@@ -116,23 +113,25 @@ export const rejectJobApplication = async (req, res) => {
           <div style="text-align: center;">
             <h2 style="color: #d32f2f;">Application Rejected</h2>
           </div>
-          <p style="font-size: 16px; color: #444;">Dear ${student.name},</p>
+          <p style="font-size: 16px; color: #444;">Dear ${student?.name || "Student"},</p>
           <p style="font-size: 16px; color: #444;">
-            We regret to inform you that your application for the job position <strong>${application.jobTitle || "the job"}</strong> was not successful this time.
+            We regret to inform you that your application for the job position <strong>${application.job?.title || "the job"}</strong> was not successful this time.
           </p>
           <p style="font-size: 16px; color: #444;">
             Please explore other opportunities on <strong>Earnease</strong>.
           </p>
-          <a href="http://localhost:5173/jobs" style="background-color: #d32f2f; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 16px;">
-            Find More Jobs
-          </a>
+          <div style="text-align: center; margin-top: 20px;">
+            <a href="https://earnease-portal.vercel.app/job" style="background-color: #d32f2f; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 16px;">
+              Find More Jobs
+            </a>
+          </div>
         </div>
       `,
-    });
+    })
 
     return res.status(200).json({ success: true, message: "Student application rejected & chat locked" })
   } catch (err) {
-    console.error("Error in rejectStudentApplication:", err)
+    console.error("Error in reject StudentApplication:", err)
     return res.status(500).json({ message: err.message })
   }
 }
