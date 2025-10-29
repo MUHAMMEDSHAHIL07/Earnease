@@ -8,6 +8,7 @@ import { deleteSavedJob, getSavedJob, postSavedJob } from "../controllers/studen
 import { getStudentChats, getStudentMessageInbox } from "../controllers/studentController/studentChat.js"
 import { uploadStudent } from "../config/cloudinary.js"
 import { getProfileStudent } from "../controllers/studentController/getProfile.js"
+import { myApplication } from "../controllers/studentController/myApplications.js"
 
 
 const router = express.Router()
@@ -21,6 +22,7 @@ router.post("/applyJob/:id",jwtMiddleware,checkRole(["student"]),applyJob)
 router.post("/saveJob",jwtMiddleware,checkRole(["student"]),postSavedJob)
 router.get("/getSavedJob",jwtMiddleware,checkRole(["student"]),getSavedJob)
 router.delete("/removeSavedJob/:id",jwtMiddleware,checkRole(["student"]),deleteSavedJob)
+router.get("/myapplications", jwtMiddleware,checkRole(["student"]), myApplication)
 router.get("/inbox",jwtMiddleware,checkRole(["student"]),getStudentMessageInbox)
 router.get("/chats",jwtMiddleware,checkRole(["student"]),getStudentChats)
 export default router

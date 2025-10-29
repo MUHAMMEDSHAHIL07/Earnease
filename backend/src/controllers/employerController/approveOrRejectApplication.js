@@ -47,14 +47,13 @@ export const approveJobApplication = async (req, res) => {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #f9f9f9;">
           <div style="text-align: center;">
-            <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Approved" style="width:80px; margin-bottom: 20px;" />
             <h2 style="color: #2E7D32;">Your Application Has Been Approved!</h2>
           </div>
           <p style="font-size: 16px; color: #444;">Dear ${student.name || "Student"},</p>
           <p style="font-size: 16px; color: #444;">
             Congratulations! Your application for the position of <strong>${application.job?.title || "a job"}</strong> has been approved.
           </p>
-          <p style="font-size: 16px; color: #444;">Now you can start chatting with the employer inside Earnease 🚀.</p>
+          <p style="font-size: 16px; color: #444;">Now you can start chatting with the employer inside Earnease.</p>
           <div style="text-align: center; margin: 30px 0;">
             <a href="https://earnease-portal.vercel.app/student-profile" style="background-color: #4CAF50; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-size: 16px;">
               View Application & Chat

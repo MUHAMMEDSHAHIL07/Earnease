@@ -4,7 +4,7 @@ import Navbar from '../../components/Navbar';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import GlobalLoader from '../../components/GlobalLoader'; // import your loader
+import GlobalLoader from '../../components/GlobalLoader'; 
 
 const SkillsInput = ({ skills, setSkills, onRemoveSkill }) => {
     const [inputValue, setInputValue] = useState("")

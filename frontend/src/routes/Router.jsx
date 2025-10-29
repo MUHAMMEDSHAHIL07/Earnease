@@ -45,6 +45,7 @@ import StudentChatRoom from "../pages/Student/StudentChatRoom";
 import EditStudentProfile from "../pages/Student/EditProfile";
 import VerifyEmployer from "../pages/Employer/VerifyEmployer";
 import AboutUs from "../pages/Publicpages/AboutUs";
+import MyApplications from "../pages/Student/MyApplication";
 
 const Router = () => {
   const { user } = useAuth();
@@ -85,6 +86,14 @@ const Router = () => {
         element={
           <ProtectedRoute allowedRoles={["student"]}>
             <SavedJobs />
+          </ProtectedRoute>
+        }
+      />
+       <Route
+        path="/myapplications"
+        element={
+          <ProtectedRoute allowedRoles={["student"]}>
+            <MyApplications />
           </ProtectedRoute>
         }
       />

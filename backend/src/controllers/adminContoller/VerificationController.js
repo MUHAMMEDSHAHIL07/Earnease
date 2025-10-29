@@ -1,17 +1,8 @@
 import { employerModel } from "../../models/employerSchema.js";
-import nodemailer from "nodemailer"
 import dotenv from "dotenv"
 import EmployerVerification from "../../models/employerVerifiySchema.js";
 import { sendEmail } from "../../utils/sendEmail.js";
 dotenv.config()
-
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-})
 
 
 export const getPendingVerification = async (req, res) => {
@@ -31,13 +22,13 @@ export const getSingleVerification = async (req, res) => {
 
         const verification = await EmployerVerification
             .findById(id)
-            .populate("employerId", "companyname email createdAt");
+            .populate("employerId", "companyname email createdAt")
 
         if (!verification) {
             return res.status(404).json({ message: "Verification not found" })
         }
 
-        res.status(200).json({ verification });
+        res.status(200).json({ verification })
     } catch (error) {
         res.status(500).json({ message: "Server error: " + error.message })
     }
