@@ -62,7 +62,6 @@ const StudentProfile = () => {
     const matchesStatus = filterStatus === "all" ? true : item.status === filterStatus
     return matchesSearch && matchesStatus
   })
- console.log(filteredJobs)
 
   return (
     <>
@@ -112,9 +111,11 @@ const StudentProfile = () => {
                   <Bookmark size={18} className="text-purple-500" /> Saved Jobs
                 </Card>
               </Link>
+               <Link to="/myapplications">
               <Card className="flex items-center justify-center gap-2 text-gray-700 font-medium hover:bg-orange-50">
                 <FileText size={18} className="text-orange-500" /> My Applications
               </Card>
+              </Link>
               <Card className="flex items-center justify-center gap-2 text-gray-700 font-medium hover:bg-gray-100">
                 <Settings size={18} className="text-gray-500" /> Settings
               </Card>

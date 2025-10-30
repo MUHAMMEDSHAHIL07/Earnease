@@ -53,3 +53,20 @@ export const myApplication = async (req, res) => {
         res.status(500).json({ message: "Server error"+error.message })
     }
 }
+
+export const getAppliedJobLength =async(req,res)=>{
+   try{
+    const student = req.user.id
+    const pending = await jobApplicationModel.countDocuments({student,status: "pending",})
+    const accepted = await jobApplicationModel.countDocuments({student,status: "accepted",})
+    const rejected = await jobApplicationModel.countDocuments({student,status: "rejected",})
+    return res.status(200).json({
+        pending,
+        accepted,
+        rejected
+    })
+   }
+   catch(err){
+       return res.status(500).json({message:err.message})
+   }
+}

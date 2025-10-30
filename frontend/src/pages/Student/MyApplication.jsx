@@ -3,6 +3,7 @@ import { motion } from "framer-motion"
 import { Search, Filter, MapPin, Briefcase, Calendar, Eye } from "lucide-react"
 import ApplicationStats from "./ApplicationStats"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 const statusColors = {
     pending: "bg-yellow-100 text-yellow-700",
@@ -18,6 +19,7 @@ const MyApplications = () => {
     const [totalPages, setTotalPages] = useState(1)
     const [totalCount, setTotalCount] = useState(0)
     const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
     const statusMap = {
         All: "all",
         Pending: "pending",
@@ -177,9 +179,13 @@ const MyApplications = () => {
                                     <Calendar size={14} /> Applied on {formatDate(app.appliedAt)}
                                 </p>
 
-                                <button className="mt-4 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-xl transition-all">
+                                <button
+                                  onClick={() => navigate(`/jobdetail/${app.job?._id}`)}
+                                    className="mt-4 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-xl transition-all"
+                                >
                                     <Eye size={16} /> View Details
                                 </button>
+
                             </motion.div>
                         ))}
                     </div>
@@ -199,8 +205,8 @@ const MyApplications = () => {
                                     key={num}
                                     onClick={() => setPage(num)}
                                     className={`w-9 h-9 flex items-center justify-center rounded-full font-medium ${num === page
-                                            ? "bg-blue-600 text-white"
-                                            : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-gray-100 text-gray-800 hover:bg-gray-200"
                                         }`}
                                 >
                                     {num}

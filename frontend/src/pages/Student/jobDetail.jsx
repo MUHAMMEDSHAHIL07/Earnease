@@ -11,6 +11,7 @@ const JobDetail = () => {
     const [job, setJob] = useState(null)
     const [loading, setLoading] = useState(true)
     const [appliedJob, setAppliedJob] = useState([])
+    const [appliedLoading, setAppliedLoading] = useState(true)
 
     const applyJob = async (id) => {
         try {
@@ -53,21 +54,22 @@ const JobDetail = () => {
                 )
                 const appliedIds = res.data.applications.map((app) => app.job._id)
                 setAppliedJob(appliedIds)
-                
-                
             } catch (error) {
                 console.error("Error fetching applied jobs:", error)
+            } finally {
+                setAppliedLoading(false)
             }
         }
 
         fetchAppliedJobs()
     }, [])
-    if (loading) {
+
+    if (loading || appliedLoading) {
         return (
             <GlobalLoader />
         )
     }
-     const isApplied = appliedJob.includes(job._id)
+    const isApplied = appliedJob.includes(job._id)
 
     return (
         <>
@@ -141,15 +143,11 @@ const JobDetail = () => {
                         )}
                         <div className="flex justify-center">
                             <button
-                                onClick={() => !isApplied && applyJob(job._id)}
-                                disabled={isApplied}
-                                className={`w-1/2 py-2 rounded-lg font-semibold text-sm transition-transform 
-                  ${isApplied
-                                        ? "bg-gray-400 text-white cursor-not-allowed"
-                                        : "bg-gradient-to-r from-blue-600 to-indigo-500 text-white hover:scale-105 hover:shadow-md"
-                                    }`}
+                                onClick={() => !isApplied && !appliedLoading && applyJob(job._id)}
+                                disabled={appliedLoading || isApplied}
+                                className={`w-1/2 py-2 rounded-lg font-semibold text-sm transition-transform  ${appliedLoading ? "bg-gray-300 text-gray-600 cursor-wait" : isApplied ? "bg-gray-400 text-white cursor-not-allowed" : "bg-gradient-to-r from-blue-600 to-indigo-500 text-white hover:scale-105 hover:shadow-md"}`}
                             >
-                                {isApplied ? "Applied" : "Apply Now"}
+                                {appliedLoading ? "Checking..." : isApplied ? "Applied" : "Apply Now"}
                             </button>
                         </div>
                     </div>
