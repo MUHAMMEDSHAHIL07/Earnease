@@ -20,7 +20,7 @@ const SkillsInput = ({ skills, setSkills, onRemoveSkill }) => {
     const handleSubmit = (e) => {
         e.preventDefault() 
         addSkillFromInput()
-    };
+    }
 
     const handleInputChange = (e) => {
         const value = e.target.value
@@ -79,8 +79,8 @@ const SkillsInput = ({ skills, setSkills, onRemoveSkill }) => {
                 </div>
             </form>
         </div>
-    );
-};
+    )
+}
 
 const InputField = React.memo(({
     icon: Icon,
@@ -99,7 +99,7 @@ const InputField = React.memo(({
     const handleChange = (e) => {
         const { value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }))
-    };
+    }
 
     return (
         <div className="space-y-2">
@@ -139,8 +139,8 @@ const InputField = React.memo(({
                 />
             )}
         </div>
-    );
-});
+    )
+})
 
 const EditStudentProfile = () => {
     const navigate = useNavigate()
@@ -156,11 +156,11 @@ const EditStudentProfile = () => {
         experience: "",
         avatarFile: null,
         avatarUrl: ""
-    });
+    })
 
-    const [completeProfile, setCompleteProfile] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
+    const [completeProfile, setCompleteProfile] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
 
     useEffect(() => {
         const fetchProfile = async () => {

@@ -7,34 +7,34 @@ import GlobalLoader from "../../components/GlobalLoader";
 
 const StudentChatRoom = ({ currentUser }) => {
   const { chatRoomId } = useParams();
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
-  const [inputText, setInputText] = useState("");
-  const [employerInfo, setEmployerInfo] = useState({ name: "", avatarUrl: "" });
-  const messagesEndRef = useRef(null);
-  const socket = getSocket();
+  const [inputText, setInputText] = useState("")
+  const [employerInfo, setEmployerInfo] = useState({ name: "", avatarUrl: "" })
+  const messagesEndRef = useRef(null)
+  const socket = getSocket()
 
   useEffect(() => {
-    if (!chatRoomId) return;
+    if (!chatRoomId) return
 
     const fetchUserDetails = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/student/chats`, { withCredentials: true });
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/student/chats`, { withCredentials: true })
         if (res.data.data) {
-          const chatRoom = res.data.data.find(room => room._id === chatRoomId);
+          const chatRoom = res.data.data.find(room => room._id === chatRoomId)
           if (chatRoom && chatRoom.employer) {
             setEmployerInfo({
               name: chatRoom.employer.companyname,
               avatarUrl: chatRoom.employer.avatarUrl,
             })
           } else {
-            setEmployerInfo({ name: "", avatarUrl: "" });
+            setEmployerInfo({ name: "", avatarUrl: "" })
           }
         }
       } catch (error) {
-        console.error("Failed to fetch user details", error);
+        console.error("Failed to fetch user details", error)
       }
-    };
+    }
 
     const fetchMessages = async () => {
       setLoading(true)
@@ -43,52 +43,52 @@ const StudentChatRoom = ({ currentUser }) => {
           `${import.meta.env.VITE_API_URL}/api/chat/messages/${chatRoomId}`,
           { withCredentials: true }
         );
-        setMessages(res.data.data);
+        setMessages(res.data.data)
       } catch (err) {
-        console.error("Error fetching messages:", err);
+        console.error("Error fetching messages:", err)
       }
       finally {
         setLoading(false)
       }
-    };
+    }
 
-    fetchUserDetails();
-    fetchMessages();
+    fetchUserDetails()
+    fetchMessages()
 
     if (socket) {
-      socket.emit("joinRoom", chatRoomId);
+      socket.emit("joinRoom", chatRoomId)
 
       const handleReceiveMessage = (newMessage) => {
         setMessages((prev) => {
-          const exists = prev.find((msg) => msg._id === newMessage._id);
-          if (exists) return prev;
-          return [...prev, newMessage];
-        });
-      };
+          const exists = prev.find((msg) => msg._id === newMessage._id)
+          if (exists) return prev
+          return [...prev, newMessage]
+        })
+      }
 
-      socket.on("receiveMessage", handleReceiveMessage);
+      socket.on("receiveMessage", handleReceiveMessage)
 
       return () => {
         if (socket) {
-          socket.off("receiveMessage", handleReceiveMessage);
+          socket.off("receiveMessage", handleReceiveMessage)
         }
-      };
+      }
     }
-  }, [chatRoomId, socket]);
+  }, [chatRoomId, socket])
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
 
   const handleSendMessage = async () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim()) return
 
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/chat/sendMessage/${chatRoomId}`,
         { text: inputText },
         { withCredentials: true }
-      );
+      )
       setMessages((prev) => [...prev, res.data.data])
       setInputText("")
     } catch (err) {
@@ -97,25 +97,25 @@ const StudentChatRoom = ({ currentUser }) => {
   };
 
   const isCurrentUser = (msg) => {
-    if (!msg || !msg.sender) return false;
+    if (!msg || !msg.sender) return false
     const senderId = typeof msg.sender === 'object' ? msg.sender._id : msg.sender
     return senderId?.toString() === currentUser?._id?.toString()
-  };
+  }
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
+      e.preventDefault()
+      handleSendMessage()
     }
-  };
+  }
 
   const formatTime = (timestamp) => {
     if (!timestamp) return "";
     return new Date(timestamp).toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
-    });
-  };
+    })
+  }
 
   return (
     <div className="flex flex-col h-full bg-white">
@@ -218,7 +218,7 @@ const StudentChatRoom = ({ currentUser }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default StudentChatRoom

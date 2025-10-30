@@ -4,6 +4,7 @@ import { Search, Filter, MapPin, Briefcase, Calendar, Eye } from "lucide-react"
 import ApplicationStats from "./ApplicationStats"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import Navbar from "../../components/Navbar"
 
 const statusColors = {
     pending: "bg-yellow-100 text-yellow-700",
@@ -73,6 +74,8 @@ const MyApplications = () => {
     }
 
     return (
+        <>
+        <Navbar/>
         <div className="min-h-screen bg-gray-50 py-10 px-6 md:px-16">
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -225,6 +228,7 @@ const MyApplications = () => {
                 </>
             )}
         </div>
+        </>
     )
 }
 

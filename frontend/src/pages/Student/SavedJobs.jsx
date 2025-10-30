@@ -17,7 +17,7 @@ const SavedJobs = () => {
        `${import.meta.env.VITE_API_URL}/api/student/applyJob/${id}`,
         {},
         { withCredentials: true }
-      );
+      )
       toast.success("Applied for job successfully!")
     } catch (error)
     {
@@ -27,7 +27,7 @@ const SavedJobs = () => {
         navigate("/editProfile")
       }
     }
-  };
+  }
 
   const handleremove = async (jobId) => {
     try {

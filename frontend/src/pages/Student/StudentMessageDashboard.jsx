@@ -44,21 +44,21 @@ const StudentMessagingDashboard = () => {
             isOnline: room.isOnline || false,
           }));
 
-          mapped.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+          mapped.sort((a, b) => b.lastMessageTime - a.lastMessageTime)
 
-          setConversations(mapped);
+          setConversations(mapped)
         }
       } catch (error) {
-        console.error('Failed to fetch inbox', error);
+        console.error('Failed to fetch inbox', error)
       } finally {
         setLoading(false);
       }
     };
-    fetchInbox();
-  }, []);
+    fetchInbox()
+  }, [])
 
   useEffect(() => {
-    if (chatRoomId) setShowChatOnMobile(true);
+    if (chatRoomId) setShowChatOnMobile(true)
   }, [chatRoomId]);
 
   useEffect(() => {
@@ -96,30 +96,30 @@ const StudentMessagingDashboard = () => {
           });
         }
 
-        updated.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
-        return updated;
-      });
-    };
+        updated.sort((a, b) => b.lastMessageTime - a.lastMessageTime)
+        return updated
+      })
+    }
 
-    window.socket.on('newMessage', handleNewMessage);
+    window.socket.on('newMessage', handleNewMessage)
 
     return () => {
-      window.socket.off('newMessage', handleNewMessage);
-    };
-  }, []);
+      window.socket.off('newMessage', handleNewMessage)
+    }
+  }, [])
 
   const filteredConversations = conversations.filter((chat) =>
     chat.employer.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  )
 
   const handleConversationClick = (chatId) => {
-    navigate(`/student/inbox/${chatId}`);
-    setShowChatOnMobile(true);
-  };
+    navigate(`/student/inbox/${chatId}`)
+    setShowChatOnMobile(true)
+  }
 
   const handleBackToList = () => {
-    setShowChatOnMobile(false);
-    navigate('/student/inbox');
+    setShowChatOnMobile(false)
+    navigate('/student/inbox')
   };
 
   return (
@@ -127,7 +127,6 @@ const StudentMessagingDashboard = () => {
       <Navbar />
       <div className="flex-1 flex overflow-hidden">
 
-        {/* Conversation List */}
         <div className={`w-full lg:w-[380px] bg-white border-r border-gray-200 flex flex-col ${showChatOnMobile ? 'hidden lg:flex' : 'flex'}`}>
           <div className="p-6 border-b border-gray-100 flex-shrink-0">
             <div className="flex items-center gap-3 mb-2">
