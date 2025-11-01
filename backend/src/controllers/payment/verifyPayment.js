@@ -82,7 +82,8 @@ export const verifyPaymentCompletedJob = async (req, res) => {
         { $set: { paymentStatus: "paid", status: "completed" } },
         { new: true }
       )
-      .populate("job")
+      .populate("job", "title")
+      .populate("student", "name email")
 
     if (!jobApp) {
       return res.status(404).json({ message: "Job application not found" })
@@ -91,11 +92,13 @@ export const verifyPaymentCompletedJob = async (req, res) => {
     await paymentModel.create({
       paymentId: razorpay_payment_id,
       employer: req.user.id,
-      student: jobApp.student,
+      student: jobApp.student?._id,
+      job: jobApp.job?._id,
       amount: paymentData.amount / 100,
       status: "paid",
       method: paymentData.method,
       description: `Payment for job: ${jobApp.job.title}`,
+      paymentReceivedDate: new Date(),
       createdAt: new Date()
     })
 

@@ -33,9 +33,9 @@ export default function UserSettings() {
             <div className="space-y-2">
               {[
                 { id: "password", label: "Change Password", color: "blue" },
-                { id: "payments", label: "Payments / Earnings", color: "green" },
-                { id: "help", label: "Help Center", color: "purple" },
-                { id: "notifications", label: "Notification Settings", color: "orange" },
+                { id: "payments", label: "Payments / Earnings", color: "blue" },
+                { id: "help", label: "Help Center", color: "blue" },
+                { id: "notifications", label: "Notification Settings", color: "blue" },
               ].map((tab) => (
                 <button
                   key={tab.id}
