@@ -9,6 +9,7 @@ import { getStudentChats, getStudentMessageInbox } from "../controllers/studentC
 import { uploadStudent } from "../config/cloudinary.js"
 import { getProfileStudent } from "../controllers/studentController/getProfile.js"
 import { getAppliedJobLength, myApplication } from "../controllers/studentController/myApplications.js"
+import { changePassword } from "../controllers/studentController/changePassword.js"
 
 
 const router = express.Router()
@@ -17,6 +18,7 @@ router.patch("/editprofile",jwtMiddleware,checkRole(["student"]),uploadStudent.s
 router.get("/getAllJobs",getAllJobs)
 router.get("/getJob/:id",getJobById)
 router.get("/getProfile",jwtMiddleware,checkRole(["student"]),getProfileStudent)
+router.post("/changepassword",jwtMiddleware,checkRole(["student"]),changePassword)
 router.get("/applications",jwtMiddleware,checkRole(["student"]),getStudentJobList)
 router.post("/applyJob/:id",jwtMiddleware,checkRole(["student"]),applyJob)
 router.post("/saveJob",jwtMiddleware,checkRole(["student"]),postSavedJob)

@@ -46,6 +46,7 @@ import EditStudentProfile from "../pages/Student/EditProfile";
 import VerifyEmployer from "../pages/Employer/VerifyEmployer";
 import AboutUs from "../pages/Publicpages/AboutUs";
 import MyApplications from "../pages/Student/MyApplication";
+import UserSettings from "../pages/Student/StudentSettings";
 
 const Router = () => {
   const { user } = useAuth();
@@ -86,6 +87,14 @@ const Router = () => {
         element={
           <ProtectedRoute allowedRoles={["student"]}>
             <SavedJobs />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute allowedRoles={["student"]}>
+            <UserSettings />
           </ProtectedRoute>
         }
       />

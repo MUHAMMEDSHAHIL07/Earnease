@@ -66,7 +66,7 @@ const StudentProfile = () => {
   return (
     <>
       <Navbar />
-      <div className="p-4 sm:p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen font-sans">
+      <div className="p-4 sm:p-8 max-w-7xl mx-auto  min-h-screen font-sans">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <Card className="text-center">
             <div className="flex flex-col items-center">
@@ -116,9 +116,11 @@ const StudentProfile = () => {
                 <FileText size={18} className="text-orange-500" /> My Applications
               </Card>
               </Link>
+              <Link to="/settings">
               <Card className="flex items-center justify-center gap-2 text-gray-700 font-medium hover:bg-gray-100">
                 <Settings size={18} className="text-gray-500" /> Settings
               </Card>
+              </Link>
             </div>
 
             <Card>

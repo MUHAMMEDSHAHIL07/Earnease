@@ -3,7 +3,6 @@ import { Briefcase, MapPin, IndianRupee, Clock, Users } from "lucide-react";
 import Navbar from "../../components/Navbar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import toast from "react-hot-toast";
 import GlobalLoader from "../../components/GlobalLoader";
 
 const JobDetail = () => {
@@ -11,21 +10,6 @@ const JobDetail = () => {
     const [job, setJob] = useState(null)
     const [loading, setLoading] = useState(true)
     const [appliedJob, setAppliedJob] = useState([])
-    const [appliedLoading, setAppliedLoading] = useState(true)
-
-    const applyJob = async (id) => {
-        try {
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/student/applyJob/${id}`,
-                {},
-                { withCredentials: true }
-            )
-            setAppliedJob((prev) => [...prev, id])
-            toast.success("Applied job successfully")
-        } catch (error) {
-            toast.error(error.response?.data?.message || "Login failed")
-        }
-    }
 
     useEffect(() => {
         const fetchJob = async () => {
@@ -56,20 +40,17 @@ const JobDetail = () => {
                 setAppliedJob(appliedIds)
             } catch (error) {
                 console.error("Error fetching applied jobs:", error)
-            } finally {
-                setAppliedLoading(false)
-            }
+            } 
         }
 
         fetchAppliedJobs()
     }, [])
 
-    if (loading || appliedLoading) {
+    if (loading) {
         return (
             <GlobalLoader />
         )
     }
-    const isApplied = appliedJob.includes(job._id)
 
     return (
         <>
@@ -141,15 +122,7 @@ const JobDetail = () => {
                                 </ul>
                             </div>
                         )}
-                        <div className="flex justify-center">
-                            <button
-                                onClick={() => !isApplied && !appliedLoading && applyJob(job._id)}
-                                disabled={appliedLoading || isApplied}
-                                className={`w-1/2 py-2 rounded-lg font-semibold text-sm transition-transform  ${appliedLoading ? "bg-gray-300 text-gray-600 cursor-wait" : isApplied ? "bg-gray-400 text-white cursor-not-allowed" : "bg-gradient-to-r from-blue-600 to-indigo-500 text-white hover:scale-105 hover:shadow-md"}`}
-                            >
-                                {appliedLoading ? "Checking..." : isApplied ? "Applied" : "Apply Now"}
-                            </button>
-                        </div>
+                       
                     </div>
                 </div>
             </div>
