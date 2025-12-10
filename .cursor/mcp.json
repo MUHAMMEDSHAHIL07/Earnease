@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "shell": {
+      "type": "command",
+      "command": "powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "-"
+      ]
+    }
+  }
+}
