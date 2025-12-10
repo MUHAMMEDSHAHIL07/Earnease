@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import express from "express";
 import connectDB from "./config/db.js"
 import authRoute from "./routes/authRoutes.js"; 
@@ -11,6 +12,9 @@ import initSocket from "./socket/index.js";
 import SocketRoute from "./routes/socketRoute.js"
 import * as chatMessageController from './socket/chatMessageController.js'
 import { apiLimiter } from "./middleware/rateLimit.js";
+
+// Load environment variables before anything uses them
+dotenv.config();
 const app = express();
 app.set('trust proxy', 1);
 const server = http.createServer(app);
