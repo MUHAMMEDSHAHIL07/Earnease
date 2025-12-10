@@ -13,7 +13,6 @@ import SocketRoute from "./routes/socketRoute.js"
 import * as chatMessageController from './socket/chatMessageController.js'
 import { apiLimiter } from "./middleware/rateLimit.js";
 
-// Load environment variables before anything uses them
 dotenv.config();
 const app = express();
 app.set('trust proxy', 1);
@@ -23,20 +22,27 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://earnease-portal.vercel.app"
+  "http://127.0.0.1:5173",
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
+  "https://earnease-portal.vercel.app",
+  null
 ];
 
+
 app.use(cors({
-  origin: function(origin, callback){
-    if (!origin) return callback(null, true); 
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) {
-      callback(null, true);
+      return callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      console.log(" Blocked origin:", origin);
+      return callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true
+  credentials: true,
 }));
+
 
 
 app.use(express.json())
